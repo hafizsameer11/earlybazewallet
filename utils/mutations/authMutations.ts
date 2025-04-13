@@ -24,6 +24,7 @@ export const resendOtp = async ({ data }: { data: { email: string } }) => {
 };
 
 export const setPin = async (data: { email: string; pin: string }) => {
+  console.log("🔹 Sending Set Pin Request:", data); // ✅ Log request before sending
   return await apiCall(API_ENDPOINTS.USER.SetPin, "POST", data);
 };
 

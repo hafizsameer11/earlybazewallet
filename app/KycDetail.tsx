@@ -15,6 +15,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { createKycRequest } from '@/utils/mutations/accountMutations';
 import { useMutation } from '@tanstack/react-query';
 import { getFromStorage } from "@/utils/storage";
+import { router } from 'expo-router';
+import Toast from 'react-native-toast-message';
 
 
 
@@ -66,6 +68,13 @@ const KycDetail: React.FC = () => {
         mutationFn: ({ data, token }: { data: FormData; token: string }) => createKycRequest({ data, token }),
         onSuccess: (data) => {
             console.log("✅ KYC Request Created:", data);
+            //move to home page
+            Toast.show({
+                type: 'success',
+                text1: 'KYC Request Created',
+                text2: 'Your KYC request has been submitted successfully.',
+            });
+            router.push("/(tabs)")
         },
         onError: (error) => {
             console.error("❌ KYC Request Failed:", error);

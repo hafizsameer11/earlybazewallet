@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     View,
     Text,
@@ -14,9 +14,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { images } from '@/constants';
 
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { createInternalTransfer } from "@/utils/mutations/accountMutations";
 import { verifyPin } from "@/utils/mutations/authMutations";
+import Toast from 'react-native-toast-message';
+import { getFromStorage } from '@/utils/storage';
+import { getUserDetails } from '@/utils/queries/appQueries';
 
 
 interface VerificationModalProps {
@@ -25,7 +28,28 @@ interface VerificationModalProps {
     onFail: () => void; // New prop to handle failure
 }
 
-const VerificationModal: React.FC<VerificationModalProps & { requestData: any; onSuccess: ({ reference, amount , currency}: { reference: string, amount: string, currency: string, transaction_id: string }) => void }> = ({ visible, onClose, onFail, requestData, onSuccess }) => {
+const VerificationModal: React.FC<VerificationModalProps & { requestData: any; onSuccess: ({ reference, amount, currency }: { reference: string, amount: string, currency: string, transaction_id: string }) => void }> = ({ visible, onClose, onFail, requestData, onSuccess }) => {
+
+    const [token, setToken] = useState<string | null>(null); // State to hold the token
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const fetchedToken = await getFromStorage("authToken");
+            setToken(fetchedToken);
+            console.log("🔹 Retrieved Token:", fetchedToken);
+        };
+
+        fetchUserData();
+    }, []);
+
+    // Fetch user details when the token is available
+    const { data: userDetails, error: userError, isLoading: userLoading } = useQuery({
+        queryKey: ["userDetails"],
+        queryFn: () => getUserDetails({ token }),
+        enabled: !!token, // Only run the query when the token is available
+    });
+
+    console.log("🔹 User Details:", userDetails);
 
     const cardBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1A1A1A' }, 'card');
     const textTitleColor = useThemeColor({ light: '#25AE7A', dark: '#25AE7A' }, 'textTitle');
@@ -41,47 +65,64 @@ const VerificationModal: React.FC<VerificationModalProps & { requestData: any; o
     const [isOtpFocused, setIsOtpFocused] = useState(false);
     const [isPinFocused, setIsPinFocused] = useState(false);
     const [email, setEmail] = useState('');
+    const calledTransferRef = useRef(false);
 
     // ✅ First mutation - Verify PIN
+    console.log("fee_summary", requestData);
     const { isPending: isPendingPin, mutate: mutatePin } = useMutation({
         mutationFn: (data: { email: string; pin: string }) => verifyPin(data),
-        onSuccess: () => {
-            console.log("✅ Pin Verification Successful");
+        // onSuccess: () => {
+        //     console.log("✅ Pin Verification Successful");
+        //     Toast.show({
+        //         type: 'success',
+        //         text1: 'Pin Verified!',
+        //         text2: 'Transactions is in progress.',
+        //     });
+        //     console.log("🔸 Payload sent to mutateTransfer:", {
+        //         data: {
+        //             currency: requestData.currency,
+        //             network: requestData.network,
+        //             amount: requestData.amount,
+        //             email: requestData.email || requestData.address,
+        //             fee_summary: requestData.fee_summary,
+        //         },
+        //         token: requestData.token,
+        //     });
+        //     // If PIN is correct, proceed to transfer
+        //     mutateTransfer(
+        //         {
+        //             data: {
+        //                 currency: requestData.currency,
+        //                 network: requestData.network,
+        //                 amount: requestData.amount,
+        //                 email: requestData.email || requestData.address,
+        //                 fee_summary: requestData.fee_summary, // ✅ Add this line
+        //             },
+        //             token: requestData.token,
+        //         },
+        //         {
+        //             onSuccess: (response) => {
+        //                 console.log("✅ Transfer Successful:", response);
 
-            // If PIN is correct, proceed to transfer
-            mutateTransfer(
-                {
-                    data: {
-                        currency: requestData.currency,
-                        network: requestData.network,
-                        amount: requestData.amount,
-                        email: email,
-                    },
-                    token: requestData.token,
-                },
-                {
-                    onSuccess: (response) => {
-                        console.log("✅ Transfer Successful:", response);
+        //                 // Extract transaction reference
+        //                 const reference = response?.data?.reference || "N/A";
+        //                 const amount = requestData.amount; // Assuming `amount` is available in `requestData`
 
-                        // Extract transaction reference
-                        const reference = response?.data?.reference || "N/A";
-                        const amount = requestData.amount; // Assuming `amount` is available in `requestData`
+        //                 onSuccess(reference, amount);
 
-                        onSuccess(reference, amount);
-
-                        onClose(); // ✅ Close verification modal
-                    },
-                    onError: (error) => {
-                        console.error("❌ Transfer Failed:", error);
-                        onFail(); // ✅ Show failure modal
-                    },
-                }
-            );
-        },
-        onError: (error) => {
-            console.error("❌ Pin Verification Failed:", error);
-            onFail(); // ✅ Show failure modal
-        },
+        //                 onClose(); // ✅ Close verification modal
+        //             },
+        //             onError: (error) => {
+        //                 console.error("❌ Transfer Failed:", error);
+        //                 onFail(); // ✅ Show failure modal
+        //             },
+        //         }
+        //     );
+        // },
+        // onError: (error) => {
+        //     console.error("❌ Pin Verification Failed:", error);
+        //     onFail(); // ✅ Show failure modal
+        // },
     });
 
     // ✅ Second mutation - Create Internal Transfer
@@ -92,7 +133,6 @@ const VerificationModal: React.FC<VerificationModalProps & { requestData: any; o
 
     // ✅ Disable Proceed button if email or PIN is missing
     const isProceedDisabled =
-        !email ||
         !pin.trim();
 
     // Start countdown when timer > 0
@@ -125,18 +165,20 @@ const VerificationModal: React.FC<VerificationModalProps & { requestData: any; o
 
                     {/* OTP Input */}
                     <View style={styles.inputContainer}>
-                        <Text style={[styles.label, { color: textColor }]}>Email OTP</Text>
+                        <Text style={[styles.label, { color: textColor }]}>Enter Your Email</Text>
                         <View style={[styles.inputRow, { borderColor: isOtpFocused ? '#25AE7A' : borderColor }]}>
                             <TextInput
                                 placeholder="Email"
                                 placeholderTextColor="#A1A1A1"
                                 style={[styles.inputField, { color: textColor }]}
-                                value={email}
+                                value={userDetails?.data?.email} // Use userDetails.email if available
                                 onChangeText={setEmail}
+                                //make 
+                                editable={false} // Disable editing
                                 onFocus={() => setIsOtpFocused(true)}
                                 onBlur={() => setIsOtpFocused(false)}
                             />
-                            <TouchableOpacity
+                            {/* <TouchableOpacity
                                 style={styles.sendOtpButton}
                                 onPress={handleResendOtp}
                                 disabled={timer > 0}
@@ -144,15 +186,15 @@ const VerificationModal: React.FC<VerificationModalProps & { requestData: any; o
                                 <Text style={[styles.sendOtpText, timer > 0 && styles.disabledText]}>
                                     {timer > 0 ? `Resend in ${timer}s` : 'Resend OTP'}
                                 </Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
 
                         {/* Resend Timer Fix */}
-                        {timer > 0 && (
+                        {/* {timer > 0 && (
                             <Text style={styles.resendText}>
                                 Resend in <Text style={styles.timer}>00 : {timer < 10 ? `0${timer}` : timer}</Text>
                             </Text>
-                        )}
+                        )} */}
 
                         {/* PIN Input */}
                         <Text style={[styles.label, { color: textColor, marginTop: 20 }]}>Input Pin</Text>
@@ -186,7 +228,7 @@ const VerificationModal: React.FC<VerificationModalProps & { requestData: any; o
                                 console.log("🔹 Verifying PIN for:", email);
 
                                 mutatePin(
-                                    { email: email, pin }, // ✅ Verify PIN first
+                                    { email: userDetails?.data?.email, pin }, // ✅ Verify PIN first
                                     {
                                         onSuccess: () => {
                                             console.log("✅ PIN Verified! Proceeding with Transfer...");
@@ -197,7 +239,8 @@ const VerificationModal: React.FC<VerificationModalProps & { requestData: any; o
                                                         currency: requestData.currency,
                                                         network: requestData.network,
                                                         amount: requestData.amount,
-                                                        email: email,
+                                                        email: requestData.email || requestData.address,
+                                                        fee_summary: requestData.fee_summary, // ✅ Add this line
                                                     },
                                                     token: requestData.token,
                                                 },
@@ -208,10 +251,10 @@ const VerificationModal: React.FC<VerificationModalProps & { requestData: any; o
                                                         // Extract transaction reference and amount
                                                         const reference = response?.data.reference || "N/A";
                                                         const amount = requestData.amount; // Assuming `amount` is available in `requestData`
-                                                        const currency= requestData.currency;
-                                                        const transaction_id= response?.data.transaction_id || "N/A";
+                                                        const currency = requestData.currency;
+                                                        const transaction_id = response?.data.transaction_id || "N/A";
                                                         // Pass both reference and amount to onSuccess as an object
-                                                        onSuccess({ reference, amount , currency, transaction_id});
+                                                        onSuccess({ reference, amount, currency, transaction_id });
 
                                                         onClose(); // ✅ Close verification modal
                                                     },

@@ -9,9 +9,11 @@ interface TransactionSuccessProps {
   title: string;
   amount: any | undefined;
   network: string | undefined;
+  currency?: string | undefined;
+  symbol?: string | undefined;
 }
 
-const TransactionSuccess: React.FC<TransactionSuccessProps> = ({ title, amount = 0, network = '0' }) => {
+const TransactionSuccess: React.FC<TransactionSuccessProps> = ({ title, amount = 0, network = '0', currency, symbol = icons.bitCoin }) => {
   // Theme colors
   const backgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1A1A1A' }, 'background');
   const textColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text');
@@ -36,8 +38,8 @@ const TransactionSuccess: React.FC<TransactionSuccessProps> = ({ title, amount =
 
         {/* Transaction Details */}
         <View style={styles.detailContainer}>
-          <TransactionDetailItem label="Crypto bought" value="Bitcoin" icon={icons.bitCoin} />
-          <TransactionDetailItem label="Network" value="Bitcoin" icon={icons.bitCoin} />
+          <TransactionDetailItem label="Crypto bought" value={currency} />
+          <TransactionDetailItem label="Network" value="Bitcoin" />
           <TransactionDetailItem label="Amount Paid" value={amount} />
         </View>
       </View>

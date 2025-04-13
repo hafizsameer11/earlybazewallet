@@ -34,7 +34,7 @@ const TransactionPage: React.FC = () => {
 
   const normalizedType = types || undefined; // Ensure it's undefined if empty
 
-
+  console.log("normalize type", normalizedType);
   // Fetch the token and user data when the component mounts
   useEffect(() => {
     const fetchUserData = async () => {
@@ -252,6 +252,8 @@ const TransactionPage: React.FC = () => {
               title={transactionType === "withdraw" ? "Withdrawal Successful" : "Transaction Successful"}
               amount={transactionSummary?.data?.amount}
               network={transactionSummary?.data?.network}
+              currency={transactionSummary?.data?.currency}
+              symbol={transactionSummary?.data?.symbol}
             />
           </View>
         )}

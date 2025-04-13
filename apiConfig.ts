@@ -36,6 +36,8 @@ const API_ENDPOINTS = {
     GetSingleTicket: API_DOMAIN + "/support/get-ticket",
     GetAssets: API_DOMAIN + "/user/assets",
     GetWalletCurrency: API_DOMAIN + "/user/wallet-currencies",
+    GetUserWalletCurrency: API_DOMAIN + "/user/all-wallet-currencies",
+    
     GetWalletNetworks: API_DOMAIN + "/user/networks",
     GetTransactionCurrency: API_DOMAIN + "/transaction/currency",
     GetReceiveAddress: API_DOMAIN + "/user/deposit-address",
@@ -48,6 +50,8 @@ const API_ENDPOINTS = {
     BuyTransfter: API_DOMAIN + "/wallet/buy",
     CalculateExchangeRate:
       API_DOMAIN + "/exchange-rate/calculate-exchange-rate",
+      GetNgNExchangeRate:
+      API_DOMAIN + "/exchange-rate/get-ngn-exchange-rate",
       GetReferral: API_DOMAIN + "/refferal/get-all",
       SwapTransfter: API_DOMAIN + "/wallet/swap",
       EditProfile: API_DOMAIN + "/user/update-profile",

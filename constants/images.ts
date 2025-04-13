@@ -64,6 +64,7 @@ const gallery = require("../assets/images/gallery.png");
 const wallet_black = require("../assets/images/wallet_black.png");
 const naira = require("../assets/images/naira.png");
 const assestBg = require('../assets/images/assestBg.png');
+const notyarrow = require('../assets/images/notyarrow.png');
 
 const images = {
   indexService,
@@ -131,7 +132,8 @@ const images = {
   gallery,
   wallet_black,
   naira,
-  assestBg
+  assestBg,
+  notyarrow
 };
 
 export default images;

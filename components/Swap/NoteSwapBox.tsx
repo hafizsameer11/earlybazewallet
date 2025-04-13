@@ -17,10 +17,10 @@ const NoteSwapBox: React.FC = () => {
       {/* Content */}
       <View style={styles.content}>
         <Text style={[styles.noteText, { color: textColor }]}>
-           Crosscheck all addresses before pasting
+          CrossCheck Amount Before Swap
         </Text>
         <Text style={[styles.noteText, { color: textColor }]}>
-           Make sure you select the right network
+          Make sure you select the right network
         </Text>
       </View>
     </View>
@@ -30,7 +30,7 @@ const NoteSwapBox: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     // width: 388,
-    marginHorizontal:16,
+    marginHorizontal: 16,
     borderWidth: 1,
     borderColor: '#25AE7A',
     backgroundColor: '#FFFFFF',

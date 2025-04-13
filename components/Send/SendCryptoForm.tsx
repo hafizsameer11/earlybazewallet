@@ -6,7 +6,8 @@ import {
     TouchableOpacity,
     Image,
     StyleSheet,
-    Modal
+    Modal,
+    Alert
 } from 'react-native';
 // import { BarCodeScanner } from 'expo-barcode-scanner';
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -44,7 +45,15 @@ const SendCryptoForm: React.FC<{
     setUsdAmount: React.Dispatch<React.SetStateAction<string>>;
     scannedAddress: string;
     setScannedAddress: React.Dispatch<React.SetStateAction<string>>;
-    assetData: { assestId: string, icon: string, assetName: string };
+    assetData: { assestId: string; icon: string; assetName: string; balance: string };
+
+    // ✅ New prop to lift fee data up to parent
+    onFeeChange: (fee: {
+        platform_fee_usd: string;
+        blockchain_fee_usd: string;
+        total_fee_usd: string;
+        amount_after_fee: string;
+    }) => void;
 }> = ({
     selectedTab,
     setSelectedTab,
@@ -56,12 +65,19 @@ const SendCryptoForm: React.FC<{
     setUsdAmount,
     scannedAddress,
     setScannedAddress,
-    assetData
+    assetData,
+    onFeeChange // ✅ Receive prop
 }) => {
         const [token, setToken] = useState<string | null>(null);
         const cardBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1A1A1A' }, 'card');
         const textColor = useThemeColor({ light: '#222222', dark: '#FFFFFF' }, 'text');
         const borderColor = useThemeColor({ light: '#E5E5E5', dark: '#333333' }, 'border');
+        const [feeData, setFeeData] = useState({
+            platform_fee_usd: "0.00",
+            blockchain_fee_usd: "0.00",
+            total_fee_usd: "0.00",
+            amount_after_fee: "0.00"
+        });
 
         const { assestId, icon, assetName } = assetData;  // Access individual properties
         console.log("The Final data receving: ", assetName, assestId, icon);
@@ -77,6 +93,9 @@ const SendCryptoForm: React.FC<{
 
         const scan = useThemeColor({ light: images.scan, dark: images.scan_black }, 'scan');
         const didMountRef = useRef(false); // ⬅️ Add this at the top of your component
+        const feeLabelColor = useThemeColor({ light: '#666', dark: '#aaa' }, 'text');
+        const feeValueColor = useThemeColor({ light: '#111', dark: '#fff' }, 'text');
+        const feeTitleColor = useThemeColor({ light: '#222', dark: '#fff' }, 'text');
 
         // Ensure selectedCoin and selectedNetwork are never null
         const coinId = selectedCoin?.id?.toString() || assestId || undefined;
@@ -106,15 +125,14 @@ const SendCryptoForm: React.FC<{
                 data,
                 token,
             }: {
-                data: { currency: string; amount: string };
+                data: { currency: string; amount: string, type: string, to: string };
                 token: string;
             }) => calculateExchangeRate({ data, token }),
 
-            onSuccess: (response: { data: { amount_usd: string | null; amount_naira: string | null }; message: string; status: string }) => {
+            onSuccess: (response: { data: { amount_usd: string | null; amount_naira: string | null, fee_summary: { platform_fee_usd: string | null; blockchain_fee_usd: string | null; total_fee_usd: string | null; amount_after_fee: string | null } }; message: string; status: string }) => {
                 console.log("✅ Exchange Rate Fetched:", response);
 
-                // Safely destructure and provide fallback values in case of undefined or null
-                const { amount_usd, amount_naira } = response.data;
+                const { amount_usd, amount_naira, fee_summary } = response.data;
 
                 // Default to "0.00" if either value is undefined or null
                 const usdAmount = amount_usd ?? "0.00";
@@ -128,6 +146,22 @@ const SendCryptoForm: React.FC<{
 
                 // ✅ Update state only if values have changed
                 setConvertedAmount(usdAmount);
+                if (fee_summary) {
+                    setFeeData({
+                        platform_fee_usd: fee_summary.platform_fee_usd ?? "0.00",
+                        blockchain_fee_usd: fee_summary.blockchain_fee_usd ?? "0.00",
+                        total_fee_usd: fee_summary.total_fee_usd ?? "0.00",
+                        amount_after_fee: fee_summary.amount_after_fee ?? "0.00",
+                    });
+                    if (onFeeChange) {
+                        onFeeChange({
+                            platform_fee_usd: fee_summary.platform_fee_usd ?? "0.00",
+                            blockchain_fee_usd: fee_summary.blockchain_fee_usd ?? "0.00",
+                            total_fee_usd: fee_summary.total_fee_usd ?? "0.00",
+                            amount_after_fee: fee_summary.amount_after_fee ?? "0.00",
+                        });
+                    }
+                }
             },
 
             onError: (error: any) => {
@@ -150,14 +184,16 @@ const SendCryptoForm: React.FC<{
                 setModalVisible(true);
             }
         }, [assetName, assestId, icon]);
-        
+
         useEffect(() => {
             if (didMountRef.current) {
                 if (token && selectedCoin?.name && usdAmount) {
                     getExchangeRate({
                         data: {
                             currency: selectedCoin.name.toLowerCase(),
-                            amount: usdAmount
+                            amount: usdAmount,
+                            type: "send",
+                            to: scannedAddress
                         },
                         token: token
                     });
@@ -165,7 +201,23 @@ const SendCryptoForm: React.FC<{
             } else {
                 didMountRef.current = true; // ⬅️ Mark as mounted after first render
             }
-        }, [usdAmount, selectedCoin, token]);
+        }, [usdAmount, selectedCoin, token, scannedAddress]);
+        const validateBalance = () => {
+            const enteredAmount = parseFloat(usdAmount || "0");
+            const availableBalance = parseFloat(assetData.balance || "0");
+
+            if (enteredAmount > availableBalance) {
+                Alert.alert(
+                    "Insufficient Balance",
+                    "You don't have enough balance. Please buy crypto first.",
+                    [{ text: "OK" }]
+                );
+                return false;
+            }
+
+            return true;
+        };
+
         return (
             <View style={styles.container}>
                 <TabSwitcher selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
@@ -181,14 +233,30 @@ const SendCryptoForm: React.FC<{
                             value={scannedAddress}
                             onChangeText={setScannedAddress}
                         />
-                        <TouchableOpacity onPress={() => setIsScannerOpen(true)}>
+                        <TouchableOpacity onPress={() => Alert.alert("Scanner will work in production build")}>
                             <Image source={scan} style={styles.scanIcon} />
                         </TouchableOpacity>
                     </View>
 
                     {/* ✅ Amount and Currency Selection */}
                     <View style={styles.exchangeContainer}>
-                        <InputField label={selectedCoin?.name} value={usdAmount} onChange={setUsdAmount} />
+                        <InputField label={selectedCoin?.name} value={usdAmount} onChange={(val) => {
+                            const entered = parseFloat(val || "0");
+                            const available = parseFloat(assetData.balance || "0");
+
+                            if (entered > available) {
+                                Alert.alert(
+                                    "Insufficient Balance",
+                                    "You don't have enough balance. Resetting to your available balance.",
+                                    [{ text: "OK" }]
+                                );
+
+                                setUsdAmount(available.toString()); // Reset to max
+                            } else {
+                                setUsdAmount(val); // Normal case
+                            }
+                        }}
+                        />
                         <SelectionBox
                             label="Coin"
                             id={selectedCoin?.id || assestId}
@@ -209,9 +277,9 @@ const SendCryptoForm: React.FC<{
                             onChange={() => { }}
                             editable={false} // ✅ Make it disabled
                         />                        <SelectionBox
-                            label="Network"
+                            label="Select Network"
                             id={selectedNetwork.id}
-                            value={selectedNetwork.name || "Select Network"}
+                            value={selectedNetwork.name || "Network"}
                             icon={selectedNetwork?.icon || images.solana}
                             onPress={coinId ? () => openModal("network") : undefined}
                             disabled={!coinId}
@@ -233,6 +301,32 @@ const SendCryptoForm: React.FC<{
                     />
                 )}
 
+                {/* ✅ Fee Summary Section */}
+                <View style={[styles.feeSummaryBox, { backgroundColor: cardBackgroundColor, borderColor }]}>
+                    <Text style={[styles.feeTitle, { color: feeTitleColor }]}>Fee Breakdown</Text>
+
+                    {/* <View style={styles.feeRow}>
+                        <Text style={[styles.feeLabel, { color: feeLabelColor }]}>Platform Fee</Text>
+                        <Text style={[styles.feeValue, { color: feeValueColor }]}>${feeData.platform_fee_usd}</Text>
+                    </View>
+
+                    <View style={styles.feeRow}>
+                        <Text style={[styles.feeLabel, { color: feeLabelColor }]}>Network Fee</Text>
+                        <Text style={[styles.feeValue, { color: feeValueColor }]}>${feeData.blockchain_fee_usd}</Text>
+                    </View> */}
+
+                    <View style={styles.feeRow}>
+                        <Text style={[styles.feeLabel, { color: feeLabelColor }]}>Total Fee</Text>
+                        <Text style={[styles.feeValue, { color: feeValueColor }]}>${feeData.total_fee_usd}</Text>
+                    </View>
+
+                    <View style={[styles.feeRow, { marginTop: 10 }]}>
+                        <Text style={[styles.feeLabel, { fontWeight: 'bold', color: feeLabelColor }]}>You Will Send</Text>
+                        <Text style={[styles.feeValue, { fontWeight: 'bold', color: feeValueColor }]}>${feeData.amount_after_fee}</Text>
+                    </View>
+                </View>
+
+
                 {/* ✅ QR Scanner Modal */}
                 <QrModal isVisible={isScannerOpen} onClose={() => setIsScannerOpen(false)} />
 
@@ -242,6 +336,35 @@ const SendCryptoForm: React.FC<{
 
 
 const styles = StyleSheet.create({
+    feeSummaryBox: {
+        marginHorizontal: 16,
+        marginTop: -7,
+        // backgroundColor: cardBackgroundColor,
+        borderRadius: 10,
+        padding: 12,
+        borderWidth: 1,
+        borderColor: '#E5E5E5',
+    },
+    feeTitle: {
+        fontSize: 14,
+        fontWeight: '600',
+        marginBottom: 8,
+        color: '#222',
+    },
+    feeRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 3,
+    },
+    feeLabel: {
+        fontSize: 12,
+        color: '#666',
+    },
+    feeValue: {
+        fontSize: 12,
+        color: '#111',
+    },
+
     container: {
         marginTop: 27,
     },

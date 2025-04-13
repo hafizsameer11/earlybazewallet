@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import * as Clipboard from 'expo-clipboard'; // ✅ Correct Clipboard import
+import * as Clipboard from 'expo-clipboard';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { images } from '@/constants';
 
@@ -18,25 +18,27 @@ const TransactionDetailItem: React.FC<TransactionDetailItemProps> = ({ label, va
   const copy = useThemeColor({ light: images.copy_white, dark: images.copy_black }, 'copy');
 
   const handleCopy = async () => {
-    await Clipboard.setString(String(value)); // Ensure value is always a string
+    await Clipboard.setString(String(value));
     console.log(`Copied: ${value}`);
   };
 
   return (
     <View style={styles.paymentRow}>
       <Text style={[styles.label, { color: labelColor }]}>{label}</Text>
-      <View style={styles.row}>
-        {/* Ensure Copy Button is wrapped inside TouchableOpacity */}
+
+      <View style={styles.rightContent}>
         {isCopyable && (
           <TouchableOpacity onPress={handleCopy}>
             <Image source={copy} style={styles.icon} />
-          </TouchableOpacity>
-        )}
-        
-        {/* Ensure value is wrapped in a <Text> element */}
-        <Text style={[styles.value, { color: textColor }, valueStyle]}>{String(value)}</Text>
+          </TouchableOpacity>)}
 
-        {/* Ensure Icon is placed correctly */}
+        <Text
+          style={[styles.value, { color: textColor }, valueStyle]}
+          numberOfLines={2}
+        >
+          {String(value)}
+        </Text>
+
         {icon && <Image source={icon} style={styles.icon} />}
       </View>
     </View>
@@ -47,28 +49,39 @@ const styles = StyleSheet.create({
   paymentRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center', // ✅ Ensure proper alignment
+    alignItems: 'flex-start',
     paddingVertical: 10,
     paddingHorizontal: 15,
     borderBottomColor: '#ddd',
+    gap: 10,
   },
   label: {
     fontSize: 10,
     fontWeight: 'bold',
+    color: '#999',
+    maxWidth: 110,
   },
-  value: {
-    fontSize: 9,
-    fontWeight: '500',
-    marginLeft: 5,
-  },
-  row: {
+  rightContent: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 4,
+    flexShrink: 1,
+    flexWrap: 'wrap',
+    justifyContent: 'flex-end',
+    maxWidth: '65%',
+  },
+  value: {
+    fontSize: 10,
+    fontWeight: '600',
+    flexShrink: 1,
+    flexWrap: 'wrap',
+    textAlign: 'right',
+    maxWidth: '100%',
   },
   icon: {
-    width: 18,
-    height: 18,
-    marginLeft: 5,
+    width: 16,
+    height: 16,
+    marginLeft: 4,
   },
 });
 

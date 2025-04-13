@@ -52,7 +52,7 @@ const Receive: React.FC = () => {
                 cardBackgroundColor={cardBackgroundColor}
                 textColor={textColor}
                 assetData={assetData}
-                setSelectedNetworkName={setSelectedNetworkName} // ✅ Pass setter function
+                setSelectedNetworkName={setSelectedNetworkName}
                 setSelectedCoinName={setSelectedCoinName}
             />        </ScrollView>
     );

@@ -15,19 +15,19 @@ import { images } from '@/constants';
 import { useQuery } from '@tanstack/react-query';
 import { getFromStorage } from '@/utils/storage';
 import { getBanksAccounts } from '@/utils/queries/appQueries';
-import { router, useRouter } from 'expo-router';
+import { router } from 'expo-router';
+
 interface PaymentMethodModalProps {
   title: string;
   visible: boolean;
   onClose: () => void;
-  onSelectPaymentMethod: (method: { id: number; account_name: string, account_number?: string }) => void; // Updated type
+  onSelectPaymentMethod: (method: { id: number; account_name: string; account_number?: string }) => void;
 }
-
 
 const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({ title, visible, onClose, onSelectPaymentMethod }) => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const [selectedAccount, setSelectedAccount] = useState<{ id: number; account_name: string } | null>(null);
-  const [token, setToken] = useState<string | null>(null); // State to hold the token
+  const [selectedAccountId, setSelectedAccountId] = useState<number | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
   const backgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#000000' }, 'background');
   const textColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text');
@@ -38,30 +38,22 @@ const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({ title, visible,
   const arrow = useThemeColor({ light: images.down_arrow, dark: images.down_arrow_black }, 'arrow');
   const closeButtonColor = useThemeColor({ light: '#F5F5F5', dark: '#161616' }, 'button');
 
-
-
   useEffect(() => {
     const fetchUserData = async () => {
       const fetchedToken = await getFromStorage("authToken");
       setToken(fetchedToken);
-      console.log("🔹 Retrieved Token: Payment Modal", fetchedToken);
     };
-
     fetchUserData();
   }, []);
 
-  const { data: bankAccounts, error: bankError, isLoading: bankLoading } = useQuery(
-    {
-      queryKey: ["bankAccounts"],
-      queryFn: () => getBanksAccounts({ token }),
-      enabled: !!token, // Only run the query when the token is available
-    }
-  );
+  const { data: bankAccounts, isLoading: bankLoading } = useQuery({
+    queryKey: ["bankAccounts"],
+    queryFn: () => getBanksAccounts({ token }),
+    enabled: !!token,
+  });
 
-  console.log("🔹 Bank Accounts:", bankAccounts);
   const accounts = bankAccounts?.data || [];
 
-  // Show "Add Account" button if no accounts are available
   if (!bankLoading && accounts.length === 0) {
     return (
       <Modal transparent visible={visible} animationType="slide">
@@ -75,9 +67,8 @@ const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({ title, visible,
             </View>
             <TouchableOpacity
               style={[styles.addAccountButton, { backgroundColor: containerBackgroundColor, borderColor }]}
-              onPress={() => router.replace('/Account')} // Replaces current screen with /Account
+              onPress={() => router.replace('/Account')}
             >
-
               <Text style={[styles.addAccountText, { color: textColor }]}>Add Account</Text>
             </TouchableOpacity>
           </View>
@@ -90,7 +81,6 @@ const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({ title, visible,
     <Modal transparent visible={visible} animationType="slide">
       <View style={styles.overlay}>
         <View style={[styles.modalContainer, { backgroundColor }]}>
-          {/* Modal Header */}
           <View style={styles.header}>
             <Text style={[styles.title, { color: titleTextColor }]}>{title}</Text>
             <TouchableOpacity onPress={onClose} style={[styles.closeButton, { backgroundColor: closeButtonColor }]}>
@@ -98,7 +88,6 @@ const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({ title, visible,
             </TouchableOpacity>
           </View>
 
-          {/* Payment Option (Bank Transfer) */}
           <TouchableOpacity
             style={[styles.paymentOption, { backgroundColor: containerBackgroundColor }]}
             onPress={() => setIsDropdownVisible(!isDropdownVisible)}
@@ -108,7 +97,6 @@ const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({ title, visible,
             <Image source={arrow} style={[styles.arrowIcon, isDropdownVisible && styles.arrowRotated]} />
           </TouchableOpacity>
 
-          {/* Dropdown Accounts List */}
           {isDropdownVisible && (
             <View style={[styles.accountContainer, { backgroundColor: containerBackgroundColor }]}>
               <FlatList
@@ -116,40 +104,51 @@ const PaymentMethodModal: React.FC<PaymentMethodModalProps> = ({ title, visible,
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                   <View style={styles.accountRow}>
-                    {/* Radio Button */}
-                    <TouchableOpacity onPress={() => setSelectedAccount(item.id)}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSelectedAccountId(item.id); // Set the selected account ID
+                        onSelectPaymentMethod({
+                          id: item.id,
+                          account_name: item.account_name,
+                          account_number: item.account_number,
+                        }); // Call the onSelectPaymentMethod with the necessary data
+                      }}
+                    >
                       <View style={[styles.radioCircle, { borderColor }]}>
-                        {selectedAccount === item.id && (
+                        {selectedAccountId === item.id && (
                           <View style={[styles.radioSelected, { backgroundColor: borderColor }]} />
                         )}
                       </View>
                     </TouchableOpacity>
 
-                    {/* Account Info */}
                     <TouchableOpacity
                       style={[
                         styles.accountItem,
                         { borderColor },
-                        selectedAccount === item.id && styles.accountSelected,
+                        selectedAccountId === item.id && styles.accountSelected,
                       ]}
                       onPress={() => {
-                        setSelectedAccount(item.id);
-                        onSelectPaymentMethod({ id: item.id, account_name: item.account_name, account_number: item.account_number }); // Pass both id and account_name to parent
-                        onClose(); // Close modal after selection
+                        setSelectedAccountId(item.id);
+                        onSelectPaymentMethod({
+                          id: item.id,
+                          account_name: item.account_name,
+                          account_number: item.account_number,
+                        });
+                        onClose();
                       }}
                     >
                       <Text style={[styles.accountTitle, { color: textColor }]}>Account {item.id}</Text>
                       <View style={styles.accountDetailsRow}>
                         <Text style={[styles.accountLabel, { color: textColor }]}>Bank Name</Text>
-                        <Text style={[styles.accountText, { color: textColor }]}>{String(item.bank_name || "N/A")}</Text> // ✅ Fix
+                        <Text style={[styles.accountText, { color: textColor }]}>{item.bank_name || "N/A"}</Text>
                       </View>
                       <View style={styles.accountDetailsRow}>
                         <Text style={[styles.accountLabel, { color: textColor }]}>Account Name</Text>
-                        <Text style={[styles.accountText, { color: textColor }]}>{String(item.account_name || "N/A")}</Text>
+                        <Text style={[styles.accountText, { color: textColor }]}>{item.account_name || "N/A"}</Text>
                       </View>
                       <View style={styles.accountDetailsRow}>
                         <Text style={[styles.accountLabel, { color: textColor }]}>Account Number</Text>
-                        <Text style={[styles.accountText, { color: textColor }]}>{String(item.account_number || "N/A")}</Text>
+                        <Text style={[styles.accountText, { color: textColor }]}>{item.account_number || "N/A"}</Text>
                       </View>
                     </TouchableOpacity>
                   </View>
@@ -175,7 +174,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
@@ -212,7 +210,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   closeText: {
-    fontSize: 18,
+    width: 16,
+    height: 16,
   },
   paymentOption: {
     flexDirection: 'row',
@@ -258,7 +257,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   accountSelected: {
-    // backgroundColor: '#E6F4EA',
+    borderColor: '#25AE7A',
   },
   radioCircle: {
     width: 20,

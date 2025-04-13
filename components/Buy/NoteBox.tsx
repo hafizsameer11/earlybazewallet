@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
   container: {
     // width: 388,
     marginHorizontal:16,
+    marginTop:10,
     borderWidth: 1,
     borderColor: '#25AE7A',
     backgroundColor: '#FFFFFF',

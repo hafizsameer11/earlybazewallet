@@ -16,10 +16,11 @@ import networkOptions from '@/constants/networkOptions.json';
 
 //Code Related to the integration
 import { getFromStorage } from "@/utils/storage";
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { createSwap } from "@/utils/mutations/accountMutations";
 import { calculateExchangeRate } from '@/utils/mutations/accountMutations';
 import Toast from "react-native-toast-message"; // ✅ Import Toast
+import { getNgNExchangeRate } from '@/utils/queries/appQueries';
 
 const Swap: React.FC = () => {
   const [token, setToken] = useState<string | null>(null);
@@ -33,10 +34,11 @@ const Swap: React.FC = () => {
   const [modalType, setModalType] = useState<'asset' | 'network'>('asset');
 
   // ✅ State for selected asset and network
-  const [selectedAsset, setSelectedAsset] = useState<{ id: string; name: string; icon: any }>({
+  const [selectedAsset, setSelectedAsset] = useState<{ id: string; name: string; icon: any, balance: string }>({
     id: "",
     name: "Select Asset",
     icon: images.solana,
+    balance: "0",
   });
 
   const [selectedNetwork, setSelectedNetwork] = useState<{ id: string; name: string; icon: any }>({
@@ -94,6 +96,7 @@ const Swap: React.FC = () => {
 
       // ✅ Update state only if values have changed
       setConvertedAmount(usdAmount);
+      console.log("The converted usd amount", convertedAmount);
       setNgnAmount(ngnAmount);
     },
 
@@ -101,7 +104,13 @@ const Swap: React.FC = () => {
       console.error('❌ Error fetching exchange rate:', error);
     },
   });
+  const { data: exchangeRateNaira } = useQuery({
+    queryKey: ['exchangeRateNaira'],
+    queryFn: () => getNgNExchangeRate(token as string), // Ensure token is a string
+    enabled: !!token, // Only run the query when token is available
+  });
 
+  console.log("Exchange Rate Naira:", exchangeRateNaira?.data);
 
 
   const { mutate: requestSwap, isPending } = useMutation({
@@ -249,6 +258,7 @@ const Swap: React.FC = () => {
             networkImage={selectedNetwork.icon}
             amount={enteredAmount}
             converted={convertedAmount}
+            conversionRate={convertedAmount}
             onAmountChange={setEnteredAmount} // ✅ Pass amount to Swap component
             onConvertedChange={setConvertedAmount} // ✅ Pass converted amount to Swap component
             onPressAsset={() => {
@@ -261,6 +271,8 @@ const Swap: React.FC = () => {
             } : undefined}
             disabled={!assetId}
             style={!assetId ? { opacity: 0.5 } : undefined}
+            balance={selectedAsset.balance} // ✅ Pass balance as prop
+
           />
 
           {/* ✅ Swap Button */}
@@ -280,7 +292,7 @@ const Swap: React.FC = () => {
 
         {/* ✅ Exchange Rate Display (Amount in USD) */}
         <View style={styles.exchangeRate}>
-          <ExchangeRate rate={`$1 = ${parseFloat(convertedAmountRef.current).toFixed(2)} NGN`} />
+          <ExchangeRate rate={`$1 = ${parseFloat(exchangeRateNaira?.data?.rate).toFixed(2)} NGN`} />
         </View>
         <NoteSwapBox />
       </ScrollView>
@@ -302,6 +314,12 @@ const Swap: React.FC = () => {
         onClose={() => setModalVisible(false)}
         onSelectNetwork={(item) => {
           if (modalType === 'asset') {
+            // 🧠 Check for 0 balance
+            console.log("Selected Asset:", item);
+            if (parseFloat(item.balance ?? "0") == 0) {
+              alert("You don't have balance in this asset. Please buy it first.");
+              return;
+            }
             setSelectedAsset(item);
             setSelectedNetwork({ id: "", name: "Select Network", icon: images.solana }); // Reset network when asset changes
           } else {
@@ -311,6 +329,7 @@ const Swap: React.FC = () => {
         }}
         selectedNetwork={modalType === 'asset' ? selectedAsset : selectedNetwork}
         networks={networkOptions}
+        isBuy={false} // Set to false for swap
         modelType={modalType === 'asset' ? 'coin' : 'network'}
         coinId={selectedAsset.id}
       />

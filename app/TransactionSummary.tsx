@@ -5,7 +5,7 @@ import PrimaryButton from '@/components/Buy/PrimaryButton';
 import Header from '@/components/Header';
 import TransactionDetailItem from '@/components/Buy/TransactionDetailItem';
 import icons from '@/constants/icons';
-import { useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import VerificationModal from '@/components/Send/VerificationModal';
 import { useState } from 'react';
 import TransactionFailedModal from '@/components/Send/TransactionFailedModal';
@@ -21,8 +21,10 @@ import { getInternalReceive } from "@/utils/queries/appQueries";
 import LoadingIndicator from "@/components/LoadingIndicator";
 
 const TransactionSummary: React.FC = () => {
-  const { type, currency, network, amount, email, address, temp, image } = useLocalSearchParams();
+  const { type, currency, network, amount, email, address, temp, image, platform_fee, network_fee, total_fee, amount_after_fee } = useLocalSearchParams();
+
   const { transType } = useLocalSearchParams();
+  console.log("Transaction Type:", transType); // Debugging
   const { id } = useLocalSearchParams();
   console.log("Transaction ID:", id); // Debugging
   console.log("The data coming from the props:", type, currency, network, amount, email, address, temp, image);
@@ -89,9 +91,9 @@ const TransactionSummary: React.FC = () => {
       amount: amount || "N/A",
       amount_usd: amount || "N/A",
       sender_address: email || "N/A",
-      recipient_address: email || "N/A",
+      recipient_address: email || address,
     };
-  }, [transactionData, type]);
+  }, [transactionData, type, email, address, amount]);
 
   // ✅ Place this check AFTER all hooks are initialized
   if (isPending && !temp) {
@@ -125,7 +127,7 @@ const TransactionSummary: React.FC = () => {
         <Text style={styles.amountText}>{transaction?.amount} </Text>
         <TransactionDetailItem
           label={type === "send" ? "Recipient Address" : "Sender Address"}
-          value={email || String(type === "send" ? transaction?.receiver_address : transaction?.receiver_address)}
+          value={email || String(type === "send" ? transaction?.recipient_address : transaction?.recipient_address)}
           isCopyable
         />
 
@@ -181,10 +183,37 @@ const TransactionSummary: React.FC = () => {
           setTransactionId(data.transaction_id)
         }}
 
-        requestData={{ currency, network, amount, email, token }}
+        requestData={{
+          currency,
+          network,
+          amount,
+          email,
+          address,
+          token,
+          ...(type === "send" && {
+            fee_summary: {
+              platform_fee_usd: platform_fee ?? "0.00",
+              network_fee_usd: network_fee ?? "0.00",
+              total_fee_usd: total_fee ?? "0.00",
+              amount_after_fee: amount_after_fee ?? "0.00"
+            }
+          })
+        }}
+
       />
 
-      <TransactionSuccessfulModal visible={isSuccessModalVisible} onClose={() => setSuccessModalVisible(false)} transactionReference={transactionReference} transactionAmont={transactionAmount} transactionCurrency={transactionCurrency} transactionId={transactionId} />
+      <TransactionSuccessfulModal
+        visible={isSuccessModalVisible}
+        onClose={() => {
+          setSuccessModalVisible(false);
+          router.replace("/(tabs)"); // 👈 Navigates to the home tab (if using expo-router)
+        }}
+        transactionReference={transactionReference}
+        transactionAmont={transactionAmount}
+        transactionCurrency={transactionCurrency}
+        transactionId={transactionId}
+      />
+
     </ScrollView>
   );
 };

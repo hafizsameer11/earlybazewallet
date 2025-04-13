@@ -13,7 +13,7 @@ const check_circle  = require("../assets/icons/check_circle.png");
 const close = require("../assets/icons/close.png");
 
 const home = require("../assets/icons/home.png");
-const assests = require("../assets/icons/assests.png");
+const assests = require("../assets/icons/Vector.png");
 const tnxs = require('../assets/icons/tnxs.png');
 const bills = require('../assets/icons/bills.png');
 const settings = require('../assets/icons/settings.png');
@@ -45,9 +45,10 @@ const receive = require('../assets/icons/receive.png');
 const buy = require('../assets/icons/buy.png');
 const swap = require('../assets/icons/swap.png');
 const withdraw = require('../assets/icons/withdraw.png');
-
+const asset2= require('../assets/icons/Vector.png');
 const icons = {
   bitCoin,
+  asset2,
   down_arrow,
   bank,
   copy,

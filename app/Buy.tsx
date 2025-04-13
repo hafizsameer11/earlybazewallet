@@ -13,12 +13,14 @@ import { getFromStorage } from "@/utils/storage";
 import { createBuy } from "@/utils/mutations/accountMutations";
 import { useMutation } from '@tanstack/react-query';
 import Toast from "react-native-toast-message"; // ✅ Import Toast
+import { getNgNExchangeRate } from '@/utils/queries/appQueries';
+import { useQuery } from '@tanstack/react-query';
 
 const Buy: React.FC = () => {
   const backgroundColor = useThemeColor({ light: '#EFFEF9', dark: '#000000' }, 'background');
   const [token, setToken] = useState<string | null>(null); // State to hold the token
   const [selectedData, setSelectedData] = useState<any | null>(null); // State to store selected coin and network data
-
+  const [exchangeRate, setExchangeRate] = useState<string | null>(null); // State to store exchange rate
   // Fetch the token when the component mounts
   useEffect(() => {
     const fetchUserData = async () => {
@@ -29,6 +31,13 @@ const Buy: React.FC = () => {
 
     fetchUserData();
   }, []);
+  const { data: exchangeRateNaira } = useQuery({
+    queryKey: ['exchangeRateNaira'],
+    queryFn: () => getNgNExchangeRate(token as string), // Ensure token is a string
+    enabled: !!token, // Only run the query when token is available
+  });
+
+  console.log("inside the Buy Section.", exchangeRateNaira);
 
   // ✅ Mutation for Buy
   const { isPending: isPendingBuy, mutate: mutateBuy } = useMutation({
@@ -75,6 +84,7 @@ const Buy: React.FC = () => {
   // Handle Proceed button press
   const handleProceed = () => {
     // Check for missing fields
+    console.log("🚀 Proceeding with:", selectedData);
     if (!selectedData?.selectedCoin?.name) {
       Toast.show({ type: "error", text1: "Please select a coin." });
       return;
@@ -130,7 +140,11 @@ const Buy: React.FC = () => {
         <Header />
       </View>
       <View style={styles.content}>
-        <BuyHead buttonText="Buy Bitcoin" topLabel="Exchange Rate" exchangeRate="$1 = NGN1,750" />
+        <BuyHead
+          buttonText="Buy Crypto"
+          topLabel="Exchange Rate"
+          exchangeRate={exchangeRateNaira ? `$1 = NGN${exchangeRateNaira?.data?.rate}` : 'Loading...'}
+        />
 
         {/* BuyCard will update selected data in the parent state */}
         <BuyCard setSelectedData={setSelectedData} showToast={showToastMessage} />

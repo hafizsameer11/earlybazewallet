@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Alert } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useThemeColor } from '@/hooks/useThemeColor'; 
+import { useThemeColor } from '@/hooks/useThemeColor';
 import { images } from '@/constants';
 import { useRouter, router } from 'expo-router';
 import useLoadFonts from '@/hooks/useLoadFonts';
@@ -15,17 +15,17 @@ export type HeaderProps = {
 };
 
 export function Header({ username, greeting }: HeaderProps) {
-  const fontsLoaded = useLoadFonts(); 
+  const fontsLoaded = useLoadFonts();
   const router = useRouter();
   const [isScannerOpen, setIsScannerOpen] = useState(false); // State to control modal visibility
 
   const backgroundColor = useThemeColor(
-    { light: '#FFFFFF', dark: '#0D0D0D' }, 
+    { light: '#FFFFFF', dark: '#0D0D0D' },
     'background'
   );
 
   const titleColor = useThemeColor(
-    { light: '#0B3558', dark: '#25AE7A' }, 
+    { light: '#0B3558', dark: '#25AE7A' },
     'text'
   );
 
@@ -49,21 +49,21 @@ export function Header({ username, greeting }: HeaderProps) {
     <SafeAreaView>
       <ThemedView style={styles.headerContainer}>
         <View style={{ padding: 8 }}>
-          <ThemedText 
-            style={[styles.title, { color: titleColor, fontFamily: fontsLoaded ? 'Caprasimo-Regular' : undefined }]} 
+          <ThemedText
+            style={[styles.title, { color: titleColor, fontFamily: fontsLoaded ? 'Caprasimo-Regular' : undefined }]}
             type="title"
           >
             {`Hi, ${username}`}
           </ThemedText>
           <ThemedText type="subtitle">
-            {greeting} 
+            {greeting}
             <Image source={images.hand} style={{ width: 30, height: 30 }} />
           </ThemedText>
         </View>
         <View style={styles.iconsContainer}>
           {/* Scan Icon - Opens QR Modal */}
           <View style={[styles.iconContainer, { backgroundColor }]}>
-            <TouchableOpacity onPress={() => setIsScannerOpen(true)}>
+            <TouchableOpacity onPress={() => Alert.alert('QR Scanner', 'This feature Will work in production build')}>
               <Image source={scan} style={styles.icon} />
             </TouchableOpacity>
           </View>

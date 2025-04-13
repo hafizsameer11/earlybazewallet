@@ -43,14 +43,27 @@ const EditProfile: React.FC = () => {
   const [email] = useState(userData.email || ''); // Read-only
   const [phone, setPhone] = useState(userData.phone || '');
   const [password, setPassword] = useState('**********');
+  const [avatarUri, setAvatarUri] = useState<string | null>(null);
+  
+  const baseURL = "https://earlybaze.hmstech.xyz/storage/";
 
   // Update state when userDetails changes
   useEffect(() => {
     if (userDetails?.data) {
       setUsername(userDetails.data.name);
       setPhone(userDetails.data.phone);
+  
+      // ✅ Set full URL if `profile_picture` exists
+      const baseURL = "https://earlybaze.hmstech.xyz/storage/";
+      if (userDetails.data.profile_picture) {
+        setAvatarUri(`${baseURL}${userDetails.data.profile_picture}`);
+      }
     }
   }, [userDetails]);
+
+  console.log("🔹 User Detailssss:", userDetails);
+  console.log("👤 Full Avatar URL Set:", `${baseURL}${userDetails?.data.profile_picture}`);
+
 
   // Mutation for editing profile
   const { mutate: editProfileMutation, isPending } = useMutation({
@@ -76,7 +89,6 @@ const EditProfile: React.FC = () => {
     onError: (error: any) => {
       console.error('❌ Error updating profile:', error);
 
-      // Handle any error here, e.g., showing error notifications
       Toast.show({
         type: "error",
         text1: "Edit Profile Failed ❌",
@@ -93,7 +105,7 @@ const EditProfile: React.FC = () => {
       <Header title="Edit Profile" />
 
       {/* Avatar */}
-      <ProfileAvatar onEditPress={() => console.log('Edit Avatar')} />
+      <ProfileAvatar avatarUri={avatarUri} setAvatarUri={setAvatarUri} />
 
       {/* Profile Fields */}
       <ProfileInputField label="Username" value={username} onChangeText={setUsername} />
@@ -113,9 +125,26 @@ const EditProfile: React.FC = () => {
           title={isPending ? "Saving..." : "Save"} // Change button text dynamically
           onPress={() => {
             if (token) {
-              editProfileMutation({ data: { name: username, phone }, token });
+              const formData = new FormData();
+          
+              formData.append('name', username);
+              formData.append('phone', phone);
+          
+              if (avatarUri) {
+                const fileName = avatarUri.split('/').pop();
+                const fileType = fileName?.split('.').pop();
+          
+                formData.append('profile_picture', {
+                  uri: avatarUri,
+                  name: fileName,
+                  type: `image/${fileType}`,
+                } as any); // `as any` required due to RN's FormData limitation
+              }
+          
+              editProfileMutation({ data: formData, token });
             }
           }}
+          
           disabled={isPending} // Disable button when saving
         />
       </View>

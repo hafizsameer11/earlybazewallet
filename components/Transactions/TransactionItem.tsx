@@ -53,7 +53,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, amount, created
       style={[styles.itemContainer, { backgroundColor }]}
       onPress={() => {
         if (type === 'send' || type === 'receive') {
-          router.push(`/TransactionSummary?id=${id}`);
+          router.push(`/TransactionSummary?id=${id}&transType=${type}`);
 
         } else {
           router.push(`/TransactionPage?id=${id}&types=${type}`);
@@ -78,7 +78,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, amount, created
 
       {/* Amount & Date */}
       <View style={styles.rightContainer}>
-        <Text style={[styles.amount, { color: textColor }]}>{amount}</Text>
+        <Text style={[styles.amount, { color: textColor }]}>{parseFloat(amount).toFixed(4)}</Text>
         <Text style={styles.date}>{formattedDate}</Text>
       </View>
 

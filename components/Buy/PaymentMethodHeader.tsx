@@ -9,7 +9,7 @@ const PaymentMethodHeader: React.FC<{ setSelectedPaymentMethodId: (data: { id: s
   const borderColor = useThemeColor({ light: '#C2C2C2', dark: '#444' }, 'border');
   const textColor = useThemeColor({ light: '#1A1A1A', dark: '#C2C2C2' }, 'placeholder');
   const arrow = useThemeColor({ light: images.down_arrow, dark: images.down_arrow_black }, 'arrow');
-  
+
   const [selectedAccount, setSelectedAccount] = useState<{ id: string; account_name: string } | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 

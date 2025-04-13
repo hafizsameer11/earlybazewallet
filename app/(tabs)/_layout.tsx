@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform, Image, View, StyleSheet } from 'react-native';
+import { Platform, Image, View, StyleSheet, Text } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -11,12 +11,17 @@ import useLoadFonts from '@/hooks/useLoadFonts'; // Import your font loader
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const fontsLoaded = useLoadFonts();
+  console.log('Color Scheme:', colorScheme);
+
+  const unfocusedTintColor = colorScheme === 'dark' ? '#FFFFFF80' : '#000000C0';
 
   const backgroundColor = useThemeColor({ light: '#F6FBFF', dark: '#202020' }, 'background');
   const activeColor = useThemeColor({ light: '#25AE7A', dark: '#25AE7A' }, 'primary'); // Green for active tab
   const inactiveColor = useThemeColor({ light: '#E5FFF5', dark: '#303030' }, 'secondary'); // Light green for inactive tab
-  const tabIconColor = useThemeColor({ light: '#5A5A5A', dark: '#C7C7C7' }, 'text');
-
+  const tabIconColor = useThemeColor({ light: '#000000C0', dark: '#C7C7C7' }, 'text');
+  const tabIconColorActive = useThemeColor({ light: '#FFFFFF', dark: '#FFFFFF' },'background');
+  const tabIconColorInactive = useThemeColor({ light: '#000000C0', dark: '#FFFFFF80' },'background');
+  
   return (
     <Tabs
       screenOptions={({ route }) => ({
@@ -27,7 +32,8 @@ export default function TabLayout() {
           backgroundColor: 'transparent',
           borderTopWidth: 0,
           elevation: 0,
-          height: 80, // Height adjusted for the rounded effect
+          height: 80,
+          // fontSize: 2, // Height adjusted for the rounded effect
         },
         tabBarBackground: () => (
           <View style={[styles.tabBarBackground, { backgroundColor }]} />
@@ -60,7 +66,9 @@ export default function TabLayout() {
                 source={iconSource}
                 style={[
                   styles.icon,
-                  { tintColor: focused ? '#FFFFFF' : tabIconColor, width: size, height: size },
+                  {tintColor: focused ? tabIconColorActive : tabIconColorInactive
+                    ,
+                     width: size, height: size },
                 ]}
               />
             </View>
@@ -68,10 +76,53 @@ export default function TabLayout() {
         },
       })}
     >
-      <Tabs.Screen name="index" options={{ title: 'Home' }} />
-      <Tabs.Screen name="assets" options={{ title: 'Assets' }} />
-      <Tabs.Screen name="transactions" options={{ title: 'Tnxs' }} />
-      <Tabs.Screen name="settings" options={{ title: 'Settings' }} />
+     <Tabs.Screen
+  name="index"
+  options={{
+    title: 'Home',
+    tabBarLabel: ({ focused }) => (
+      <Text style={{ fontSize: 9, color: focused ? '#FFFFFF' : tabIconColor }}>
+        Home
+      </Text>
+    ),
+  }}
+/>
+
+<Tabs.Screen
+  name="assets"
+  options={{
+    title: 'Assets',
+    tabBarLabel: ({ focused }) => (
+      <Text style={{ fontSize: 9, color: focused ? '#FFFFFF' : tabIconColor }}>
+        Assets
+      </Text>
+    ),
+  }}
+/>
+
+<Tabs.Screen
+  name="transactions"
+  options={{
+    title: 'Tnxs',
+    tabBarLabel: ({ focused }) => (
+      <Text style={{ fontSize: 9, color: focused ? '#FFFFFF' : tabIconColor }}>
+        Tnxs
+      </Text>
+    ),
+  }}
+/>
+
+<Tabs.Screen
+  name="settings"
+  options={{
+    title: 'Settings',
+    tabBarLabel: ({ focused }) => (
+      <Text style={{ fontSize: 9, color: focused ? '#FFFFFF' : tabIconColor }}>
+        Settings
+      </Text>
+    ),
+  }}
+/>
     </Tabs>
   );
 }
@@ -101,12 +152,15 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 5,
   },
   icon: {
-    width: 24,
-    height: 24,
+    width: 20,
+    height: 20,
+    marginBottom: 5,
     resizeMode: 'contain',
+    opacity:1
   },
 });
 
-export default TabLayout;
+// export default TabLayout;

@@ -35,6 +35,7 @@ const TransactionStep: React.FC<TransactionStepProps> = ({
   transactionData,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  console.log('Transaction DataAAAA:', transactionData);
 
   // Theme colors
   const backgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1A1A1A' }, 'background');

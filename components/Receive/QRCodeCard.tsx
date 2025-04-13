@@ -6,6 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { images } from '@/constants';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
+import * as Clipboard from 'expo-clipboard';
+// import { ToastAndroid } from 'react-native'; // optional for feedback (Android only)
 
 //Code related to the integration:
 import { getFromStorage } from "@/utils/storage";
@@ -109,10 +111,19 @@ const QRCodeCard: React.FC<QRCodeCardProps> = ({ cardBackgroundColor, selectedTa
                 <Text style={styles.cryptoAddress}>
                     {selectedTab === 'Crypto Address' ? receiveAddress?.data?.address || "Please Select the Network..." : email}
                 </Text>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => {
+                        const textToCopy = selectedTab === 'Crypto Address' ? receiveAddress?.data?.address : email;
+                        if (textToCopy) {
+                            Clipboard.setStringAsync(textToCopy);
+                            ToastAndroid.show("Copied to clipboard", ToastAndroid.SHORT); // optional
+                        }
+                    }}
+                >
                     <Ionicons name="copy-outline" size={20} color="white" />
                 </TouchableOpacity>
             </View>
+
         </View>
     );
 };

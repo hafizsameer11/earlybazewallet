@@ -180,6 +180,7 @@ const BuyCard = ({ setSelectedData, showToast }) => {  // Add showToast prop
           networks={networkOptions}
           modelType={modalType}
           coinId={selectedCoin.id}
+          isBuy={true}
         />
       )}
     </View>

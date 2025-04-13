@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, FlatList, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native';
 import AssetCard from '@/components/AssetCard';
 import icons from '@/constants/icons';
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -84,12 +84,12 @@ const AssetList: React.FC<{
                             <TouchableOpacity
                                 style={styles.cardContainer}
                                 onPress={() => {
-                                    if (fromMarket == 'market') {
-                                        router.push({
-                                            pathname: '/MyAssest',
-                                            params: { balance: item.balance, assestId: item.id, assetName: item.name, fullName: item.fullName, icon: item.icon },
-                                        });
-                                    }
+                                    // if (fromMarket == 'market') {
+                                    //     router.push({
+                                    //         pathname: '/MyAssest',
+                                    //         params: { balance: item.balance, assestId: item.id, assetName: item.name, fullName: item.fullName, icon: item.icon },
+                                    //     });
+                                    // }
                                     if (type === 'receive') {
                                         router.push({
                                             pathname: '/Receive',
@@ -98,10 +98,14 @@ const AssetList: React.FC<{
                                     } else if (type === 'send' && Number(item.balance) > 0) {
                                         router.push({
                                             pathname: '/Send',
-                                            params: { assestId: item.id, assetName: item.name, fullName: item.fullName, icon: item.icon },
+                                            params: { assestId: item.id, assetName: item.name, fullName: item.fullName, icon: item.icon, balance: item.balance },
                                         });
                                     } else if (type === 'send' && Number(item.balance) === 0) {
-                                        console.log(`❌ Cannot send ${item.name} - Balance is zero`);
+                                        Alert.alert(
+                                            'Insufficient Balance',
+                                            `You don't have enough ${item.name} to send.`,
+                                            [{ text: 'OK' }]
+                                        );
                                     } else {
                                         console.log(`Normal action for ${item.name}`);
                                     }

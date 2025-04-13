@@ -22,7 +22,7 @@ const SettingOption: React.FC<SettingOptionProps> = ({
   return (
     <TouchableOpacity style={styles.settingRow} onPress={onPress}>
       <View style={styles.iconLabel}>
-        <Image source={iconName} />
+        <Image source={iconName} style={[{height:20,width:20}]} />
         <Text style={[styles.label, { color: textColor }]}>{title}</Text>
       </View>
       {rightContent && <View>{rightContent}</View>}

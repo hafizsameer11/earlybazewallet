@@ -42,7 +42,7 @@ const SettingsScreen: React.FC = () => {
     }
   );
 
-  console.log("🔹 User Details:", userDetails);
+  console.log("🔹 User Details Setting Page:", userDetails);
 
 
   // Fetch user balance using `useQuery`
@@ -55,7 +55,17 @@ const SettingsScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container} >
       <ScrollView>
-        <ProfileHeader name={userDetails?.data.name} email={userDetails?.data.email} cryptoBalance={userBalance?.data.crypto_balance} nairaBalance={userBalance?.data.naira_balance} profileImage={userDetails?.data.profile_picture}/>
+      <ProfileHeader
+  name={userDetails?.data.name}
+  email={userDetails?.data.email}
+  cryptoBalance={userBalance?.data.crypto_balance}
+  nairaBalance={userBalance?.data.naira_balance}
+  profileImage={
+    userDetails?.data.profile_picture
+      ? `https://earlybaze.hmstech.xyz/storage/${userDetails.data.profile_picture}`
+      : undefined
+  }
+/>
 
         {/* Settings Grid */}
         <View style={[styles.gridContainer, { backgroundColor }]}>

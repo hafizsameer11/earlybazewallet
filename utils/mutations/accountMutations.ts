@@ -39,7 +39,14 @@ export const createInternalTransfer = async ({
     network: string;
     amount: string;
     email: string;
+    fee_summary?: {
+      platform_fee_usd: string;
+      network_fee_usd: string;
+      total_fee_usd: string;
+      amount_after_fee: string;
+    };
   };
+
   token: string;
 }) => {
   console.log("🔹 Original Create Internal Transfer Data:", data);
@@ -89,6 +96,8 @@ export const calculateExchangeRate = async ({
   data: {
     currency: string;
     amount: string;
+    type?: string;
+    to?: string // Optional field, can be undefined
   };
   token: string;
 }) => {

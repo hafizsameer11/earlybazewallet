@@ -17,11 +17,17 @@ const Send: React.FC = () => {
     const networkOptions = [{ id: "1" }];
     const [selectedTab, setSelectedTab] = useState<'Crypto Address' | 'Internal Transfer'>('Crypto Address');
     const route = useRoute();
-    const { assestId, icon, assetName,fullName } = route.params as { assestId: string, icon: string, assetName: string, fullName: string };
+    const { assestId, icon, assetName, fullName, balance } = route.params as { assestId: string, icon: string, assetName: string, fullName: string, balance: string }; // ✅ Destructure the params
 
     console.log("Received values:", { assestId, icon, assetName });
-    const assetData = { assestId, icon, assetName };
+    const assetData = { assestId, icon, assetName, balance };
 
+    const [feeSummary, setFeeSummary] = useState({
+        platform_fee_usd: "0.00",
+        blockchain_fee_usd: "0.00",
+        total_fee_usd: "0.00",
+        amount_after_fee: "0.00"
+    });
 
     const backgroundColor = useThemeColor({ light: '#EFFEF9', dark: '#000000' }, 'background');
 
@@ -64,8 +70,13 @@ const Send: React.FC = () => {
             amount: usdAmount,
             email: selectedTab === "Internal Transfer" ? scannedAddress : undefined,
             address: selectedTab === "Crypto Address" ? scannedAddress : undefined,
-            image: selectedCoin?.icon?.uri || "", // ✅ Only pass the image URI string
+            image: selectedCoin?.icon?.uri || "",
             temp: "temp",
+            // 🔥 Add fee values
+            platform_fee_usd: feeSummary.platform_fee_usd,
+            network_fee_usd: feeSummary.blockchain_fee_usd,
+            total_fee_usd: feeSummary.total_fee_usd,
+            amount_after_fee: feeSummary.amount_after_fee,
         };
 
         console.log("🔹 Request Data:", requestData);
@@ -81,7 +92,7 @@ const Send: React.FC = () => {
                 <Header />
             </View>
             <View style={styles.content}>
-                <BuyHead buttonText="Send Crypto" topLabel="Balance" exchangeRate="$1 = NGN1,750" />
+                <BuyHead buttonText="Send Crypto" topLabel="Balance" exchangeRate={`${balance} ${assetName}`} />
 
                 {/* ✅ Pass State Handlers to SendCryptoForm */}
                 <SendCryptoForm
@@ -96,6 +107,7 @@ const Send: React.FC = () => {
                     scannedAddress={scannedAddress}
                     setScannedAddress={setScannedAddress}
                     assetData={assetData}  // Passing the object as a prop
+                    onFeeChange={setFeeSummary}
 
                 />
 
@@ -128,7 +140,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
         paddingHorizontal: 16,
         paddingBottom: 20,
-        position: 'absolute',
+        position: 'fixed',
         bottom: 0,
         width: '100%',
         alignSelf: 'center',

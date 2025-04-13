@@ -12,7 +12,7 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 //Code related to the integration
 
 import { useQuery } from '@tanstack/react-query';
-import { getWalletCurrency } from '@/utils/queries/appQueries';
+import { getAllWalletCurrency, getWalletCurrency } from '@/utils/queries/appQueries';
 import { getFromStorage } from "@/utils/storage";
 
 
@@ -57,7 +57,7 @@ const NetworkSelection: React.FC<NetworkSelectionProps> = ({
     const { data: walletCurrency, error: walletCurrencyError, isLoading: walletCurrencyLoading } = useQuery(
         {
             queryKey: ["walletCurrency"],
-            queryFn: () => getWalletCurrency({ token }),
+            queryFn: () => getAllWalletCurrency({ token }),
             enabled: !!token
         }
     );

@@ -38,9 +38,11 @@ const Kyc: React.FC = () => {
   useEffect(() => {
     if (kycData?.data?.status) {
       const status = kycData.data.status;
+      console.log("KYC Status from API:", status); // Debugging
 
       // Ensure status is one of the allowed values
       if (['Pending', 'Failed', 'Approved'].includes(status)) {
+        console.log("changings status", status);
         setKycStatus(status);
       } else {
         // Fallback to 'Pending' if status is not recognized

@@ -7,7 +7,8 @@ import {
     TouchableOpacity,
     StyleSheet,
     Modal,
-    FlatList
+    FlatList,
+    ScrollView
 } from 'react-native';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { images } from '@/constants';
@@ -16,7 +17,7 @@ import { images } from '@/constants';
 //Code related to the integration:
 import { useQuery } from '@tanstack/react-query';
 import { getFromStorage } from '@/utils/storage';
-import { getWalletCurrency, getNetworkCurreny } from '@/utils/queries/appQueries';
+import { getWalletCurrency, getNetworkCurreny, getAllWalletCurrency } from '@/utils/queries/appQueries';
 import LoadingIndicator from "@/components/LoadingIndicator";
 
 
@@ -26,6 +27,7 @@ interface NetworkOption {
     name: string;
     icon: any;
     color: string;
+    balance: string
 
 }
 
@@ -38,6 +40,7 @@ interface NetworkSelectionModalProps {
     modelType: string | null;
     coinId?: string;
     assetName?: string
+    isBuy?: boolean
 }
 
 const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
@@ -48,7 +51,8 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
     networks,
     modelType,
     coinId,
-    assetName
+    assetName,
+    isBuy
 }) => {
     const [token, setToken] = useState<string | null>(null); // State to hold the token
     const backgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#000000' }, 'background');
@@ -57,7 +61,7 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
     const itemBackgroundColor = useThemeColor({ light: '#F6FBFF', dark: '#181818' }, 'background');
     const titleTextColor = useThemeColor({ light: '#25AE7A', dark: '#25AE7A' }, 'text');
     const close = useThemeColor({ light: images.cross_white, dark: images.cross_black }, 'close');
-    
+
 
     // Fetch the token when the component mounts
     useEffect(() => {
@@ -72,11 +76,13 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
 
     const { data: walletCurrency, error: walletCurrencyError, isLoading: walletCurrencyLoading } = useQuery(
         {
-            queryKey: ["walletCurrency"],
-            queryFn: () => getWalletCurrency({ token }),
+            queryKey: ["walletCurrency", isBuy],
+            queryFn: () => getAllWalletCurrency({ token, data: { isBuy } }),
+
             enabled: !!token && modelType === "coin", // Only run the query when token is available and modelType is "coin"
         }
     );
+    console.log("isBuy", isBuy);
 
     console.log("🔹 Wallet Currencyss:", walletCurrency);
 
@@ -95,33 +101,35 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
     console.log("The Model Type is:", modelType);
     useEffect(() => {
         if (
-          modelType === "coin" &&
-          walletCurrency?.data?.length &&
-          coinId &&
-          onSelectNetwork
+            modelType === "coin" &&
+            walletCurrency?.data?.length &&
+            coinId &&
+            onSelectNetwork
         ) {
-          const matchingCoin = walletCurrency.data.find(
-            (item) => item.currency.id.toString() === coinId || item.currency.currency === assetName
-          );
-      
-          if (matchingCoin) {
-            onSelectNetwork({
-              id: matchingCoin.currency.id.toString(),
-              name: matchingCoin.currency.currency,
-              icon: { uri: `https://earlybaze.hmstech.xyz/storage/${matchingCoin.currency.symbol}` },
-              color: "#DCDCDC",
-            });
-          }
+            const matchingCoin = walletCurrency.data.find(
+                (item) => item.currency.id.toString() === coinId || item.currency.currency === assetName
+            );
+            console.log(matchingCoin, "matchingCoin");
+
+            if (matchingCoin) {
+                onSelectNetwork({
+                    id: matchingCoin.currency.id.toString(),
+                    name: matchingCoin.currency.currency,
+                    icon: { uri: `https://earlybaze.hmstech.xyz/storage/${matchingCoin.currency.symbol}` },
+                    color: "#DCDCDC",
+                    balance: matchingCoin.balance,
+                });
+            }
         }
-      }, [walletCurrency, coinId, assetName, modelType]);
-      
-      return (
+    }, [walletCurrency, coinId, assetName, modelType]);
+
+    return (
         <Modal visible={visible} animationType="slide" transparent>
             <View style={styles.modalContainer}>
                 <View style={[styles.modalContent, { backgroundColor, borderColor }]}>
                     {/* Modal Header */}
                     <View style={styles.header}>
-                        <Text style={[styles.title, { color: titleTextColor }]}>Select Network</Text>
+                        <Text style={[styles.title, { color: titleTextColor }]}>Select {modelType}</Text>
                         <TouchableOpacity onPress={onClose} style={[styles.closeButton, { backgroundColor }]}>
                             <Image source={close} style={styles.closeIcon} />
                         </TouchableOpacity>
@@ -132,7 +140,10 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
                     {walletCurrencyLoading || networkCurrencyLoading ? (
                         <LoadingIndicator /> // ✅ Show loading indicator while fetching data
                     ) : (
+
                         <FlatList
+                            initialNumToRender={20}
+
                             data={
                                 modelType === "coin" && walletCurrency?.data
                                     ? walletCurrency.data.map((item) => ({
@@ -140,6 +151,7 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
                                         name: item.currency.currency,
                                         icon: { uri: `https://earlybaze.hmstech.xyz/storage/${item.currency.symbol}` },
                                         color: "#DCDCDC", // Default color
+                                        balance: item.balance
                                     }))
                                     : modelType === "network" && networkCurrency?.data
                                         ? networkCurrency.data.map((item) => ({
@@ -152,6 +164,7 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
                             }
                             keyExtractor={(item) => item.id}
                             numColumns={3}
+
                             contentContainerStyle={styles.networkList}
                             renderItem={({ item }) => (
                                 <TouchableOpacity
@@ -169,6 +182,7 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
                                 </TouchableOpacity>
                             )}
                         />
+
                     )}
 
 
@@ -209,6 +223,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         paddingVertical: 20,
         borderWidth: 1,
+        // flex: 1
     },
     closeButton: {
         padding: 5,

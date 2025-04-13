@@ -35,22 +35,28 @@ const ImageSlider: React.FC = () => {
 
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList>(null);
-  const currentIndex = useRef(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   // Fetch the token and user data when the component mounts
   useEffect(() => {
     const fetchUserData = async () => {
-      const fetchedToken = await getFromStorage("authToken");
-      setToken(fetchedToken);
-      console.log("🔹 Retrieved Token:", fetchedToken);
+      if (!token) {
+        const fetchedToken = await getFromStorage("authToken");
+        if (fetchedToken) {
+          setToken(fetchedToken);
+          console.log("🔹 Retrieved Token:", fetchedToken);
+        }
+      }
     };
-
+  
     fetchUserData();
   }, []);
+  
 
   const { data: slideResponse, error: slideError, isLoading: slideLoading } = useQuery<SlideResponse, Error>(
     {
-      queryKey: ["slide", token],
+      queryKey: ["slide"],
+
       queryFn: () => getSlide({ token }),
       enabled: !!token, // Only run the query when the token is available
     }
@@ -59,23 +65,32 @@ const ImageSlider: React.FC = () => {
   console.log("🔹 Slide Response:", slideResponse);
 
 
- 
+
   const slideCount = slideResponse?.data?.length || 0;
 
-  const moveToNextSlide = useCallback(() => {
-    if (slideCount <= 1) return; // 🔐 prevent if only 1 item
 
-    if (currentIndex.current < slideCount - 1) {
-      currentIndex.current += 1;
-    } else {
-      currentIndex.current = 0;
-    }
+  const moveToNextSlide = useCallback(() => {
+    if (slideCount <= 1) return;
+
+    const nextIndex = currentIndex < slideCount - 1 ? currentIndex + 1 : 0;
+    setCurrentIndex(nextIndex);
 
     flatListRef.current?.scrollToIndex({
-      index: currentIndex.current,
+      index: nextIndex,
       animated: true,
     });
-  }, [slideCount]);
+  }, [currentIndex, slideCount]);
+
+  useEffect(() => {
+    if (slideCount <= 1) return;
+
+    const interval = setInterval(() => {
+      moveToNextSlide();
+    }, 9000);
+
+    return () => clearInterval(interval);
+  }, [moveToNextSlide, slideCount]);
+
 
   useEffect(() => {
     if (slideCount <= 1) return; // 🛑 skip if only one slide
@@ -111,11 +126,24 @@ const ImageSlider: React.FC = () => {
         onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
           useNativeDriver: false,
         })}
+        onMomentumScrollEnd={(event) => {
+          const index = Math.round(event.nativeEvent.contentOffset.x / ITEM_WIDTH);
+          setCurrentIndex(index);
+
+        }}
       />
 
       <TouchableOpacity style={styles.rightArrow} onPress={moveToNextSlide}>
-        <Text style={styles.arrowText}>▶</Text>
+        {/* <Text style={styles.arrowText}>→</Text> */}
+        <Image source={images.notyarrow} />
       </TouchableOpacity>
+
+      <View style={styles.paginationContainer}>
+        <Text style={styles.paginationText}>
+          {currentIndex + 1}/{slideCount}
+
+        </Text>
+      </View>
     </View >
   );
 };
@@ -169,17 +197,45 @@ const styles = StyleSheet.create({
   },
   rightArrow: {
     position: 'absolute',
-    right: 10,
-    top: '50%',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    padding: 10,
-    borderRadius: 20,
+    left: 10,
+    bottom: 1,
+    top: '80%',
+    backgroundColor: '#FFFFFF', // White background
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 50, // Full rounded
     transform: [{ translateY: -20 }],
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 3, // optional: gives subtle shadow on Android
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
   arrowText: {
-    fontSize: 20,
-    color: 'white',
+    color: '#000000', // Black arrow
   },
+  paginationContainer: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: 'white',
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  paginationText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+
+
 });
 
 export default ImageSlider;

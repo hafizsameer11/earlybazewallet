@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useRef } from 'react';
 import {
   View,
   Text,
@@ -22,6 +22,7 @@ interface SwapAssetSectionProps {
   onPressNetwork?: () => void;
   onAmountChange?: (amount: string) => void; // ✅ Passes amount to parent
   onConvertedChange?: (convertedAmount: string) => void; // ✅ Passes converted amount to parent
+  balance?: string; // Optional balance prop
 }
 
 const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
@@ -36,6 +37,7 @@ const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
   onPressAsset,
   onPressNetwork,
   onAmountChange,
+  balance,
   onConvertedChange
 }) => {
   const [enteredAmount, setEnteredAmount] = useState(initialAmount); // ✅ State for user-entered amount
@@ -48,14 +50,32 @@ const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
   const borderColor = useThemeColor({ light: '#E5E5E5', dark: '#000000' }, 'border');
   const arrow = useThemeColor({ light: images.down_arrow, dark: images.down_arrow_black }, 'arrow');
 
+  const inputRef = useRef<TextInput>(null);
+
   // ✅ Update Converted Amount when User Inputs Amount
   const handleAmountChange = (text: string) => {
     const numericValue = text.replace(/[^0-9.]/g, ''); // Allow only numbers & decimal
+    const input = parseFloat(numericValue || "0");
+    const max = parseFloat(balance || "0");
+
+    if (input > max) {
+      alert(`🚫 You don’t have enough balance.\nYour maximum available amount is ${max.toFixed(6)} ${asset}.`);
+
+      // Auto-set to max
+      const maxValue = max.toFixed(6);
+      setEnteredAmount(maxValue);
+      const converted = (max * conversionRate).toFixed(2);
+      setConvertedAmount(converted);
+
+      if (onAmountChange) onAmountChange(maxValue);
+      if (onConvertedChange) onConvertedChange(converted);
+      return;
+    }
+
     setEnteredAmount(numericValue);
-    const updatedConvertedAmount = (parseFloat(numericValue || "0") * conversionRate).toFixed(2);
+    const updatedConvertedAmount = (input * conversionRate).toFixed(2);
     setConvertedAmount(updatedConvertedAmount);
 
-    // ✅ Send values back to parent component
     if (onAmountChange) onAmountChange(numericValue);
     if (onConvertedChange) onConvertedChange(updatedConvertedAmount);
   };
@@ -80,24 +100,35 @@ const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
 
         {/* ✅ Input for "You Send" (Editable only if asset is selected) */}
         {title === "You Send" ? (
-          <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
-            <Text style={[styles.amountCurrency, { color: labelColor }]}>{asset}</Text>
-            <TextInput
-              style={[styles.amountText, { color: textColor }]}
-              placeholderTextColor={labelColor}
-              keyboardType="numeric"
-              value={enteredAmount}
-              onChangeText={handleAmountChange}
-              editable={asset !== "Select Asset"} // ✅ Prevents editing when no asset is selected
-            />
-          </View>
-        ) : (
-          /* 🔹 "You Receive" (Non-Editable) */
-          <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
-            <Text style={[styles.amountCurrency, { color: labelColor }]}>{asset}</Text>
-            <Text style={[styles.amountText, { color: textColor }]}>{amount}</Text>
-          </View>
-        )}
+  <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
+    <TouchableOpacity
+      activeOpacity={1}
+      style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+      onPress={() => {
+        if (asset !== "Select Asset") {
+          inputRef.current?.focus();
+        }
+      }}
+    >
+      <Text style={[styles.amountCurrency, { color: labelColor }]}>{asset}</Text>
+      <TextInput
+        ref={inputRef}
+        style={[styles.amountText, { color: textColor, textAlign: 'right', flex: 1 }]}
+        placeholderTextColor={labelColor}
+        keyboardType="numeric"
+        value={enteredAmount}
+        onChangeText={handleAmountChange}
+        editable={asset !== "Select Asset"}
+      />
+    </TouchableOpacity>
+  </View>
+) : (
+  <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
+    <Text style={[styles.amountCurrency, { color: labelColor }]}>{asset}</Text>
+    <Text style={[styles.amountText, { color: textColor }]}>{amount}</Text>
+  </View>
+)}
+
       </View>
 
       {/* Network Selection & Converted Amount */}

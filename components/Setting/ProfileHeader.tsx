@@ -73,7 +73,10 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, email, cryptoBalanc
                         <Text style={[styles.balanceLabel, { color: textColor }]}>Naira Asset</Text>
                         <View style={styles.balanceRow}>
                             <Image source={wallet_icon} style={styles.balanceIcon} />
-                            <Text style={[styles.balanceAmount, { color: amountColor }]}>{nairaBalance} </Text>
+                            <Text style={[styles.balanceAmount, { color: amountColor }]}>
+  {(nairaBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+</Text>
+
                             <View style={styles.balanceCurrencyName} >
                                 <Text style={{ color: textColor }}>NGN</Text>
                             </View>
@@ -174,7 +177,7 @@ const styles = StyleSheet.create({
         marginRight: 5,
     },
     balanceAmount: {
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: 'bold',
     },
     balanceCurrencyName: {

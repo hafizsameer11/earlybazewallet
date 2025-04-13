@@ -90,6 +90,20 @@ export const getWalletCurrency = async ({
     token
   );
 };
+export const getAllWalletCurrency = async ({
+  token,
+  isBuy
+}: {
+  token: string;
+  isBuy: boolean;
+}): Promise<WalletCurrency[]> => {
+  return await apiCall(
+    `${API_ENDPOINTS.USER.GetUserWalletCurrency}/${isBuy}`,
+    "GET",
+    undefined,
+    token
+  );
+};
 
 export const getNetworkCurreny = async (
   token: string,
@@ -97,6 +111,17 @@ export const getNetworkCurreny = async (
 ): Promise<NetworkResponse> => {
   return await apiCall(
     `${API_ENDPOINTS.USER.GetWalletNetworks}/${coinId}`, // Append ticketId dynamically
+    "GET",
+    undefined,
+    token
+  );
+};
+export const getNgNExchangeRate = async (
+  token: string,
+ 
+): Promise<any> => {
+  return await apiCall(
+    `${API_ENDPOINTS.USER.GetNgNExchangeRate}`, // Append ticketId dynamically
     "GET",
     undefined,
     token
@@ -139,8 +164,7 @@ export const getInternalSend = async ({
   }
 
   console.log(
-    `🔹 Fetching transaction: ${id} with token: ${
-      token ? "✅ Available" : "❌ Missing"
+    `🔹 Fetching transaction: ${id} with token: ${token ? "✅ Available" : "❌ Missing"
     }`
   );
 
@@ -165,13 +189,12 @@ export const getInternalReceive = async ({
   }
 
   console.log(
-    `🔹 Fetching transaction: ${id} with token: ${
-      token ? "✅ Available" : "❌ Missing"
+    `🔹 Fetchi : ${id} with token: ${token ? "✅ Available" : "❌ Missing"
     }`
   );
 
   return apiCall(
-    `${API_ENDPOINTS.USER.GetInternalSend}/${id}`,
+    `${API_ENDPOINTS.USER.GetInternalReceive}/${id}`,
     "GET",
     undefined,
     token
@@ -190,8 +213,7 @@ export const getSwap = async ({
   }
 
   console.log(
-    `🔹 Fetching transaction: ${id} with token: ${
-      token ? "✅ Available" : "❌ Missing"
+    `🔹 Fetching transaction: ${id} with token: ${token ? "✅ Available" : "❌ Missing"
     }`
   );
   console.log("Sending the requesat", id);

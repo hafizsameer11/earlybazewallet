@@ -30,10 +30,10 @@ const Actions = ({ balance, assestId, assetName, fullName, icon }) => {
             } else {
                 console.log(`❌ Cannot send ${assetName} - Balance is zero`);
             }
-        } else if(type=== 'buy') {
-           router.push('/Buy');
+        } else if (type === 'buy') {
+            router.push('/Buy');
         }
-        else if (type === 'swap'){
+        else if (type === 'swap') {
             router.push('/Swap');
         }
     };
