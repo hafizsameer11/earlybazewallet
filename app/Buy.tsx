@@ -121,8 +121,8 @@ const Buy: React.FC = () => {
     const buyData = {
       currency: selectedData.selectedCoin.name.toLowerCase(),
       network: selectedData.selectedNetwork.name.toLowerCase(),
-      amount_coin: selectedData.amount_coin,
-      amount_usd: selectedData.amount_usd,
+      amount_coin: selectedData.amount_usd,
+      amount_usd: selectedData.amount_coin,
       amount_naira: selectedData.amount_naira,
       bank_account_id: selectedData.selectedPaymentMethodId.id.toString(),
     };
