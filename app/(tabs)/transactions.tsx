@@ -59,6 +59,10 @@ const Transactions: React.FC = () => {
     ? (transactionsResponse?.data as AllWithdrawalResponse["data"]) || []
     : (transactionsResponse?.data?.transactions || []);
 
+  const graphicalData = activeTab !== "Withdraw"
+    ? (transactionsResponse?.data?.graphicalData || [])
+    : [];
+
   const filteredTransactions = transactions.length > 0
     ? transactions.filter(tx => {
       // Check for tab match
@@ -108,7 +112,10 @@ const Transactions: React.FC = () => {
 
         <ScrollView contentContainerStyle={styles.contentContainer}>
           {/* Show Graph ONLY when "All" Tab is Active */}
-          {/* {activeTab === 'All' ? <TransactionsGraph /> : null} */}
+          {activeTab === 'All' && graphicalData.length > 0 && (
+            <TransactionsGraph graphicalData={graphicalData} />
+          )}
+
 
           {/* Transaction List */}
           {transactionsLoading ? (

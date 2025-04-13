@@ -60,7 +60,6 @@ const ImageSlider: React.FC = () => {
     }
   );
 
-  console.log("🔹 Slide Response:", slideResponse);
 
   const slideCount = slideResponse?.data?.length || 0;
 

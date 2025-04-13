@@ -1,120 +1,199 @@
 import React from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
-import { BarChart } from 'react-native-chart-kit';
-import { useThemeColor } from '@/hooks/useThemeColor';
-import transactionsData from '@/constants/transactionsData.json';
+import { View, Text, StyleSheet, Dimensions, ScrollView } from 'react-native';
 
-const screenWidth = Dimensions.get('window').width * 0.9;
+const COLORS = {
+  send: '#22A45D',
+  buy: '#5D3FD3',
+  withdraw: '#000000',
+  receive: '#800000',
+  swap: '#8A2BE2',
+};
 
-const TransactionsGraph: React.FC = () => {
-  const backgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1A1A1A' }, 'background') || '#FFFFFF';
-  const borderColor = useThemeColor({ light: '#22A45D', dark: '#157347' }, 'border') || '#22A45D';
-  const textColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text') || '#000000';
+const BAR_WIDTH = 12;
+const BAR_GAP = 8;
+const BAR_GROUP_MARGIN = 12;
+const maxHeight = 120; // max bar height
 
-  // Group transactions by type and count occurrences
-  const transactionCounts = {
-    send: transactionsData.filter(tx => tx.type === 'send').length || 0,
-    receive: transactionsData.filter(tx => tx.type === 'receive').length || 0,
-    buy: transactionsData.filter(tx => tx.type === 'buy').length || 0,
-    swap: transactionsData.filter(tx => tx.type === 'swap').length || 0,
-    withdraw: transactionsData.filter(tx => tx.type === 'withdraw').length || 0,
+const TransactionsGraph = ({ graphicalData }: { graphicalData: any[] }) => {
+  if (!graphicalData || graphicalData.length === 0) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ textAlign: 'center', padding: 16, color: '#888' }}>
+          No transaction graph data available.
+        </Text>
+      </View>
+    );
+  }
+
+  const maxTransactionValue = Math.max(
+    ...graphicalData.map((data) =>
+      Math.max(data.send, data.receive, data.buy, data.swap, data.withdrawTransaction)
+    )
+  );
+
+  const getBarHeight = (value: number) =>
+    maxTransactionValue === 0 ? 0 : (value / maxTransactionValue) * maxHeight;
+
+  // Always show labels starting from 1, not 0
+  const getYAxisLabels = (maxValue: number) => {
+    if (maxValue <= 10) return Array.from({ length: maxValue }, (_, i) => maxValue - i);
+
+    const approxLabelCount = 6; // desired number of labels
+    const step = Math.ceil(maxValue / approxLabelCount);
+
+    const labels = [];
+    for (let i = maxValue; i >= 1; i -= step) {
+      labels.push(i);
+    }
+
+    if (labels[labels.length - 1] !== 1) labels.push(1); // ensure 1 is included
+    return labels;
   };
 
-  // Chart Data
-  const data = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    datasets: [
-      {
-        data: [
-          transactionCounts.send,
-          transactionCounts.buy,
-          transactionCounts.withdraw,
-          transactionCounts.receive,
-          transactionCounts.swap,
-          transactionCounts.buy,
-        ],
-      },
-    ],
-  };
+  const yAxisLabels = getYAxisLabels(maxTransactionValue);
 
   return (
-    <View style={[styles.container, { backgroundColor, borderColor }]}>
-      <BarChart
-        data={data}
-        width={screenWidth}
-        height={220}
-        yAxisLabel=""
-        yAxisSuffix=""
-        fromZero
-        chartConfig={{
-          backgroundGradientFrom: backgroundColor,
-          backgroundGradientTo: backgroundColor,
-          color: () => textColor,
-          barPercentage: 0.6,
-          decimalPlaces: 0,
-        }}
-        style={styles.chart}
-      />
+    <View style={styles.container}>
+      <ScrollView horizontal contentContainerStyle={styles.chartContainer} showsHorizontalScrollIndicator={false}>
+        {/* Y-axis Labels */}
+        <View style={styles.yAxis}>
+          {yAxisLabels.map((value, idx) => (
+            <Text key={idx} style={styles.yAxisLabel}>
+              {value}
+            </Text>
+          ))}
+        </View>
 
-      {/* Graph Legend */}
+        {/* Bars */}
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={{ position: 'relative' }}>
+            {/* Horizontal Lines */}
+            <View style={styles.gridLines}>
+              {yAxisLabels.map((_, index) => (
+                <View key={index} style={styles.gridLine} />
+              ))}
+            </View>
+
+            {/* Bars */}
+            <View style={styles.barsWrapper}>
+              {graphicalData.map((data, index) => (
+                <View key={index} style={styles.barGroup}>
+                  <View style={styles.barStack}>
+                    <View style={[styles.bar, { height: getBarHeight(data.send), backgroundColor: COLORS.send }]} />
+                    <View style={[styles.bar, { height: getBarHeight(data.receive), backgroundColor: COLORS.receive }]} />
+                    <View style={[styles.bar, { height: getBarHeight(data.buy), backgroundColor: COLORS.buy }]} />
+                    <View style={[styles.bar, { height: getBarHeight(data.swap), backgroundColor: COLORS.swap }]} />
+                    <View style={[styles.bar, { height: getBarHeight(data.withdrawTransaction), backgroundColor: COLORS.withdraw }]} />
+                  </View>
+                  <Text style={styles.label}>{data.month}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+
+        </ScrollView>
+      </ScrollView>
+
+      {/* Legend */}
       <View style={styles.legendContainer}>
-        <View style={styles.legendRow}>
-          <View style={[styles.legendDot, { backgroundColor: '#22A45D' }]} />
-          <Text style={[styles.legendText, { color: textColor }]}>Send Transactions</Text>
-        </View>
-        <View style={styles.legendRow}>
-          <View style={[styles.legendDot, { backgroundColor: '#5D3FD3' }]} />
-          <Text style={[styles.legendText, { color: textColor }]}>Buy Transactions</Text>
-        </View>
-        <View style={styles.legendRow}>
-          <View style={[styles.legendDot, { backgroundColor: '#000000' }]} />
-          <Text style={[styles.legendText, { color: textColor }]}>Withdrawals</Text>
-        </View>
-        <View style={styles.legendRow}>
-          <View style={[styles.legendDot, { backgroundColor: '#800000' }]} />
-          <Text style={[styles.legendText, { color: textColor }]}>Receive Transactions</Text>
-        </View>
-        <View style={styles.legendRow}>
-          <View style={[styles.legendDot, { backgroundColor: '#8A2BE2' }]} />
-          <Text style={[styles.legendText, { color: textColor }]}>Swap Transactions</Text>
-        </View>
+        <Legend color={COLORS.send} label="Send Transactions" />
+        <Legend color={COLORS.buy} label="Buy Transactions" />
+        <Legend color={COLORS.withdraw} label="Withdrawals" />
+        <Legend color={COLORS.receive} label="Receive Transactions" />
+        <Legend color={COLORS.swap} label="Swap Transactions" />
       </View>
     </View>
   );
 };
 
+const Legend = ({ color, label }: { color: string; label: string }) => (
+  <View style={styles.legendRow}>
+    <View style={[styles.legendDot, { backgroundColor: color }]} />
+    <Text style={styles.legendText}>{label}</Text>
+  </View>
+);
+
 export default TransactionsGraph;
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    borderRadius: 10,
-    marginVertical: 16,
+    borderColor: '#22A45D',
     borderWidth: 1,
+    borderRadius: 12,
     padding: 12,
+    margin: 16,
+    backgroundColor: '#fff',
   },
-  chart: {
-    borderRadius: 10,
+  chartContainer: {
+    flexDirection: 'row',
+  },
+  yAxis: {
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    paddingRight: 8,
+    height: maxHeight,
+  },
+  yAxisLabel: {
+    fontSize: 10,
+    color: '#555',
+  },
+  barsWrapper: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    paddingBottom: 12,
+  },
+  barGroup: {
+    alignItems: 'center',
+    marginHorizontal: BAR_GROUP_MARGIN,
+  },
+  barStack: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    gap: BAR_GAP,
+    marginBottom: 4,
+  },
+  bar: {
+    width: BAR_WIDTH,
+    borderRadius: 4,
+  },
+  label: {
+    fontSize: 10,
+    textAlign: 'center',
+    marginTop: 2,
   },
   legendContainer: {
-    marginTop: 10,
     flexDirection: 'row',
     flexWrap: 'wrap',
+    marginTop: 10,
     justifyContent: 'space-evenly',
   },
   legendRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 12,
     marginBottom: 5,
   },
   legendDot: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    marginRight: 5,
+    marginRight: 4,
   },
   legendText: {
-    fontSize: 12,
+    fontSize: 11,
   },
+  gridLines: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: maxHeight,
+    justifyContent: 'space-between',
+    zIndex: -1,
+  },
+  gridLine: {
+    height: 1,
+    backgroundColor: '#ddd',
+    width: '100%',
+  },
+
 });
