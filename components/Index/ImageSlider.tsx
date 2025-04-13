@@ -48,15 +48,13 @@ const ImageSlider: React.FC = () => {
         }
       }
     };
-  
+
     fetchUserData();
   }, []);
-  
 
   const { data: slideResponse, error: slideError, isLoading: slideLoading } = useQuery<SlideResponse, Error>(
     {
       queryKey: ["slide"],
-
       queryFn: () => getSlide({ token }),
       enabled: !!token, // Only run the query when the token is available
     }
@@ -64,10 +62,7 @@ const ImageSlider: React.FC = () => {
 
   console.log("🔹 Slide Response:", slideResponse);
 
-
-
   const slideCount = slideResponse?.data?.length || 0;
-
 
   const moveToNextSlide = useCallback(() => {
     if (slideCount <= 1) return;
@@ -81,6 +76,7 @@ const ImageSlider: React.FC = () => {
     });
   }, [currentIndex, slideCount]);
 
+  // Auto-scroll effect (deduplicated)
   useEffect(() => {
     if (slideCount <= 1) return;
 
@@ -91,20 +87,8 @@ const ImageSlider: React.FC = () => {
     return () => clearInterval(interval);
   }, [moveToNextSlide, slideCount]);
 
-
-  useEffect(() => {
-    if (slideCount <= 1) return; // 🛑 skip if only one slide
-
-    const interval = setInterval(() => {
-      moveToNextSlide();
-    }, 9000);
-
-    return () => clearInterval(interval);
-  }, [moveToNextSlide, slideCount]);
-
-
   return (
-    <View style={styles.container} >
+    <View style={styles.container}>
       <FlatList
         ref={flatListRef}
         data={slideResponse?.data?.map(item => ({
@@ -112,7 +96,8 @@ const ImageSlider: React.FC = () => {
           image: { uri: `https://earlybaze.hmstech.xyz/storage/${item.attachment}` },
           heading: item.title,
           // subheading: item.url
-        })) ?? []} horizontal
+        })) ?? []}
+        horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         keyExtractor={(item) => item.id}
@@ -129,7 +114,6 @@ const ImageSlider: React.FC = () => {
         onMomentumScrollEnd={(event) => {
           const index = Math.round(event.nativeEvent.contentOffset.x / ITEM_WIDTH);
           setCurrentIndex(index);
-
         }}
       />
 
@@ -141,12 +125,12 @@ const ImageSlider: React.FC = () => {
       <View style={styles.paginationContainer}>
         <Text style={styles.paginationText}>
           {currentIndex + 1}/{slideCount}
-
         </Text>
       </View>
-    </View >
+    </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

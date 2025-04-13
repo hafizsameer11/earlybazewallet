@@ -13,6 +13,7 @@ import { useRouter } from 'expo-router';
 import { getReferral } from '@/utils/queries/appQueries';
 import { useQuery } from '@tanstack/react-query';
 import { getFromStorage } from '@/utils/storage';
+import ReferralStatsModal from '@/components/Setting/Referral/ReferralStatsModal';
 
 const Referral: React.FC = () => {
   const router = useRouter();
@@ -20,6 +21,7 @@ const Referral: React.FC = () => {
   const backgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#000000' }, 'background');
   const titleText = useThemeColor({ light: '#0B3558', dark: '#25AE7A' }, 'text');
   const textColor = useThemeColor({ light: '#222222', dark: '#FFFFFF' }, 'text');
+  const [showStatsModal, setShowStatsModal] = useState(false);
 
   // Fetch token
   useEffect(() => {
@@ -36,7 +38,7 @@ const Referral: React.FC = () => {
     queryKey: ["referrals", token], // Ensure token is part of the query key to refetch when it changes
     queryFn: () => (token ? getReferral({ token }) : Promise.reject("No token available")), // Ensure token is not undefined
     enabled: !!token, // Run query only when token exists
-});
+  });
 
 
   console.log("🔹 Referrals Data:", referrals);
@@ -64,24 +66,41 @@ const Referral: React.FC = () => {
 
           {/* Referral Stats */}
           <View style={{ marginHorizontal: 10 }}>
-            <ReferralStats 
-              earnings={referrals?.data?.Earning?.naira?.toString() || "0"} 
-              referrals={referrals?.data?.totalRefferals || 0} 
+            <ReferralStats
+              earnings={referrals?.data?.Earning?.naira?.toString() || "0"}
+              referrals={referrals?.data?.totalRefferals || 0}
             />
 
             {/* Referral Code */}
-            <ReferralCodeBox 
-              code={referrals?.data?.reffralCode || "No Code"} 
-              onCopy={() => Clipboard.setString(referrals?.data?.reffralCode || "")} 
-              onShare={() => console.log('Share referral')} 
+            <ReferralCodeBox
+              code={referrals?.data?.reffralCode || "No Code"}
+              onCopy={() => Clipboard.setString(referrals?.data?.reffralCode || "")}
+              onShare={() => console.log('Share referral')}
             />
           </View>
         </View>
       </LinearGradient>
 
+      {showStatsModal && (
+  <ReferralStatsModal
+    totalEarnings={referrals?.data?.earning?.[0]?.totalEarning || "0"}
+    totalWithdrawals={referrals?.data?.earning?.[0]?.totalWithdrawls || "0"}
+    numberOfReferrals={referrals?.data?.earning?.[0]?.noOfReferrals || 0}
+    totalTrades={referrals?.data?.earning?.[0]?.totalTradesCompletedByReferrals || "0"}
+    onClose={() => setShowStatsModal(false)}
+  />
+)}
+
+
+
       {/* Referrals List */}
       <View style={[styles.section, { backgroundColor }]}>
-        <Text style={[styles.sectionTitle, { color: titleText }]}>My Referrals</Text>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text style={[styles.sectionTitle, { color: titleText }]}>My Referrals</Text>
+          <TouchableOpacity onPress={() => setShowStatsModal(true)}>
+            <Text style={[styles.sectionText, { color: titleText }]}>View Stats</Text>
+          </TouchableOpacity>
+        </View>
 
         {/* Show Empty State if No Referrals */}
         {referralList.length === 0 ? (
@@ -133,6 +152,10 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginVertical: 13,
+  },
+  sectionText: {
+    fontSize: 15,
+    fontWeight: 'bold',
   },
   section: {
     flex: 1,
