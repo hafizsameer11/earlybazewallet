@@ -55,17 +55,18 @@ const SettingsScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container} >
       <ScrollView>
-      <ProfileHeader
-  name={userDetails?.data.name}
-  email={userDetails?.data.email}
-  cryptoBalance={userBalance?.data.crypto_balance}
-  nairaBalance={userBalance?.data.naira_balance}
-  profileImage={
-    userDetails?.data.profile_picture
-      ? `https://earlybaze.hmstech.xyz/storage/${userDetails.data.profile_picture}`
-      : undefined
-  }
-/>
+        <ProfileHeader
+          name={userDetails?.data.name}
+          email={userDetails?.data.email}
+          cryptoBalance={userBalance?.data.crypto_balance}
+          nairaBalance={userBalance?.data.naira_balance}
+          profileImage={
+            userDetails?.data.profile_picture
+              ? `https://earlybaze.hmstech.xyz/storage/${userDetails.data.profile_picture}`
+              : undefined
+          }
+          kycStatus={userDetails?.data.kyc_status}
+        />
 
         {/* Settings Grid */}
         <View style={[styles.gridContainer, { backgroundColor }]}>

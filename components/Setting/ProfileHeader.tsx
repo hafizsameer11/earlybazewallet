@@ -11,9 +11,10 @@ interface ProfileHeaderProps {
     cryptoBalance: number | undefined;
     nairaBalance: number | undefined;
     profileImage?: string | undefined;
+    kycStatus?: string | undefined;
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, email, cryptoBalance, nairaBalance, profileImage }) => {
+const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, email, cryptoBalance, nairaBalance, profileImage, kycStatus }) => {
     const cardBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1A1A1A' }, 'card');
     const textColor = useThemeColor({ light: '#222222', dark: '#FFFFFF' }, 'text');
     const amountColor = useThemeColor({ light: '#0C5E3F', dark: '#0C5E3F' }, 'textTitle');
@@ -48,9 +49,9 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, email, cryptoBalanc
                         <Text style={styles.email}>{email}</Text>
 
                         {/* ID Verified Badge */}
-                        <View style={styles.verificationBadge}>
+                        {kycStatus && kycStatus == "approved" ? <View style={styles.verificationBadge}>
                             <Text style={styles.verificationText}>ID Verified <Image source={images.tick} style={styles.verifiedIcon} /></Text>
-                        </View>
+                        </View> : <Text style={styles.verificationText}>{kycStatus} </Text>}
                     </View>
                 </LinearGradient>
 
@@ -74,8 +75,8 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, email, cryptoBalanc
                         <View style={styles.balanceRow}>
                             <Image source={wallet_icon} style={styles.balanceIcon} />
                             <Text style={[styles.balanceAmount, { color: amountColor }]}>
-  {(nairaBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
-</Text>
+                                {(nairaBalance || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                            </Text>
 
                             <View style={styles.balanceCurrencyName} >
                                 <Text style={{ color: textColor }}>NGN</Text>
@@ -140,11 +141,23 @@ const styles = StyleSheet.create({
     },
     verificationText: {
         color: '#22A45D',
-        fontSize: 13,
+        fontSize: 12,
         fontWeight: '600',
+        backgroundColor: '#EFFEF9',
+        paddingHorizontal: 20,
+        paddingVertical: 5,
+        borderRadius: 20,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     verifiedIcon: {
-        marginLeft: 5,
+        marginTop: 2,
+        // marginLeft: 5,
+        height: 16,
+        width: 16,
+        //make image fit to width height not cutted
+        resizeMode: 'contain',
     },
     balanceContainer: {
         flexDirection: 'row',

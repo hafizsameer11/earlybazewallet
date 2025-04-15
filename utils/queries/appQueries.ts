@@ -118,7 +118,7 @@ export const getNetworkCurreny = async (
 };
 export const getNgNExchangeRate = async (
   token: string,
- 
+
 ): Promise<any> => {
   return await apiCall(
     `${API_ENDPOINTS.USER.GetNgNExchangeRate}`, // Append ticketId dynamically
@@ -665,6 +665,7 @@ interface UserDetails {
   pin: string;
   phone: string;
   profile_picture: string | null;
+  kyc_status: string | null;
 }
 
 interface UserDetailsResponse {
