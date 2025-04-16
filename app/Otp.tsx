@@ -150,7 +150,7 @@ const Otp: React.FC = () => {
             <Header title={headerTitle} />
 
             <View style={{ paddingHorizontal: 20 }}>
-                <Text style={[styles.title, { color: titleColor, fontFamily: fontsLoaded ? 'Caprasimo-Regular' : undefined }]}>
+                <Text style={[styles.title, { color: titleColor, fontFamily: fontsLoaded ? 'Caprasimo' : undefined }]}>
                     {step === 1 ? 'Input OTP' : step === 2 ? 'Enter Pin' : 'Re-Enter Pin'}
                 </Text>
 
@@ -192,8 +192,9 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 32,
-        fontWeight: 'bold',
         marginVertical: 10,
+        fontFamily: 'Caprasimo',
+
     },
     subtitle: {
         fontSize: 14,

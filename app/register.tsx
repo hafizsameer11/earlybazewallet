@@ -74,7 +74,7 @@ const Register = () => {
         text2: "Register Successful!",
         visibilityTime: 3000,
       });
-      push({ pathname: "/Otp", params: { email: variables.email } });
+    push({ pathname: "/Otp", params: { email: variables.email } });
     },
     onError: (error) => {
       console.error("❌ Register Failed:", error);
@@ -426,9 +426,10 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontSize: 22,
-    fontWeight: "bold",
     textAlign: "center",
     color: COLORS.white,
+    fontFamily: 'Caprasimo',
+
   },
   bottomBoxText: {
     fontSize: 16,

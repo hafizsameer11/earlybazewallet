@@ -131,7 +131,7 @@ const ForgetPassword = () => {
             ]}
           >
             <View style={styles.loginContainer}>
-              <Text style={[styles.loginText, { fontFamily: fontsLoaded ? 'Caprasimo-Regular' : undefined }]}>Forget Password</Text>
+              <Text style={[styles.loginText, { fontFamily: fontsLoaded ? 'Caprasimo' : undefined }]}>Forget Password</Text>
             </View>
 
             <Text
@@ -244,7 +244,7 @@ const ForgetPassword = () => {
               </View>
             </Text>
           </View>
-            <Toast /> {/* ✅ Add Toast Component to Render */}
+          <Toast /> {/* ✅ Add Toast Component to Render */}
 
         </View>
       </ScrollView>
@@ -332,9 +332,10 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontSize: 22,
-    fontWeight: "bold",
     textAlign: "center",
     color: COLORS.white,
+    fontFamily: 'Caprasimo',
+
   },
   bottomBoxText: {
     fontSize: 16,

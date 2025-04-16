@@ -95,7 +95,7 @@ const ResetPassword = () => {
             ]}
           >
             <View style={styles.loginContainer}>
-              <Text style={[styles.loginText, { fontFamily: fontsLoaded ? 'Caprasimo-Regular' : undefined }]}>Reset Password</Text>
+              <Text style={[styles.loginText,]}>Reset Password</Text>
             </View>
 
             <Text
@@ -301,9 +301,10 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontSize: 22,
-    fontWeight: "bold",
     textAlign: "center",
     color: COLORS.white,
+    fontFamily: 'Caprasimo',
+
   },
   bottomBoxText: {
     fontSize: 16,
