@@ -27,7 +27,8 @@ interface NetworkOption {
     name: string;
     icon: any;
     color: string;
-    balance: string
+    balance: string;
+    currency: string;
 
 }
 
@@ -82,9 +83,12 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
             enabled: !!token && modelType === "coin", // Only run the query when token is available and modelType is "coin"
         }
     );
+
     console.log("isBuy", isBuy);
 
-    console.log("🔹 Wallet Currencyss:", walletCurrency);
+    // Log the full response using JSON.stringify to avoid [Object]
+    console.log("🔹 Wallet Currencyss:", JSON.stringify(walletCurrency, null, 2));
+
 
 
     const { data: networkCurrency, error: networkCurrencyError, isLoading: networkCurrencyLoading } = useQuery(
@@ -148,10 +152,12 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
                                 modelType === "coin" && walletCurrency?.data
                                     ? walletCurrency.data.map((item) => ({
                                         id: item.currency.id.toString(),
-                                        name: item.currency.currency,
+                                        name: item.currency.name ?? item.currency.currency, // ✅ Show "USDT BSC", fallback to "USDT_BSC"
                                         icon: { uri: `https://earlybaze.hmstech.xyz/storage/${item.currency.symbol}` },
                                         color: "#DCDCDC", // Default color
-                                        balance: item.balance
+                                        balance: item.balance,
+                                        currency: item.currency.currency, // ✅ Keep original currency for backend use
+
                                     }))
                                     : modelType === "network" && networkCurrency?.data
                                         ? networkCurrency.data.map((item) => ({
@@ -173,7 +179,17 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
                                         selectedNetwork.id === item.id && styles.selectedNetwork,
                                         { backgroundColor: itemBackgroundColor },
                                     ]}
-                                    onPress={() => onSelectNetwork(item)} // Update network on tap
+                                    onPress={() => {
+                                        onSelectNetwork({
+                                            id: item.id,
+                                            name: item.name,
+                                            icon: item.icon,
+                                            color: item.color,
+                                            balance: item.balance,
+                                            currency: item.currency // ✅ Send actual backend currency string
+                                        });
+                                    }}
+
                                 >
                                     <View style={[styles.networkIconContainer, { backgroundColor: item.color }]}>
                                         <Image source={item.icon} style={styles.networkIcon} />

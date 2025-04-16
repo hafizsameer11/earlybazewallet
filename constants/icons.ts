@@ -46,6 +46,8 @@ const buy = require('../assets/icons/buy.png');
 const swap = require('../assets/icons/swap.png');
 const withdraw = require('../assets/icons/withdraw.png');
 const asset2= require('../assets/icons/Vector.png');
+
+const logout = require('../assets/icons/logout.png');
 const icons = {
   bitCoin,
   asset2,
@@ -84,8 +86,8 @@ const icons = {
   receive,
   buy,
   swap,
-  withdraw
-
+  withdraw,
+  logout
 };
 
 export default icons;

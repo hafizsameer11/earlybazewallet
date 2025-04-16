@@ -48,6 +48,7 @@ const AssetList: React.FC<{
         const formattedAssets = userAssets?.data?.map((asset: any) => ({
             id: asset.id.toString(),
             name: asset.currency,
+            coinName: asset.wallet_currency.name,
             fullName: asset.blockchain.charAt(0).toUpperCase() + asset.blockchain.slice(1),
             balance: asset.available_balance,
             price: showPrice && asset.wallet_currency?.price ? `$${asset.wallet_currency.price}` : "******", // ✅ Hide or show based on toggle
@@ -108,6 +109,10 @@ const AssetList: React.FC<{
                                         );
                                     } else {
                                         console.log(`Normal action for ${item.name}`);
+                                        router.push({
+                                            pathname: '/MyAssest',
+                                            params: { balance: item.balance, assestId: item.id, assetName: item.name, fullName: item.fullName, icon: item.icon },
+                                        })
                                     }
                                 }
                                 }

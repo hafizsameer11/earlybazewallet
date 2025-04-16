@@ -20,7 +20,7 @@ export function ThemedText({
   return (
     <Text
       style={[
-        { color },
+        { color, fontFamily: 'Caprasimo' },
         type === 'default' ? styles.default : undefined,
         type === 'title' ? styles.title : undefined,
         type === 'defaultSemiBold' ? styles.defaultSemiBold : undefined,
@@ -45,12 +45,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
     lineHeight: 32,
+    fontFamily: 'Caprasimo', 
+
   },
   subtitle: {
     fontSize: 16,
     fontWeight: 'bold',
+    fontFamily: 'Caprasimo', 
   },
   link: {
     lineHeight: 30,

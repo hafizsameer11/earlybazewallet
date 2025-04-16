@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Image, TouchableOpacity, Alert } from 'react-native';
-import { ThemedText } from '@/components/ThemedText';
+import { StyleSheet, View, Image, TouchableOpacity, Alert, Text } from 'react-native';
+import { ThemedText, } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemeColor } from '@/hooks/useThemeColor';
@@ -55,10 +55,18 @@ export function Header({ username, greeting }: HeaderProps) {
           >
             {`Hi, ${username}`}
           </ThemedText>
-          <ThemedText type="subtitle">
-            {greeting}
-            <Image source={images.hand} style={{ width: 30, height: 30 }} />
-          </ThemedText>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <ThemedText type="subtitle">
+
+              {greeting}
+
+
+
+            </ThemedText>
+            <View style={{ paddingBottom: 1, }}>
+              <Image source={images.hand} style={{ width: 30, height: 30, }} />
+            </View>
+          </View>
         </View>
         <View style={styles.iconsContainer}>
           {/* Scan Icon - Opens QR Modal */}

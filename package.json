@@ -31,7 +31,7 @@
     "expo-clipboard": "~7.0.1",
     "expo-constants": "~17.0.3",
     "expo-file-system": "~18.0.9",
-    "expo-font": "~13.0.3",
+    "expo-font": "~13.0.4",
     "expo-haptics": "~14.0.1",
     "expo-image": "~2.0.6",
     "expo-image-picker": "~16.0.6",

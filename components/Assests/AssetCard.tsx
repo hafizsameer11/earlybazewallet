@@ -29,6 +29,8 @@ const Actions = ({ balance, assestId, assetName, fullName, icon }) => {
                 });
             } else {
                 console.log(`❌ Cannot send ${assetName} - Balance is zero`);
+                alert("You don't have balance in this asset. Please buy it first.");
+
             }
         } else if (type === 'buy') {
             router.push('/Buy');
@@ -87,7 +89,7 @@ const AssetCard: React.FC<AssetCardProps> = ({ iconUrl, balance, percentage, ass
                 <Image source={{ uri: iconUrl }} style={styles.iconMain} />
             </View>
             <Text style={styles.balance}>{balance}</Text>
-            <Text style={styles.percentage}>{percentage}</Text>
+            {/* <Text style={styles.percentage}>{percentage}</Text> */}
 
             {/* Pass data to Actions component */}
             <Actions balance={balance} assestId={assestId} assetName={assetName} fullName={fullName} icon={icon} />
@@ -113,9 +115,10 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     iconMain: {
-        width: 60,
-        height: 60,
+        width: 80,
+        height: 80,
         resizeMode: "contain",
+        marginTop:20,
     },
     icon: {
         width: 20,
@@ -144,7 +147,9 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         paddingHorizontal: 50,
         marginBottom: 10,
+        
     },
+
     balanceText: {
         fontSize: 14,
         color: "gray",

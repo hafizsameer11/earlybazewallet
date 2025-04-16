@@ -24,7 +24,7 @@ import { BackHandler, Alert } from 'react-native';
 
 //Related to the Integration of the Login Page
 import { useMutation } from '@tanstack/react-query';
-import Toast from "react-native-toast-message"; 
+import Toast from "react-native-toast-message";
 
 export interface InputValues {
   email: string;
@@ -34,7 +34,7 @@ export interface InputValues {
 const Login = () => {
   const { dark } = useTheme();
   const { push } = useRouter();
-  const fontsLoaded = useLoadFonts(); 
+  const fontsLoaded = useLoadFonts();
   const { replace } = useRouter();
 
   useEffect(() => {
@@ -129,7 +129,7 @@ const Login = () => {
             ]}
           >
             <View style={styles.loginContainer}>
-              <Text style={[styles.loginText, { fontFamily: fontsLoaded ? 'Caprasimo-Regular' : undefined }]}>Login</Text>
+              <Text style={[styles.loginText, { fontFamily: 'Caprasimo' }]}>Login</Text>
             </View>
 
             <Text
@@ -138,11 +138,11 @@ const Login = () => {
                 { color: dark ? COLORS.white : COLORS.black },
               ]}
             >
-              <View>
+                        <View>
                 <Formik
                   initialValues={{ email: "", password: "" }}
                   validationSchema={validationSignInSchema}
-                  onSubmit={(values) => mutateLogin(values)} 
+                  onSubmit={(values) => mutateLogin(values)}
                 >
                   {({
                     handleChange,
@@ -236,6 +236,7 @@ const Login = () => {
                     </View>
                   )}
                 </Formik>
+
               </View>
             </Text>
           </View>
@@ -305,7 +306,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     paddingVertical: 10,
     zIndex: 1,
-    top: -40,
+    top: -30,
     backgroundColor: COLORS.primary,
     justifyContent: "center",
     borderTopLeftRadius: 20,
@@ -314,7 +315,6 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontSize: 22,
-    fontWeight: "bold",
     textAlign: "center",
     color: COLORS.white,
   },

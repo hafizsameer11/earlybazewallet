@@ -34,6 +34,7 @@ const OtherSettings: React.FC<OtherSettingsProps> = ({ isDarkMode, onToggleTheme
   const term = useThemeColor({ light: icons.term_white, dark: icons.term_black }, 'background');
   const notification = useThemeColor({ light: icons.notification_white, dark: icons.notification_black }, 'background');
   const faq = useThemeColor({ light: icons.faq_white, dark: icons.faq_black }, 'background');
+  const logout = useThemeColor({ light: icons.logout, dark: icons.logout }, 'background');
 
   const handleThemeChange = (theme: 'Light' | 'Dark') => {
     setSelectedTheme(theme);
@@ -105,7 +106,7 @@ const OtherSettings: React.FC<OtherSettingsProps> = ({ isDarkMode, onToggleTheme
       {/* Logout Button */}
       <SettingOption
         title="Logout"
-        iconName="log-out-outline"
+        iconName={logout}
         iconColor="red"
         textColor="red"
         onPress={() => {

@@ -12,6 +12,7 @@ interface SelectionBoxProps {
   onPress?: () => void;
   disabled?: boolean;
   style?: object; // ✅ Added missing `style` prop
+  coinName?:string;
 }
 
 

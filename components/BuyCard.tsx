@@ -144,15 +144,16 @@ const BuyCard = ({ setSelectedData, showToast }) => {  // Add showToast prop
           label="Coin"
           id={selectedCoin.id}
           value={selectedCoin.name}
+          coinName={selectedCoin.name}
           icon={selectedCoin.icon}
           onPress={() => openModal('coin')}
         />
       </View>
 
       {/* Swap Button */}
-      <TouchableOpacity style={[styles.swapButton, { borderColor: useThemeColor({ light: '#E5E5E5', dark: '#095D3F' }, 'arrowBorder') }]}>
+      {/* <TouchableOpacity style={[styles.swapButton, { borderColor: useThemeColor({ light: '#E5E5E5', dark: '#095D3F' }, 'arrowBorder') }]}>
         <Image source={doublearrow} style={styles.swapIcon} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {/* Network Selection */}
       <View style={styles.selectionContainer}>

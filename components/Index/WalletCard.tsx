@@ -124,12 +124,25 @@ const WalletCard: React.FC<WalletCardProps> = ({ isCrypto, onToggle }) => {
           {/* Card Balance with Eye Icon */}
           <View style={styles.balanceContainer}>
             <Text style={styles.cardBalance}>
-              {isBalanceVisible
-                ? userLoading
-                  ? "Loading..." // ✅ Show loading while fetching data
-                  : walletBalance
-                : "*****"}
-            </Text>            <TouchableOpacity onPress={toggleBalanceVisibility}>
+              {isBalanceVisible ? (
+                userLoading ? (
+                  "Loading..."
+                ) : isCrypto ? (
+                  `$${Number(userBalance?.data?.userBalance?.crypto_balance || 0).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}`
+                ) : (
+                  `₦${Number(userBalance?.data?.userBalance?.naira_balance || 0).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}`
+                )
+              ) : "*****"}
+            </Text>
+
+
+            <TouchableOpacity onPress={toggleBalanceVisibility}>
               <Ionicons name={isBalanceVisible ? "eye-off" : "eye"} size={24} color="#FFF" style={styles.eyeIcon} />
             </TouchableOpacity>
           </View>
@@ -138,19 +151,20 @@ const WalletCard: React.FC<WalletCardProps> = ({ isCrypto, onToggle }) => {
         {/* Wallet Items (Dynamic) */}
         {isCrypto ? (
           <View style={styles.cryptoInfoContainer}>
-            {cryptoAssets.slice(0, 3).map((asset) => ( // ✅ Show only first 3 assets
+            {userBalance?.data?.userVirtualAccounts?.slice(0, 3).map((asset) => (
               <WalletItem
                 key={asset.id}
-                label={asset.currency}
+                label={asset.wallet_currency?.name || asset.currency}
                 value={asset.available_balance}
                 icon={
-                  asset.walletCurrency.symbol
-                    ? `https://earlybaze.hmstech.xyz/storage/${asset.walletCurrency.symbol}`
+                  asset.wallet_currency?.symbol
+                    ? `https://earlybaze.hmstech.xyz/storage/${asset.wallet_currency.symbol}`
                     : "default_crypto_icon"
                 }
               />
             ))}
           </View>
+
         ) : null}
 
       </ImageBackground>

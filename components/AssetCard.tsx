@@ -8,10 +8,11 @@ interface AssetCardProps {
     fullName: string;
     balance: string;
     price: string;
-    icon: string; // Ensure it's a string (URL)
+    icon: string; // Ensure it's a string (URL),
+    coinName:string;
 }
 
-const AssetCard: React.FC<AssetCardProps> = ({ name, fullName, balance, price, icon }) => {
+const AssetCard: React.FC<AssetCardProps> = ({ name, fullName, balance, price, icon, coinName }) => {
     const backgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#161616' }, 'background');
     const textColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text');
     const secondaryTextColor = useThemeColor({ light: '#666', dark: '#999' }, 'secondaryText');
@@ -25,7 +26,7 @@ const AssetCard: React.FC<AssetCardProps> = ({ name, fullName, balance, price, i
                 <Image source={typeof icon === "string" ? { uri: icon } : icon ||images.account} style={styles.icon} />
                 </View>
                 <View style={styles.textContainer}>
-                    <Text style={[styles.assetName, { color: textColor }]}>{name}</Text>
+                    <Text style={[styles.assetName, { color: textColor }]}>{coinName}</Text>
                     <Text style={[styles.assetFullName, { color: secondaryTextColor }]}>{fullName}</Text>
                 </View>
             </View>

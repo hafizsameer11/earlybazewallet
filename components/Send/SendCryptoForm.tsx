@@ -240,23 +240,25 @@ const SendCryptoForm: React.FC<{
 
                     {/* ✅ Amount and Currency Selection */}
                     <View style={styles.exchangeContainer}>
-                        <InputField label={selectedCoin?.name} value={usdAmount} onChange={(val) => {
-                            const entered = parseFloat(val || "0");
-                            const available = parseFloat(assetData.balance || "0");
+                        <InputField
+                            label={selectedCoin?.name}
+                            value={usdAmount}
+                            onChange={(val) => setUsdAmount(val)} // ✅ Just update state
+                            onEndEditing={() => {
+                                const entered = parseFloat(usdAmount || "0");
+                                const available = parseFloat(assetData.balance || "0");
 
-                            if (entered > available) {
-                                Alert.alert(
-                                    "Insufficient Balance",
-                                    "You don't have enough balance. Resetting to your available balance.",
-                                    [{ text: "OK" }]
-                                );
-
-                                setUsdAmount(available.toString()); // Reset to max
-                            } else {
-                                setUsdAmount(val); // Normal case
-                            }
-                        }}
+                                if (entered > available) {
+                                    Alert.alert(
+                                        "Insufficient Balance",
+                                        "You don't have enough balance. Resetting to your available balance.",
+                                        [{ text: "OK" }]
+                                    );
+                                    setUsdAmount(available.toString());
+                                }
+                            }}
                         />
+
                         <SelectionBox
                             label="Coin"
                             id={selectedCoin?.id || assestId}

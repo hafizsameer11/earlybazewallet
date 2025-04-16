@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 30,
     width: '94.5%', // Responsive width
-    height: 60,
+    height: 58,
     borderRadius: 50,
     alignSelf: 'center',
     flexDirection: 'row',
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
     elevation: 6,
     borderWidth: 0.3,
-    paddingBottom : 10,
+    paddingBottom : 0,
   },
   iconContainer: {
     width: 55,
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 5,
+    marginTop: 4,
   },
   icon: {
     width: 20,
