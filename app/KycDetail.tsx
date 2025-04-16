@@ -78,7 +78,15 @@ const KycDetail: React.FC = () => {
         },
         onError: (error) => {
             console.error("❌ KYC Request Failed:", error);
+
+            Toast.show({
+                type: 'error',
+                text1: 'KYC Request Failed',
+                text2: error?.response?.data?.message || error?.message || 'Something went wrong',
+                position: 'top',
+            });
         }
+
     });
     const handleKycSubmission = (form: any, token: string | null, mutateKyc: Function) => {
         if (!token) {
@@ -136,7 +144,7 @@ const KycDetail: React.FC = () => {
                 {form.profile_image ? (
                     <Image source={{ uri: form.profile_image }} style={styles.profileImage} />
                 ) : (
-                    <Ionicons name="camera-outline" size={25} color="white" />
+                    <Ionicons name="camera-outline" size={25} color="black" />
                 )}
             </TouchableOpacity>
 
@@ -179,7 +187,7 @@ const styles = StyleSheet.create({
         width: 100,
         height: 100,
         borderRadius: 50,
-        backgroundColor: '#004d40',
+        backgroundColor: '#DFDFDF',
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 20,

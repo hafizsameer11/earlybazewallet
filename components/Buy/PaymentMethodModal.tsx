@@ -200,7 +200,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'Caprasimo'
+
   },
   closeButton: {
     width: 30,
@@ -228,7 +229,7 @@ const styles = StyleSheet.create({
   },
   paymentText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontFamily: 'Caprasimo',
     flex: 1,
     marginLeft: 10,
   },

@@ -52,8 +52,9 @@ const styles = StyleSheet.create({
   },
   buyText: {
     fontSize: 32,
-    fontWeight: 'bold',
     color: '#FFF',
+    fontFamily: 'Caprasimo'
+
   },
   exchangeRateContainer: {
     position: 'absolute',

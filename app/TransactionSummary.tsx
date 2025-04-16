@@ -124,7 +124,14 @@ const TransactionSummary: React.FC = () => {
 
       {/* Transaction Card */}
       <View style={[styles.card, { backgroundColor: cardBackgroundColor }]}>
-        <Text style={styles.amountText}>{transaction?.amount} </Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={styles.amountText}>{transaction?.amount}</Text>
+          <Text style={[styles.amountText, { marginLeft: 4 }]}>
+            {transaction?.currency?.replace(/\b\w/g, (char) => char.toUpperCase())}
+          </Text>
+
+        </View>
+        y
         <TransactionDetailItem
           label={type === "send" ? "Recipient Address" : "Sender Address"}
           value={email || String(type === "send" ? transaction?.recipient_address : transaction?.recipient_address)}
@@ -154,8 +161,18 @@ const TransactionSummary: React.FC = () => {
               value={transaction?.created_at ? moment(transaction?.created_at).format("MMMM DD, YYYY h:mm A") : "N/A"}
             />
             <TransactionDetailItem label="Type" value={String(transaction?.transaction_type)} />
-            <TransactionDetailItem label="Status" value={String(transaction?.status)} />
-          </>
+            <TransactionDetailItem
+              label="Status"
+              value={String(transaction?.status)}
+              valueStyle={{
+                color:
+                  String(transaction?.status).toLowerCase() === 'completed'
+                    ? 'green'
+                    : String(transaction?.status).toLowerCase() === 'rejected'
+                      ? 'red'
+                      : undefined,
+              }}
+            />          </>
         )}
       </View>
 
@@ -264,10 +281,11 @@ const styles = StyleSheet.create({
   },
   amountText: {
     fontSize: 18,
-    fontWeight: 'bold',
     color: '#22A45D',
     textAlign: 'center',
     marginVertical: 10,
+    fontFamily: 'Caprasimo'
+
 
   },
   buttonContainer: {

@@ -1,4 +1,4 @@
-import React, { useState,useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -100,34 +100,34 @@ const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
 
         {/* ✅ Input for "You Send" (Editable only if asset is selected) */}
         {title === "You Send" ? (
-  <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
-    <TouchableOpacity
-      activeOpacity={1}
-      style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
-      onPress={() => {
-        if (asset !== "Select Asset") {
-          inputRef.current?.focus();
-        }
-      }}
-    >
-      <Text style={[styles.amountCurrency, { color: labelColor }]}>{asset}</Text>
-      <TextInput
-        ref={inputRef}
-        style={[styles.amountText, { color: textColor, textAlign: 'right', flex: 1 }]}
-        placeholderTextColor={labelColor}
-        keyboardType="numeric"
-        value={enteredAmount}
-        onChangeText={handleAmountChange}
-        editable={asset !== "Select Asset"}
-      />
-    </TouchableOpacity>
-  </View>
-) : (
-  <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
-    <Text style={[styles.amountCurrency, { color: labelColor }]}>{asset}</Text>
-    <Text style={[styles.amountText, { color: textColor }]}>{amount}</Text>
-  </View>
-)}
+          <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
+            <TouchableOpacity
+              activeOpacity={1}
+              style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+              onPress={() => {
+                if (asset !== "Select Asset") {
+                  inputRef.current?.focus();
+                }
+              }}
+            >
+              <Text style={[styles.amountCurrency, { color: labelColor }]}>{asset}</Text>
+              <TextInput
+                ref={inputRef}
+                style={[styles.amountText, { color: textColor, textAlign: 'right', flex: 1 }]}
+                placeholderTextColor={labelColor}
+                keyboardType="numeric"
+                value={enteredAmount}
+                onChangeText={handleAmountChange}
+                editable={asset !== "Select Asset"}
+              />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
+            <Text style={[styles.amountCurrency, { color: labelColor }]}>{asset}</Text>
+            <Text style={[styles.amountText, { color: textColor }]}>{amount}</Text>
+          </View>
+        )}
 
       </View>
 

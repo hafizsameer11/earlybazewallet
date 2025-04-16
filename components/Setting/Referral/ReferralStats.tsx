@@ -14,8 +14,9 @@ const ReferralStats: React.FC<ReferralStatsProps> = ({ earnings, referrals }) =>
           <Text style={styles.label}>Earnings</Text>
           <View style={styles.earningsRow}>
             <Text style={styles.currencySymbol}>$</Text>
-            <Text style={styles.amount}>{earnings}</Text>
-          </View>
+            <Text style={styles.amount}>
+              {Number(earnings).toLocaleString()}
+            </Text>          </View>
 
         </View>
 
@@ -66,9 +67,10 @@ const styles = StyleSheet.create({
   },
   amount: {
     fontSize: 24,
-    fontWeight: 'bold',
     color: '#FFFFFF',
     marginLeft: 10,
+    fontFamily: 'Caprasimo'
+
 
   },
   description: {

@@ -106,8 +106,8 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 12,
-    fontWeight: 'bold',
     color: '#fff',
+    fontFamily: 'Caprasimo'
   },
   divider: {
     width: 1,

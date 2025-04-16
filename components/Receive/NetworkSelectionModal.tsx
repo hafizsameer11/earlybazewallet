@@ -278,7 +278,8 @@ const styles = StyleSheet.create({
     },
     networkText: {
         fontSize: 14,
-        fontWeight: 'bold',
+        fontFamily: 'Caprasimo'
+
     },
 });
 

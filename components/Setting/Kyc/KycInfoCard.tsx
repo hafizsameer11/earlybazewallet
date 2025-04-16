@@ -76,9 +76,10 @@ const styles = StyleSheet.create({
     height: 54,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
+    fontSize: 26,
     marginVertical: 14,
+    fontFamily: 'Caprasimo'
+
 
   },
   list: {

@@ -23,7 +23,7 @@ const SettingsOption: React.FC<SettingsOptionProps> = ({ title, image, onPress }
       <View style={[styles.iconContainer, { backgroundColor: iconContainerColor }]}>
         <Image source={image} style={styles.icon} />
       </View>
-      <Text style={[styles.title, { color: textColor, fontFamily: fontsLoaded ? 'Caprasimo-Regular' : undefined }]}>{title}</Text>
+      <Text style={[styles.title, { color: textColor, fontFamily: fontsLoaded ? 'Caprasimo' : undefined }]}>{title}</Text>
     </TouchableOpacity>
   );
 };
@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 12,
-    fontWeight: 'bold',
   },
 });
 

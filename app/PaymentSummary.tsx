@@ -90,9 +90,10 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   accountTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 14,
     color: '#FFFFFF',
+    fontFamily: 'Caprasimo'
+
   },
   paymentContainer: {
     borderRadius: 10,
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
     borderColor: '#22A45D', // Green border to match UI
     alignItems: 'center',
     justifyContent: 'center',
+
   },
   buttonContainer: {
     position: 'absolute',

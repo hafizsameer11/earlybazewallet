@@ -312,7 +312,8 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 17,
-        fontWeight: 'bold',
+        fontFamily: 'Caprasimo'
+
     },
     label: {
         fontSize: 11,

@@ -30,7 +30,7 @@ const SummaryReceive: React.FC = () => {
 
             {/* Summary Card */}
             <View style={[styles.card, { backgroundColor: cardBackgroundColor }]}>
-                <Text style={[styles.title, { color: textColor, fontFamily: fontsLoaded ? 'Caprasimo-Regular' : undefined }]}>EarlyBaze</Text>
+                <Text style={[styles.title, { color: textColor,}]}>EarlyBaze</Text>
 
                 {/* QR Code */}
                 <Image source={images.qrcode} style={styles.qrCode} />
@@ -93,7 +93,8 @@ const styles = StyleSheet.create({
     title: {
         marginTop: 20,
         fontSize: 32,
-        fontWeight: 'bold',
+        fontFamily: 'Caprasimo'
+
     },
     qrCode: {
         width: 234,

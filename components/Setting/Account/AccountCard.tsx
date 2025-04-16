@@ -58,7 +58,7 @@ const AccountCard: React.FC<AccountCardProps> = ({
             {/* Action Buttons */}
             <View style={styles.actions}>
                 <TouchableOpacity style={styles.iconButton} onPress={onEdit}>
-                    <Image source={icons.edit}/>
+                    <Image source={icons.edit} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.iconButton} onPress={onDelete}>
                     <Ionicons name="trash-outline" size={20} color="red" />
@@ -82,21 +82,23 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: -28,
         flexDirection: 'row',
+        alignItems: 'center',
     },
     tab: {
         width: 110,
         backgroundColor: '#17A167',
         paddingHorizontal: 15,
-        paddingVertical: 5,
+        paddingVertical: 4,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 60,
         borderBottomLeftRadius: 0,  // Add this line if you want rounded corners on the bottom as well
         borderBottomRightRadius: 0, // Add this line if you want rounded corners on the bottom as well
     },
     accountTitle: {
-        fontSize: 16,
-        fontWeight: 'bold',
+        fontSize: 14,
         color: '#FFFFFF',
+        fontFamily: 'Caprasimo'
+
     },
     tabDefault: {
         backgroundColor: '#C8C8C84D',

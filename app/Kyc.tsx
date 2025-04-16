@@ -65,7 +65,7 @@ const Kyc: React.FC = () => {
       <View style={styles.buttonContainer}>
         <PrimaryButton
           title="Proceed"
-          onPress={() => router.push('/KycDetail')}
+        onPress={() => router.push('/KycDetail')}
           disabled={kycStatus === 'Approved' } // Disable button if KYC is approved
         />
       </View>

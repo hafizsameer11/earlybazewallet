@@ -53,18 +53,18 @@ const SwapSummaryDetails: React.FC<SwapSummaryDetailsProps> = ({
         <Image source={swapIcon} style={[styles.swapIcon]} />
         <View style={styles.assetContainer}>
           {/* Use dynamic icon from the URL */}
-          <Image source={{ uri: icon }} style={styles.assetIcon} /> {/* Use dynamic icon here */}
+          <Image source={images.naira} style={styles.assetIcon} /> {/* Use dynamic icon here */}
           <Text style={[styles.amountText, { color: textColor }]}>{amount_naira}</Text>
         </View>
       </View>
-  
+
       <View style={[styles.summaryBox, { backgroundColor, borderColor }]}>
         {/* Transaction Details */}
         <View style={styles.transactionDetails}>
           {/* Use dynamic icon here */}
           <TransactionDetailItem label="Coin Sent" value={currency} icon={{ uri: icon }} />
           <TransactionDetailItem label="Network" value={network} icon={{ uri: icon }} />
-          <TransactionDetailItem label="Asset Received" value="Naira" icon={{ uri: icon }} />
+          <TransactionDetailItem label="Asset Received" value="Naira" icon={images.naira} />
           <TransactionDetailItem label="Amount paid in USD" value={amount_usd} />
           <TransactionDetailItem label="Amount to receive in NGN" value={amount_naira} />
           <TransactionDetailItem label="Amount to receive in USD" value={amount_usd} />
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
 
   },
   assetIcon: {
-    marginTop:10,
+    marginTop: 10,
     width: 40,
     height: 40,
   },

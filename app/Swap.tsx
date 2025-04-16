@@ -295,18 +295,20 @@ const Swap: React.FC = () => {
           <ExchangeRate rate={`$1 = ${parseFloat(exchangeRateNaira?.data?.rate).toFixed(2)} NGN`} />
         </View>
         <NoteSwapBox />
+
+        {/* ✅ Proceed Button to Call Swap API */}
+        <View style={styles.fixedButtonContainer}>
+          <PrimaryButton
+            title={isPending ? "Processing..." : "Proceed"} // Change title when loading
+            onPress={handleProceed} // Calls the function instead of inline logic
+            disabled={isPending} // Disable button while request is being sent
+            loading={isPending} // Show loading spinner when request is in progress
+          />
+
+        </View>
+
       </ScrollView>
 
-      {/* ✅ Proceed Button to Call Swap API */}
-      <View style={styles.fixedButtonContainer}>
-        <PrimaryButton
-          title={isPending ? "Processing..." : "Proceed"} // Change title when loading
-          onPress={handleProceed} // Calls the function instead of inline logic
-          disabled={isPending} // Disable button while request is being sent
-          loading={isPending} // Show loading spinner when request is in progress
-        />
-
-      </View>
 
       {/* ✅ Show Modal */}
       <NetworkSelectionModal
@@ -352,13 +354,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginHorizontal: 18,
     borderRadius: 20,
+    marginTop:80,
   },
   fixedButtonContainer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 18,
-    right: 18,
     width: '90%',
+    marginTop: 20,
+    marginHorizontal: 18
   },
   swapButton: {
     padding: 11,

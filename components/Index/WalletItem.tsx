@@ -55,13 +55,15 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 10,
     color: "#FFF",
-    fontWeight: "600",
     marginBottom: 8,
+    fontFamily: 'Caprasimo'
+
   },
   value: {
     fontSize: 12,
-    fontWeight: "bold",
     color: "#FFF",
+    fontFamily: 'Caprasimo'
+
   },
   iconWrapper: {
     position: "absolute",

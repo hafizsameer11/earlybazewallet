@@ -16,13 +16,13 @@ const DropdownField: React.FC<DropdownFieldProps> = ({ label, options, selectedV
   const backgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1E1E1E' }, 'background');
   const textColor = useThemeColor({ light: '#222222', dark: '#FFFFFF' }, 'text');
   const modalBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#2D2D2D' }, 'modalBackground');
-  const borderColor = useThemeColor({ light: '#D3D3D3', dark: '#555555' }, 'border');
+  const activeColor = useThemeColor({ light: '#25AE7A', dark: '#25AE7A' }, 'active');
 
   return (
     <View style={styles.container}>
       <Text style={[styles.label, { color: textColor }]}>{label}</Text>
-      <TouchableOpacity 
-        style={[styles.input, { borderColor, backgroundColor }]} 
+      <TouchableOpacity
+        style={[styles.input, { backgroundColor }]}
         onPress={() => setModalVisible(true)}
       >
         <Text style={{ color: textColor }}>{selectedValue || 'Select document type'}</Text>
@@ -38,6 +38,7 @@ const DropdownField: React.FC<DropdownFieldProps> = ({ label, options, selectedV
                 <Text style={[styles.closeButton, { color: textColor }]}>✖</Text>
               </TouchableOpacity>
             </View>
+            <View style={styles.divider} />
 
             {/* Options List */}
             <FlatList
@@ -46,18 +47,26 @@ const DropdownField: React.FC<DropdownFieldProps> = ({ label, options, selectedV
                 <TouchableOpacity
                   style={[
                     styles.option,
-                    selectedValue === item && styles.selectedOption,
-                    { borderColor, backgroundColor }
+                    selectedValue === item && {
+                      backgroundColor: '#F8FFFA',
+                    }
                   ]}
                   onPress={() => {
                     onSelect(item);
                     setModalVisible(false);
                   }}
                 >
-                  <Text style={styles.radio}>{selectedValue === item ? '🟢' : '⚪'}</Text>
+                  <View style={[
+                    styles.radioButtonOuter,
+                    { borderColor: selectedValue === item ? activeColor : '#999' }
+                  ]}>
+                    {selectedValue === item && <View style={[styles.radioButtonInner, { backgroundColor: activeColor }]} />}
+                  </View>
+
                   <Text style={[styles.optionText, { color: textColor }]}>{item}</Text>
                 </TouchableOpacity>
               )}
+
               keyExtractor={(item) => item}
             />
           </View>
@@ -72,52 +81,49 @@ const styles = StyleSheet.create({
   label: { fontSize: 14, fontWeight: 'bold', marginBottom: 5 },
   input: {
     height: 50,
-    borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 15,
     justifyContent: 'center',
+    elevation: 1,
   },
   overlay: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    marginBottom: 10,
+    paddingBottom: 15,
   },
   modal: {
     width: '92%',
     padding: 20,
-    borderRadius: 15,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5,
+    borderRadius: 20,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 15,
+    marginBottom: 10,
     alignItems: 'center',
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
     color: '#25AE7A',
+    fontFamily: 'Caprasimo',
   },
   closeButton: {
     fontSize: 20,
   },
+  divider: {
+    height: 1,
+    backgroundColor: '#ccc',
+    marginBottom: 10,
+  },
   option: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 15,
-    borderRadius: 12,
-    borderWidth: 1,
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    borderRadius: 14,
     marginBottom: 10,
-  },
-  selectedOption: {
-    borderColor: '#008000',
-    backgroundColor: '#F0FFF0',
   },
   radio: {
     marginRight: 15,
@@ -126,6 +132,22 @@ const styles = StyleSheet.create({
   optionText: {
     fontSize: 16,
   },
+  radioButtonOuter: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
+
+  radioButtonInner: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+
 });
 
 export default DropdownField;

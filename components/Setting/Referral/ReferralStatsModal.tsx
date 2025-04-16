@@ -140,7 +140,8 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontSize: 18,
-        fontWeight: 'bold',
+        fontFamily: 'Caprasimo'
+
     },
     headerRight: {
         flexDirection: 'row',

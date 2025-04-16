@@ -82,14 +82,14 @@ const Referral: React.FC = () => {
       </LinearGradient>
 
       {showStatsModal && (
-  <ReferralStatsModal
-    totalEarnings={referrals?.data?.earning?.[0]?.totalEarning || "0"}
-    totalWithdrawals={referrals?.data?.earning?.[0]?.totalWithdrawls || "0"}
-    numberOfReferrals={referrals?.data?.earning?.[0]?.noOfReferrals || 0}
-    totalTrades={referrals?.data?.earning?.[0]?.totalTradesCompletedByReferrals || "0"}
-    onClose={() => setShowStatsModal(false)}
-  />
-)}
+        <ReferralStatsModal
+          totalEarnings={referrals?.data?.earning?.[0]?.totalEarning || "0"}
+          totalWithdrawals={referrals?.data?.earning?.[0]?.totalWithdrawls || "0"}
+          numberOfReferrals={referrals?.data?.earning?.[0]?.noOfReferrals || 0}
+          totalTrades={referrals?.data?.earning?.[0]?.totalTradesCompletedByReferrals || "0"}
+          onClose={() => setShowStatsModal(false)}
+        />
+      )}
 
 
 
@@ -139,10 +139,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
     color: '#FFFFFF',
     marginBottom: 20,
     marginLeft: 20,
+    fontFamily: 'Caprasimo'
+
   },
   withdrawText: {
     color: '#222222',
@@ -150,8 +151,9 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 24,
-    fontWeight: 'bold',
     marginVertical: 13,
+    fontFamily: 'Caprasimo'
+
   },
   sectionText: {
     fontSize: 15,

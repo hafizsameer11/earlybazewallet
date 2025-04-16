@@ -44,7 +44,7 @@ const ChangePinModal: React.FC<ChangePinModalProps> = ({ visible, onClose }) => 
   useEffect(() => {
     const fetchUserData = async () => {
       const user = await getFromStorage("user");
-      const email= user.email
+      const email = user.email
       setEmail(email);
       console.log("🔹 Retrieved email:", email);
     };
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontFamily: 'Caprasimo',
   },
   closeButton: {
     padding: 5,
@@ -260,10 +260,11 @@ const styles = StyleSheet.create({
   },
   subTitle: {
     fontSize: 32,
-    fontWeight: 'bold',
     marginVertical: 20,
     color: '#22A45D',
     paddingBottom: 10,
+    fontFamily: 'Caprasimo',
+
   },
   pinInputContainer: {
     flexDirection: 'row',

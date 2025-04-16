@@ -143,9 +143,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
     marginBottom: 10,
     alignSelf: 'center',
+    fontFamily: 'Caprasimo',
   },
   label: {
     fontSize: 13,

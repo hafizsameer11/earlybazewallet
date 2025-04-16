@@ -44,7 +44,7 @@ const PaymentMethodHeader: React.FC<{ setSelectedPaymentMethodId: (data: { id: s
 
       {/* Payment Method Modal */}
       <PaymentMethodModal
-        title="Choose Account"
+        title="Payment Method"
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
         onSelectPaymentMethod={handleSelectPaymentMethod}

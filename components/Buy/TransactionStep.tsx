@@ -69,7 +69,7 @@ const TransactionStep: React.FC<TransactionStepProps> = ({
           <Text
             style={[
               styles.stepTitle,
-              title === 'Transaction Submitted' && [styles.boldTitle, { color: textColor }],
+              title === 'Transaction Submitted' && [, { color: textColor }],
               title === 'Transaction Processed' && styles.processedTitle,
               title === 'Transaction Rejected' && styles.rejectedTitle,
             ]}
@@ -145,18 +145,19 @@ const styles = StyleSheet.create({
   },
   stepTitle: {
     fontSize: 13,
-    fontWeight: 'normal', // Default
+    fontFamily: 'Caprasimo'
+
   },
   boldTitle: {
     fontWeight: 'bold',
   },
   processedTitle: {
     color: '#C56A1B',
-    fontWeight: 'bold',
+    fontFamily: 'Caprasimo'
   },
   rejectedTitle: {
     color: '#C51B1B',
-    fontWeight: 'bold',
+    fontFamily: 'Caprasimo'
   },
   stepDescription: {
     fontSize: 11,

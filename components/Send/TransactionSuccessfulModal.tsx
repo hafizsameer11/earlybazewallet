@@ -131,9 +131,10 @@ const styles = StyleSheet.create({
   },
   successText: {
     fontSize: 18,
-    fontWeight: 'bold',
     color: '#FFFFFF',
     marginBottom: 8,
+    fontFamily: 'Caprasimo'
+
   },
   description: {
     fontSize: 14,

@@ -90,9 +90,10 @@ const styles = StyleSheet.create({
   },
   successTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
+    marginTop: 13,
     textAlign: 'center',
     marginBottom: 5,
+    fontFamily: 'Caprasimo'
   },
   successAmount: {
     fontSize: 12,

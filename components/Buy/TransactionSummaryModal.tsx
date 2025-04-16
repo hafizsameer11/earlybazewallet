@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 17,
-    fontWeight: 'bold',
+    fontFamily: 'Caprasimo'
   },
   horizontalLine: {
     width: '100%',

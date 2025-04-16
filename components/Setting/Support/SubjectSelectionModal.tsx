@@ -8,9 +8,9 @@ import {
     StyleSheet,
     Image,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { images } from '@/constants';
+
 interface SubjectSelectionModalProps {
     modalVisible: boolean;
     setModalVisible: (visible: boolean) => void;
@@ -19,56 +19,32 @@ interface SubjectSelectionModalProps {
 }
 
 const subjects = ['Send', 'Receive', 'Buy', 'Swap', 'Withdraw', 'Others'];
+
 const SubjectSelectionModal: React.FC<SubjectSelectionModalProps> = ({
     modalVisible,
     setModalVisible,
     selectedSubject,
     setSelectedSubject,
 }) => {
-    const textColor = useThemeColor(
-        { light: '#222222', dark: '#FFFFFF' },
-        'text'
-    );
-    const titleColor = useThemeColor(
-        { light: '#25AE7A', dark: '#25AE7A' },
-        'title'
-    );
-    const modalBackgroundColor = useThemeColor(
-        { light: '#FFFFFF', dark: '#1E1E1E' },
-        'modal'
-    );
-    const cardBackgroundColor = useThemeColor(
-        { light: '#FFFFFF', dark: '#2A2A2A' },
-        'card'
-    );
-    const borderColor = useThemeColor(
-        { light: '#C2C2C2', dark: '#161616' },
-        'border'
-    );
-    const radioBorderColor = useThemeColor(
-        { light: '#00000080', dark: '#FFFFFF' },
-        'radio'
-    );
-    const close = useThemeColor({ light: images.cross_white, dark: images.cross_black }, 'close');
+    const textColor = useThemeColor({ light: '#222222', dark: '#FFFFFF' }, 'text');
+    const titleColor = useThemeColor({ light: '#25AE7A', dark: '#25AE7A' }, 'title');
+    const modalBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1E1E1E' }, 'modal');
+    const cardBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#2A2A2A' }, 'card');
     const backgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1A1A1A' }, 'background');
-    const borderColorLine = useThemeColor({ light: '#D4D4D4', dark: '#0F714D' }, 'border');
+    const close = useThemeColor({ light: images.cross_white, dark: images.cross_black }, 'close');
 
     return (
-        <Modal
-            transparent
-            animationType="fade"
-            visible={modalVisible}
-            onRequestClose={() => setModalVisible(false)}
-        >
+        <Modal transparent animationType="fade" visible={modalVisible} onRequestClose={() => setModalVisible(false)}>
             <View style={styles.modalOverlay}>
                 <View style={[styles.modalContainer, { backgroundColor: modalBackgroundColor }]}>
                     {/* Modal Header */}
-                    <View style={[styles.modalHeader, { borderColor: borderColorLine }]}>
-                        <Text style={[styles.modalTitle, { color: titleColor, }]}>Subject</Text>
-                        <TouchableOpacity onPress={() => setModalVisible(false)} style={[styles.closeButton, { backgroundColor: backgroundColor }]}>
+                    <View style={styles.modalHeader}>
+                        <Text style={[styles.modalTitle, { color: titleColor }]}>Subject</Text>
+                        <TouchableOpacity onPress={() => setModalVisible(false)} style={[styles.closeButton, { backgroundColor }]}>
                             <Image source={close} style={styles.closeIcon} />
                         </TouchableOpacity>
                     </View>
+                    <View style={styles.divider} />
 
                     {/* Subject List */}
                     <View style={styles.subjectList}>
@@ -79,7 +55,7 @@ const SubjectSelectionModal: React.FC<SubjectSelectionModalProps> = ({
                                 <TouchableOpacity
                                     style={[
                                         styles.option,
-                                        { backgroundColor: cardBackgroundColor, borderColor },
+                                        { backgroundColor: cardBackgroundColor },
                                         selectedSubject === item && styles.selectedOption,
                                     ]}
                                     onPress={() => {
@@ -87,13 +63,7 @@ const SubjectSelectionModal: React.FC<SubjectSelectionModalProps> = ({
                                         setModalVisible(false);
                                     }}
                                 >
-                                    <View
-                                        style={[
-                                            styles.radioContainer,
-                                            selectedSubject === item && styles.radioSelected,
-                                            { borderColor: radioBorderColor },
-                                        ]}
-                                    >
+                                    <View style={styles.radioContainer}>
                                         {selectedSubject === item && <View style={styles.radioInner} />}
                                     </View>
                                     <Text style={[styles.optionText, { color: textColor }]}>{item}</Text>
@@ -116,7 +86,7 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         width: '90%',
-        borderRadius: 16,
+        borderRadius: 20,
         paddingVertical: 16,
         elevation: 10,
         shadowColor: '#000',
@@ -128,62 +98,63 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingBottom: 12,
-        borderBottomWidth: 1,
-        marginBottom: 6,
+        paddingBottom: 10,
+        paddingHorizontal: 16,
     },
     modalTitle: {
-        fontSize: 16,
-        marginLeft: 16,
-        fontWeight: 'bold',
+        fontSize: 18,
+        fontFamily: 'Caprasimo',
     },
     closeButton: {
-        padding: 6,
+        padding: 5,
         borderRadius: 25,
-        borderWidth: 0.5,
-        marginRight: 13,
+        borderWidth: 1,
     },
     closeIcon: {
         width: 20,
         height: 20,
+    },
+    divider: {
+        height: 1,
+        backgroundColor: '#ccc',
+        marginBottom: 8,
+        marginTop: 2,
+    },
+    subjectList: {
+        marginHorizontal: 10,
     },
     option: {
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 14,
         paddingHorizontal: 16,
-        borderRadius: 12,
-        marginVertical: 6,
-        borderWidth: 1,
-    },
-    subjectList: {
-        marginHorizontal: 12,
+        borderRadius: 14,
+        marginBottom: 10,
     },
     selectedOption: {
-        borderWidth: 2,
-        borderColor: '#C2C2C2',
+        backgroundColor: '#F0FFF5',
     },
     optionText: {
         fontSize: 16,
     },
     radioContainer: {
-        width: 16,
-        height: 16,
+        width: 20,
+        height: 20,
         borderRadius: 10,
         borderWidth: 2,
+        borderColor: '#25AE7A', // always green outline
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: 12,
     },
-    radioSelected: {
-        borderWidth: 2,
-    },
+
     radioInner: {
         width: 10,
         height: 10,
         borderRadius: 5,
-        backgroundColor: '#25AE7A',
+        backgroundColor: '#25AE7A', // green fill for selected
     },
+
 });
 
 export default SubjectSelectionModal;

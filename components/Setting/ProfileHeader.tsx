@@ -45,7 +45,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, email, cryptoBalanc
                             </LinearGradient>
                         </View>
 
-                        <Text style={[styles.name, { fontFamily: fontsLoaded ? 'Caprasimo-Regular' : undefined }]}>{name}</Text>
+                        <Text style={[styles.name, { fontFamily: fontsLoaded ? 'Caprasimo' : undefined }]}>{name}</Text>
                         <Text style={styles.email}>{email}</Text>
 
                         {/* ID Verified Badge */}
@@ -123,9 +123,10 @@ const styles = StyleSheet.create({
     },
     name: {
         fontSize: 24,
-        fontWeight: 'bold',
         color: '#FFFFFF',
         marginTop: 10,
+        fontFamily: 'Caprasimo'
+
     },
     email: {
         fontSize: 13,

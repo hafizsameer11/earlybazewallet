@@ -70,10 +70,11 @@ const styles = StyleSheet.create({
         marginHorizontal: 8,
     },
     assetName: {
-        fontSize: 22,
-        fontWeight: 'bold',
+        fontSize: 24,
         color: 'white',
         marginHorizontal: 13,
+        fontFamily: 'Caprasimo'
+
     },
 });
 

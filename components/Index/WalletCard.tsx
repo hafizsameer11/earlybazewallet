@@ -223,8 +223,9 @@ const styles = StyleSheet.create({
   cardBalance: {
     color: '#FFF',
     fontSize: 30,
-    fontWeight: 'bold',
     marginTop: 8,
+    fontFamily: 'Caprasimo'
+
   },
 
   // Balance Container for Eye Icon

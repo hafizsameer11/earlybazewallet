@@ -24,7 +24,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, amount, created
 
   // Define colors for different statuses
   const statusColors: Record<string, string> = {
-    successful: '#139B15',
+    completed: '#139B15',
     pending: '#E0B711',
     failed: '#E51616',
   };
