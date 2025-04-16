@@ -233,7 +233,7 @@ const SendCryptoForm: React.FC<{
                             value={scannedAddress}
                             onChangeText={setScannedAddress}
                         />
-                        <TouchableOpacity onPress={() => Alert.alert("Scanner will work in production build")}>
+                        <TouchableOpacity onPress={() => setIsScannerOpen(true)}>
                             <Image source={scan} style={styles.scanIcon} />
                         </TouchableOpacity>
                     </View>
@@ -278,11 +278,12 @@ const SendCryptoForm: React.FC<{
                             value={convertedAmount}
                             onChange={() => { }}
                             editable={false} // ✅ Make it disabled
-                        />                        <SelectionBox
+                        />
+                        <SelectionBox
                             label="Select Network"
                             id={selectedNetwork.id}
                             value={selectedNetwork.name || "Network"}
-                            icon={selectedNetwork?.icon || images.solana}
+                            icon={selectedNetwork?.icon || images.dummy}
                             onPress={coinId ? () => openModal("network") : undefined}
                             disabled={!coinId}
                             style={!coinId ? { opacity: 0.5 } : undefined}

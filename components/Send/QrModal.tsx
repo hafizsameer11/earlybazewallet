@@ -85,6 +85,10 @@ const QrModal: React.FC<QrModalProps> = ({ isVisible, onClose }) => {
 
     return (
         <Modal visible={isVisible} animationType="slide" transparent>
+            {/* Close Button */}
+            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                <Image source={images.cross_white} style={styles.closeIcon} />
+            </TouchableOpacity>
             <View style={styles.scannerContainer}>
                 <Text style={styles.scannerText}>Scan the QR Code or Choose an Image</Text>
 
@@ -130,6 +134,21 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 20,
     },
+    closeButton: {
+        position: 'absolute',
+        top: 40,
+        right: 20,
+        zIndex: 10,
+        backgroundColor: '#FFFFFF20',
+        borderRadius: 20,
+        padding: 5,
+    },
+    closeIcon: {
+        width: 18,
+        height: 18,
+        tintColor: '#FFFFFF',
+    },
+
     permissionButton: {
         backgroundColor: "#007AFF",
         padding: 12,
@@ -142,7 +161,7 @@ const styles = StyleSheet.create({
     },
     cameraWrapper: {
         width: width * 0.70,
-        height: height * 0.35 ,
+        height: height * 0.35,
         borderRadius: 10,
         overflow: "hidden",
     },

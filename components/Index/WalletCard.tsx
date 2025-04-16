@@ -251,11 +251,11 @@ const styles = StyleSheet.create({
   // Withdraw Button
   withdrawButton: {
     position: 'absolute',
-    bottom: 16,
+    bottom: 20,
     left: 16, // Set to 16 for padding from the left edge
     right: 16, // Use right: 16 for consistent spacing
     backgroundColor: '#FFF',
-    paddingVertical: 12,
+    paddingVertical: 18,
     borderRadius: 100, // Updated border radius to match the provided design
     justifyContent: 'center',
     alignItems: 'center',
@@ -264,10 +264,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 3,
+
   },
   withdrawText: {
     color: '#4C4C6D',
-    fontSize: 14,
+    fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
   },

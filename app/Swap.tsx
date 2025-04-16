@@ -37,14 +37,14 @@ const Swap: React.FC = () => {
   const [selectedAsset, setSelectedAsset] = useState<{ id: string; name: string; icon: any, balance: string }>({
     id: "",
     name: "Select Asset",
-    icon: images.solana,
+    icon: images.dummy,
     balance: "0",
   });
 
   const [selectedNetwork, setSelectedNetwork] = useState<{ id: string; name: string; icon: any }>({
     id: "",
     name: "Select Network",
-    icon: images.solana,
+    icon: images.dummy,
   });
 
   // ✅ State for amount inputs
@@ -276,9 +276,9 @@ const Swap: React.FC = () => {
           />
 
           {/* ✅ Swap Button */}
-          <TouchableOpacity style={[styles.swapButton, { borderColor: arrowBorderColor }]}>
+          {/* <TouchableOpacity style={[styles.swapButton, { borderColor: arrowBorderColor }]}>
             <Image source={doublearrow} style={styles.swapIcon} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           {/* ✅ Receive Section (Amount in NGN) */}
           {/* ✅ Receive Section (Amount in NGN) */}
@@ -323,7 +323,7 @@ const Swap: React.FC = () => {
               return;
             }
             setSelectedAsset(item);
-            setSelectedNetwork({ id: "", name: "Select Network", icon: images.solana }); // Reset network when asset changes
+            setSelectedNetwork({ id: "", name: "Select Network", icon: images.dummy }); // Reset network when asset changes
           } else {
             setSelectedNetwork(item);
           }

@@ -5,6 +5,8 @@ import * as FileSystem from 'expo-file-system';
 import { Ionicons } from '@expo/vector-icons';
 import { images } from '@/constants';
 import { useThemeColor } from '@/hooks/useThemeColor';
+import { Asset } from 'expo-asset';
+import * as Share from 'expo-sharing';
 
 import * as Clipboard from 'expo-clipboard';
 // import { ToastAndroid } from 'react-native'; // optional for feedback (Android only)
@@ -61,23 +63,27 @@ const QRCodeCard: React.FC<QRCodeCardProps> = ({ cardBackgroundColor, selectedTa
     );
     const handleSaveImage = async () => {
         try {
-            // Request permission for storage
             const { status } = await MediaLibrary.requestPermissionsAsync();
             if (status !== 'granted') {
                 Alert.alert('Permission Required', 'Please grant storage permissions to save the image.');
                 return;
             }
 
-            // Save the image to a file
-            const fileUri = FileSystem.cacheDirectory + 'qrcode.png';
-            const imageBase64 = await FileSystem.readAsStringAsync(images.qrcode, { encoding: FileSystem.EncodingType.Base64 });
-            await FileSystem.writeAsStringAsync(fileUri, imageBase64, { encoding: FileSystem.EncodingType.Base64 });
+            // ✅ Resolve the asset URI from static image
+            const asset = Asset.fromModule(images.qrcode);
+            await asset.downloadAsync(); // Ensure it's downloaded
 
-            // Save the file to gallery
-            const asset = await MediaLibrary.createAssetAsync(fileUri);
-            await MediaLibrary.createAlbumAsync('QR Codes', asset, false);
+            // ✅ Use the local URI from the asset
+            const localUri = asset.localUri;
 
-            // Show success toast message
+            if (!localUri) {
+                throw new Error("Unable to resolve local URI for the image.");
+            }
+
+            // ✅ Save to gallery
+            const mediaAsset = await MediaLibrary.createAssetAsync(localUri);
+            await MediaLibrary.createAlbumAsync('QR Codes', mediaAsset, false);
+
             if (Platform.OS === 'android') {
                 ToastAndroid.show('The image has been saved to your gallery', ToastAndroid.SHORT);
             } else {
@@ -89,6 +95,35 @@ const QRCodeCard: React.FC<QRCodeCardProps> = ({ cardBackgroundColor, selectedTa
         }
     };
 
+    const handleShareImage = async () => {
+        try {
+            const asset = Asset.fromModule(images.qrcode);
+            await asset.downloadAsync(); // Ensure it's available
+            const localUri = asset.localUri;
+
+            if (!localUri) {
+                Alert.alert("Error", "Could not load image to share.");
+                return;
+            }
+
+            const isAvailable = await Share.isAvailableAsync();
+            if (!isAvailable) {
+                Alert.alert('Sharing not available on this device');
+                return;
+            }
+
+            await Share.shareAsync(localUri, {
+                dialogTitle: 'Share your QR Code',
+                mimeType: 'image/png', // or image/jpeg depending on format
+            });
+        } catch (error) {
+            console.error('Error sharing image:', error);
+            Alert.alert('Error', 'Could not share image.');
+        }
+    };
+
+
+
     return (
         <View style={[styles.qrContainer, { backgroundColor: cardBackgroundColor }]}>
             <Image source={images.qrcode} style={styles.qrCode} />
@@ -99,7 +134,7 @@ const QRCodeCard: React.FC<QRCodeCardProps> = ({ cardBackgroundColor, selectedTa
                     </View>
                     <Text style={styles.iconText}>Save</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.iconButton}>
+                <TouchableOpacity style={styles.iconButton} onPress={handleShareImage}>
                     <View style={[styles.iconBackground, { backgroundColor: iconBackground }]}>
                         <Image source={share} />
                     </View>

@@ -92,10 +92,10 @@ const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
         >
           <Image source={assetImage} style={styles.assetImage} />
           <View style={styles.assetTextContainer}>
-            <Text style={[styles.assetSubText, { color: labelColor }]}>Asset</Text>
+            {/* <Text style={[styles.assetSubText, { color: labelColor }]}>Asset</Text> */}
             <Text style={[styles.assetText, { color: textColor }]}>{asset}</Text>
           </View>
-          {title === 'You Send' && <Image source={arrow} style={styles.arrowIcon} />}
+          {/* {title === 'You Send' && <Image source={arrow} style={styles.arrowIcon} />} */}
         </TouchableOpacity>
 
         {/* ✅ Input for "You Send" (Editable only if asset is selected) */}
@@ -103,7 +103,7 @@ const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
           <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
             <TouchableOpacity
               activeOpacity={1}
-              style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+              style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 0 }}
               onPress={() => {
                 if (asset !== "Select Asset") {
                   inputRef.current?.focus();
@@ -137,10 +137,10 @@ const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
           <TouchableOpacity style={[styles.assetBox, { borderColor, backgroundColor: inputBackgroundColor }]} onPress={onPressNetwork}>
             <Image source={networkImage} style={styles.assetImage} />
             <View style={styles.assetTextContainer}>
-              <Text style={[styles.assetSubText, { color: labelColor }]}>Network</Text>
+              {/* <Text style={[styles.assetSubText, { color: labelColor }]}>Network</Text> */}
               <Text style={[styles.assetText, { color: textColor }]}>{network}</Text>
             </View>
-            <Image source={arrow} style={styles.arrowIcon} />
+            {/* <Image source={arrow} style={styles.arrowIcon} /> */}
           </TouchableOpacity>
 
           {/* ✅ Converted Amount Updates Dynamically */}
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderRadius: 50, // Rounded corners
-    paddingVertical: 10,
+    paddingVertical: 8,
     paddingHorizontal: 10,
     width: '48%',
     borderWidth: 1,
@@ -198,8 +198,8 @@ const styles = StyleSheet.create({
     opacity: 0.6, // Light gray effect
   },
   assetImage: {
-    width: 42,
-    height: 42,
+    width: 32,
+    height: 32,
   },
   assetText: {
     fontSize: 10,

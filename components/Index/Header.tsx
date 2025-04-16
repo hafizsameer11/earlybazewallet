@@ -71,7 +71,7 @@ export function Header({ username, greeting }: HeaderProps) {
         <View style={styles.iconsContainer}>
           {/* Scan Icon - Opens QR Modal */}
           <View style={[styles.iconContainer, { backgroundColor }]}>
-            <TouchableOpacity onPress={() => Alert.alert('QR Scanner', 'This feature Will work in production build')}>
+            <TouchableOpacity onPress={() => setIsScannerOpen(true)}>
               <Image source={scan} style={styles.icon} />
             </TouchableOpacity>
           </View>

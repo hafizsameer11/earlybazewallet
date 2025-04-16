@@ -19,11 +19,11 @@ const failed = require("../assets/images/failed.png");
 const profile = require("../assets/images/profile.png");
 const wallet = require("../assets/images/wallet.png");
 const tick = require("../assets/images/tick.png");
-const edit_profile= require("../assets/images/edit_profile.png");
+const edit_profile = require("../assets/images/edit_profile.png");
 const account = require("../assets/images/account.png");
 const referral = require("../assets/images/referral.png");
 const kyc = require("../assets/images/kyc.png");
-const support=  require("../assets/images/support.png");
+const support = require("../assets/images/support.png");
 const security = require("../assets/images/security.png");
 const shield = require("../assets/images/shield.png");
 const dots = require("../assets/images/dots.png");
@@ -53,18 +53,21 @@ const save_white = require("../assets/images/save_white.png");
 const save_black = require("../assets/images/save_black.png");
 const share_white = require("../assets/images/share_white.png");
 const share_black = require("../assets/images/share_black.png");
-const down_arrow =  require("../assets/images/down_arrow.png");
-const down_arrow_black =  require("../assets/images/down_arrow_black.png");
+const down_arrow = require("../assets/images/down_arrow.png");
+const down_arrow_black = require("../assets/images/down_arrow_black.png");
 const copy_white = require("../assets/images/copy_white.png");
-const copy_black =  require("../assets/images/copy_black.png");
+const copy_black = require("../assets/images/copy_black.png");
 const double_side_black = require("../assets/images/double_side_black.png");
 const double_side_white = require("../assets/images/double_side_white.png");
 const red_cross = require("../assets/images/red_cross.png");
 const gallery = require("../assets/images/gallery.png");
 const wallet_black = require("../assets/images/wallet_black.png");
 const naira = require("../assets/images/naira.png");
-const assestBg = require('../assets/images/assestBg.png');
-const notyarrow = require('../assets/images/notyarrow.png');
+const assestBg = require("../assets/images/assestBg.png");
+const notyarrow = require("../assets/images/notyarrow.png");
+const icon = require("../assets/images/icon.png");
+
+const dummy = require("../assets/images/dummy.png");
 
 const images = {
   indexService,
@@ -133,7 +136,9 @@ const images = {
   wallet_black,
   naira,
   assestBg,
-  notyarrow
+  notyarrow,
+  icon,
+  dummy,
 };
 
 export default images;

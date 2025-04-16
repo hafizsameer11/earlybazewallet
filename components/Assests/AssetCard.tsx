@@ -46,8 +46,10 @@ const Actions = ({ balance, assestId, assetName, fullName, icon }) => {
         >
             {/* My Balance Section */}
             <View style={styles.balanceContainer}>
-                <Text style={styles.balanceText}>My Balance</Text>
-                <Text style={styles.balanceAmount}>{balance}</Text>
+                <Text style={styles.balanceText}>My balance</Text>
+                <Text style={styles.balanceAmount}>
+                    {parseFloat(balance || "0").toFixed(4)}
+                </Text>s
             </View>
 
             <View style={styles.actionsContainer}>
@@ -88,7 +90,9 @@ const AssetCard: React.FC<AssetCardProps> = ({ iconUrl, balance, percentage, ass
             <View style={styles.iconContainer}>
                 <Image source={{ uri: iconUrl }} style={styles.iconMain} />
             </View>
-            <Text style={styles.balance}>{balance}</Text>
+            <View style={{ marginTop: 25, marginBottom: 15, }}>
+                <Text style={styles.balance}>{balance}</Text>
+            </View>
             {/* <Text style={styles.percentage}>{percentage}</Text> */}
 
             {/* Pass data to Actions component */}
@@ -106,19 +110,19 @@ const styles = StyleSheet.create({
         height: 300,
     },
     iconContainer: {
-        backgroundColor: "white",
         width: 60,
         height: 60,
         borderRadius: 40,
         justifyContent: "center",
         alignItems: "center",
         marginVertical: 10,
+        marginTop: 20,
     },
     iconMain: {
-        width: 80,
-        height: 80,
+        width: 90,
+        height: 90,
         resizeMode: "contain",
-        marginTop:20,
+        marginTop: 20,
     },
     icon: {
         width: 20,
@@ -126,38 +130,44 @@ const styles = StyleSheet.create({
         resizeMode: "contain",
     },
     balance: {
-        fontSize: 22,
-        fontWeight: "bold",
+        fontSize: 24,
         color: "white",
+        fontFamily: 'Caprasimo',
+
     },
     percentage: {
         fontSize: 18,
         color: "white",
         marginBottom: 10,
+
     },
     actionsBackground: {
         width: "100%",
-        height: "75%", // Adjust the height as needed
         paddingVertical: 25, // Optional padding
         paddingHorizontal: 10,
         marginLeft: 20,
+
     },
     balanceContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        paddingHorizontal: 50,
+        paddingHorizontal: 20, // reduced from 50 to 20
         marginBottom: 10,
-        
+        position: 'absolute',
+        top: 2,
     },
 
     balanceText: {
-        fontSize: 14,
+        fontSize: 12,
         color: "gray",
+        marginLeft: 50,
+
     },
     balanceAmount: {
-        fontSize: 16,
+        fontSize: 12,
         fontWeight: "bold",
         color: "#22A45D",
+        marginLeft: 100,
     },
     actionsContainer: {
         flexDirection: "row",
@@ -176,7 +186,8 @@ const styles = StyleSheet.create({
     },
     actionText: {
         fontSize: 10,
-        fontWeight: "bold",
+        fontFamily: 'Caprasimo',
+
     },
 });
 

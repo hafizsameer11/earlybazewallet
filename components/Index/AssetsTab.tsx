@@ -81,21 +81,24 @@ const AssetsTab: React.FC = () => {
       `{/* List of Assets */}
       <FlatList
         data={getData()}
-        keyExtractor={(item) => item.id.toString()} // ✅ Ensure all keys are strings
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <AssetItem
             item={{
               ...item,
-              icon: item.symbol ? `https://earlybaze.hmstech.xyz/storage/${item.symbol}` : null, // ✅ Correct image URL
+              icon: item.symbol ? `https://earlybaze.hmstech.xyz/storage/${item.symbol}` : null,
             }}
+            isAssetTab={selectedTab === 'Assets'} // 🔸 New prop
+            customIconSize={selectedTab === 'Assets' ? 35 : 20} // 🔸 New prop
           />
         )}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.flatListContainer} // Optional, ensures content is centered/has padding
-        scrollEnabled={false} // ✅ Prevents nested scrolling issues
+        contentContainerStyle={styles.flatListContainer}
+        scrollEnabled={false}
       />
 
-      `
+
+
     </View>
   );
 };
