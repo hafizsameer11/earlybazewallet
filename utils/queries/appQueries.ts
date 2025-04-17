@@ -779,6 +779,7 @@ interface Transaction {
   currency: string;
   amount: string;
   type: string;
+  icon: string;
   status: string;
   network: string;
   reference: string;

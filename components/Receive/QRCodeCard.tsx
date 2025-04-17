@@ -126,8 +126,10 @@ const QRCodeCard: React.FC<QRCodeCardProps> = ({ cardBackgroundColor, selectedTa
 
     return (
         <View style={[styles.qrContainer, { backgroundColor: cardBackgroundColor }]}>
-            <Image source={images.qrcode} style={styles.qrCode} />
-            <View style={styles.iconRow}>
+            <Image
+                source={{ uri: `https://api.qrserver.com/v1/create-qr-code/?data=${selectedTab === 'Crypto Address' ? receiveAddress?.data?.address : email}&size=200x200` }}
+                style={styles.qrCode}
+            />            <View style={styles.iconRow}>
                 <TouchableOpacity style={styles.iconButton} onPress={handleSaveImage}>
                     <View style={[styles.iconBackground, { backgroundColor: iconBackground }]}>
                         <Image source={save} />

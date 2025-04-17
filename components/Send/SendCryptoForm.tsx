@@ -240,7 +240,33 @@ const SendCryptoForm: React.FC<{
 
                     {/* ✅ Amount and Currency Selection */}
                     <View style={styles.exchangeContainer}>
-                        <InputField
+                       
+
+                        <SelectionBox
+                            label="Coin"
+                            id={selectedCoin?.id || assestId}
+                            value={selectedCoin?.name || assetName}
+                            icon={selectedCoin?.icon || icon}
+                        // onPress={() => {
+                        //     openModal("coin");
+                        // }}
+                        />
+                         <SelectionBox
+                            label="Select Network"
+                            id={selectedNetwork.id}
+                            value={selectedNetwork.name || "Network"}
+                            icon={selectedNetwork?.icon || images.dummy}
+                            onPress={coinId ? () => openModal("network") : undefined}
+                            disabled={!coinId}
+                            style={!coinId ? { opacity: 0.5 } : undefined}
+                        />
+
+                    </View>
+
+                    {/* ✅ Network Selection */}
+                    <View style={styles.selectionContainer}>
+                       
+                         <InputField
                             label={selectedCoin?.name}
                             value={usdAmount}
                             onChange={(val) => setUsdAmount(val)} // ✅ Just update state
@@ -258,36 +284,13 @@ const SendCryptoForm: React.FC<{
                                 }
                             }}
                         />
-
-                        <SelectionBox
-                            label="Coin"
-                            id={selectedCoin?.id || assestId}
-                            value={selectedCoin?.name || assetName}
-                            icon={selectedCoin?.icon || icon}
-                        // onPress={() => {
-                        //     openModal("coin");
-                        // }}
-                        />
-
-                    </View>
-
-                    {/* ✅ Network Selection */}
-                    <View style={styles.selectionContainer}>
-                        <InputField
+                         <InputField
                             label="USD"
                             value={convertedAmount}
                             onChange={() => { }}
                             editable={false} // ✅ Make it disabled
                         />
-                        <SelectionBox
-                            label="Select Network"
-                            id={selectedNetwork.id}
-                            value={selectedNetwork.name || "Network"}
-                            icon={selectedNetwork?.icon || images.dummy}
-                            onPress={coinId ? () => openModal("network") : undefined}
-                            disabled={!coinId}
-                            style={!coinId ? { opacity: 0.5 } : undefined}
-                        />
+                       
                     </View>
                 </View>
 
@@ -331,8 +334,14 @@ const SendCryptoForm: React.FC<{
 
 
                 {/* ✅ QR Scanner Modal */}
-                <QrModal isVisible={isScannerOpen} onClose={() => setIsScannerOpen(false)} />
-
+                <QrModal
+                    isVisible={isScannerOpen}
+                    onClose={() => setIsScannerOpen(false)}
+                    onAddressScanned={(address: string) => {
+                        setScannedAddress(address);           // ✅ Set scanned address
+                        setIsScannerOpen(false);              // ✅ Close modal after scanning
+                    }}
+                />
             </View>
         );
     };

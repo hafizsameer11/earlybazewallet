@@ -149,7 +149,7 @@ const Buy: React.FC = () => {
         {/* BuyCard will update selected data in the parent state */}
         <BuyCard setSelectedData={setSelectedData} showToast={showToastMessage} />
 
-        <NoteBox />
+        {/* <NoteBox /> */}
       </View>
 
       {/* Proceed button to initiate transaction */}

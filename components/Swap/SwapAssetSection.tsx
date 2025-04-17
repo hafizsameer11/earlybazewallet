@@ -92,14 +92,27 @@ const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
         >
           <Image source={assetImage} style={styles.assetImage} />
           <View style={styles.assetTextContainer}>
-            {/* <Text style={[styles.assetSubText, { color: labelColor }]}>Asset</Text> */}
             <Text style={[styles.assetText, { color: textColor }]}>{asset}</Text>
           </View>
-          {/* {title === 'You Send' && <Image source={arrow} style={styles.arrowIcon} />} */}
         </TouchableOpacity>
 
         {/* ✅ Input for "You Send" (Editable only if asset is selected) */}
-        {title === "You Send" ? (
+        <TouchableOpacity style={[styles.assetBox, { borderColor, backgroundColor: inputBackgroundColor }]} onPress={onPressNetwork}>
+            <Image source={networkImage} style={styles.assetImage} />
+            <View style={styles.assetTextContainer}>
+              {/* <Text style={[styles.assetSubText, { color: labelColor }]}>Network</Text> */}
+              <Text style={[styles.assetText, { color: textColor }]}>{network}</Text>
+            </View>
+            {/* <Image source={arrow} style={styles.arrowIcon} /> */}
+          </TouchableOpacity>
+      </View>
+
+      {/* Network Selection & Converted Amount */}
+      {network && (
+        <View style={styles.row}>
+       
+
+          {title === "You Send" ? (
           <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
             <TouchableOpacity
               activeOpacity={1}
@@ -113,7 +126,7 @@ const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
               <Text style={[styles.amountCurrency, { color: labelColor }]}>{asset}</Text>
               <TextInput
                 ref={inputRef}
-                style={[styles.amountText, { color: textColor, textAlign: 'right', flex: 1 }]}
+                style={[styles.amountText, { color: textColor, textAlign: 'right', flex: 1,padding:0 }]}
                 placeholderTextColor={labelColor}
                 keyboardType="numeric"
                 value={enteredAmount}
@@ -128,20 +141,6 @@ const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
             <Text style={[styles.amountText, { color: textColor }]}>{amount}</Text>
           </View>
         )}
-
-      </View>
-
-      {/* Network Selection & Converted Amount */}
-      {network && (
-        <View style={styles.row}>
-          <TouchableOpacity style={[styles.assetBox, { borderColor, backgroundColor: inputBackgroundColor }]} onPress={onPressNetwork}>
-            <Image source={networkImage} style={styles.assetImage} />
-            <View style={styles.assetTextContainer}>
-              {/* <Text style={[styles.assetSubText, { color: labelColor }]}>Network</Text> */}
-              <Text style={[styles.assetText, { color: textColor }]}>{network}</Text>
-            </View>
-            {/* <Image source={arrow} style={styles.arrowIcon} /> */}
-          </TouchableOpacity>
 
           {/* ✅ Converted Amount Updates Dynamically */}
           <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>

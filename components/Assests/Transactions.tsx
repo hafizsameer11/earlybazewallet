@@ -20,6 +20,7 @@ const Transactions = ({ assetName }) => {
         fetchUserData();
     }, []);
 
+    console.log("assetName", assetName);
     // Fetch transaction data using API
     const { data, error, isLoading } = useQuery({
         queryKey: ["currency", assetName],
@@ -41,19 +42,23 @@ const Transactions = ({ assetName }) => {
                     data={transactions}
                     keyExtractor={(item) => item.id.toString()}
                     renderItem={({ item }) => {
-                        const imageUrl = item.user?.profile_picture
-                            ? `${BASE_URL}${item.user.profile_picture}`
-                            : "https://via.placeholder.com/40"; // Default image
+                        console.log("icon", item.icon);
+                        const imageUrl = item.icon
+                            ? `${BASE_URL}${item.icon}`
+                            : "https://via.placeholder.com/30"; // Default image
 
                         return (
                             <View style={styles.transactionItem}>
                                 {/* Profile Image */}
-                                <Image source={{ uri: imageUrl }} style={styles.transactionImage} />
-                                
+                                <View style={styles.transactionImageWrapper}>
+                                    <Image source={{ uri: imageUrl }} style={styles.transactionImage} />
+                                </View>
+
+
                                 {/* Transaction Details */}
                                 <View style={styles.transactionDetails}>
                                     <Text style={styles.transactionType}>
-                                        {item.type === "withdrawTransaction" ? "Send" : "Receive"}
+                                        {item.type.toUpperCase()}
                                     </Text>
                                     <Text style={styles.transactionAmount}>
                                         {item.amount} {item.currency}
@@ -92,11 +97,24 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginBottom: 10,
     },
-    transactionImage: {
+    transactionImageWrapper: {
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: "#ddd",
+        backgroundColor: "#fff",
+        borderWidth: 2,
+        borderColor: "#22A45D", // or any accent color
+        alignItems: "center",
+        justifyContent: "center",
+        marginRight: 10,
+        padding:5,
+    },
+    transactionImage: {
+        width: 24,
+        height: 24,
+      
+        borderRadius: 15,
+        resizeMode: "contain",
     },
     transactionDetails: {
         flex: 1,

@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderTopLeftRadius: 20,
     borderColor: '#E0E0E0',
-    width: 160,
+    width: 147,
     height: 70,
     justifyContent: 'center',
     alignItems: 'flex-start',

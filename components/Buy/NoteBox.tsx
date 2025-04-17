@@ -22,9 +22,9 @@ const NoteBox: React.FC = () => {
         <Text style={[styles.noteText, { color: textColor }]}>
            Make sure you select the right network
         </Text>
-        <Text style={[styles.noteText, { color: textColor }]}>
+        {/* <Text style={[styles.noteText, { color: textColor }]}>
            Originating account name must match with wallet name
-        </Text>
+        </Text> */}
       </View>
     </View>
   );

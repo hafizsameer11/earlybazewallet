@@ -131,14 +131,7 @@ const BuyCard = ({ setSelectedData, showToast }) => {  // Add showToast prop
 
       {/* Coin Selection */}
       <View style={styles.exchangeContainer}>
-        <InputField
-          label={selectedCoin.name}
-          value={usdAmount}
-          editable={isUsdEditable}
-          onChangeText={handleUsdChange}
-          keyboardType="numeric"
-          onPressDisabled={() => showToast("Please select a coin first.")} // Show toast when input is disabled
-        />
+       
 
         <SelectionBox
           label="Coin"
@@ -147,6 +140,15 @@ const BuyCard = ({ setSelectedData, showToast }) => {  // Add showToast prop
           coinName={selectedCoin.name}
           icon={selectedCoin.icon}
           onPress={() => openModal('coin')}
+        />
+         <SelectionBox
+          label="Network"
+          id={selectedNetwork.id}
+          value={selectedNetwork.name}
+          icon={selectedNetwork.icon}
+          onPress={coinId ? () => openModal('network') : undefined}
+          disabled={!coinId}
+          style={!coinId ? { opacity: 0.5 } : undefined}
         />
       </View>
 
@@ -157,16 +159,16 @@ const BuyCard = ({ setSelectedData, showToast }) => {  // Add showToast prop
 
       {/* Network Selection */}
       <View style={styles.selectionContainer}>
-        <InputField label="USD" value={btcAmount} editable={false} />
-        <SelectionBox
-          label="Network"
-          id={selectedNetwork.id}
-          value={selectedNetwork.name}
-          icon={selectedNetwork.icon}
-          onPress={coinId ? () => openModal('network') : undefined}
-          disabled={!coinId}
-          style={!coinId ? { opacity: 0.5 } : undefined}
+      <InputField
+          label={selectedCoin.name}
+          value={usdAmount}
+          editable={isUsdEditable}
+          onChangeText={handleUsdChange}
+          keyboardType="numeric"
+          onPressDisabled={() => showToast("Please select a coin first.")} // Show toast when input is disabled
         />
+        <InputField label="USD" value={btcAmount} editable={false} />
+       
       </View>
 
       {/* Amount to Pay Section */}

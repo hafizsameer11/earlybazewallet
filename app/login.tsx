@@ -276,10 +276,16 @@ const styles = StyleSheet.create({
     borderColor: COLORS.greyscale300,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor:'white'
   },
   middleImg: {
-    width: "80%",
-    height: "80%",
+    width: "100%",
+    height: "100%",
+    // borderRadius: Dimensions.get("window").width * 0.18, // Match the container's borderRadius
+    resizeMode: "contain", // or use 'cover' if you want it to fill the circle and crop
+    transform: [{ scale: 0.7 }]
+
+  
   },
   bottomBox: {
     position: "absolute",

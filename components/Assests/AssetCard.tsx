@@ -151,7 +151,8 @@ const styles = StyleSheet.create({
     balanceContainer: {
         flexDirection: "row",
         justifyContent: "space-between",
-        paddingHorizontal: 20, // reduced from 50 to 20
+        paddingHorizontal: 10,
+        marginRight:20, // reduced from 50 to 20
         marginBottom: 10,
         position: 'absolute',
         top: 2,
@@ -172,7 +173,7 @@ const styles = StyleSheet.create({
     actionsContainer: {
         flexDirection: "row",
         gap: 20,
-        marginHorizontal: 10,
+        marginHorizontal:-5,
         width: "100%",
     },
     actionButton: {

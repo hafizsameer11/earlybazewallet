@@ -17,6 +17,9 @@ const NoteSwapBox: React.FC = () => {
       {/* Content */}
       <View style={styles.content}>
         <Text style={[styles.noteText, { color: textColor }]}>
+          First Select Coin and then Network before entering the amount
+        </Text>
+        <Text style={[styles.noteText, { color: textColor }]}>
           CrossCheck Amount Before Swap
         </Text>
         <Text style={[styles.noteText, { color: textColor }]}>
@@ -53,7 +56,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   noteText: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '400',
     marginBottom: 5,
   },

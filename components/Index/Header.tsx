@@ -85,8 +85,11 @@ export function Header({ username, greeting }: HeaderProps) {
       </ThemedView>
 
       {/* QR Scanner Modal */}
-      <QrModal isVisible={isScannerOpen} onClose={() => setIsScannerOpen(false)} />
-    </SafeAreaView>
+      <QrModal
+        isVisible={isScannerOpen}
+        onClose={() => setIsScannerOpen(false)}
+
+      />    </SafeAreaView>
   );
 }
 

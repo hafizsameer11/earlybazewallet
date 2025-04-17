@@ -22,9 +22,10 @@ const { width, height } = Dimensions.get("window");
 interface QrModalProps {
     isVisible: boolean;
     onClose: () => void;
+    onAddressScanned?: (address: string) => void; // ✅ Add this line
 }
 
-const QrModal: React.FC<QrModalProps> = ({ isVisible, onClose }) => {
+const QrModal: React.FC<QrModalProps> = ({ isVisible, onClose, onAddressScanned }) => {
     const [permission, requestPermission] = useCameraPermissions();
     const qrLock = useRef(false);
     const appState = useRef(AppState.currentState);
@@ -65,11 +66,13 @@ const QrModal: React.FC<QrModalProps> = ({ isVisible, onClose }) => {
         if (data && !qrLock.current) {
             qrLock.current = true;
             setTimeout(() => {
-                onClose(); // Auto-close after scanning
-                Linking.openURL(data);
-            }, 1000);
+                onAddressScanned?.(data); // ✅ Use callback
+                onClose(); // ✅ Auto-close
+                qrLock.current = false;
+            }, 500);
         }
     };
+
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
