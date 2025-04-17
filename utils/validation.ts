@@ -32,5 +32,4 @@ export const validationRegistrationSchema = yup.object().shape({
     ),
     phone: yup.string().required("Phone number is required"),
     password: yup.string().required("Password is required"),
-    invite_code: yup.string().required("Referral code is required"),
 })

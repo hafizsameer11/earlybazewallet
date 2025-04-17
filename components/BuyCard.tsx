@@ -131,7 +131,7 @@ const BuyCard = ({ setSelectedData, showToast }) => {  // Add showToast prop
 
       {/* Coin Selection */}
       <View style={styles.exchangeContainer}>
-       
+
 
         <SelectionBox
           label="Coin"
@@ -141,7 +141,7 @@ const BuyCard = ({ setSelectedData, showToast }) => {  // Add showToast prop
           icon={selectedCoin.icon}
           onPress={() => openModal('coin')}
         />
-         <SelectionBox
+        <SelectionBox
           label="Network"
           id={selectedNetwork.id}
           value={selectedNetwork.name}
@@ -159,7 +159,7 @@ const BuyCard = ({ setSelectedData, showToast }) => {  // Add showToast prop
 
       {/* Network Selection */}
       <View style={styles.selectionContainer}>
-      <InputField
+        <InputField
           label={selectedCoin.name}
           value={usdAmount}
           editable={isUsdEditable}
@@ -168,11 +168,10 @@ const BuyCard = ({ setSelectedData, showToast }) => {  // Add showToast prop
           onPressDisabled={() => showToast("Please select a coin first.")} // Show toast when input is disabled
         />
         <InputField label="USD" value={btcAmount} editable={false} />
-       
+
       </View>
 
       {/* Amount to Pay Section */}
-      <AmountToPay label="Amount to pay" value={ngnAmount} />
 
       {coinId && (
         <NetworkSelectionModal
@@ -186,6 +185,9 @@ const BuyCard = ({ setSelectedData, showToast }) => {  // Add showToast prop
           isBuy={true}
         />
       )}
+
+      <AmountToPay label="Amount to pay" value={ngnAmount} />
+
     </View>
   );
 };

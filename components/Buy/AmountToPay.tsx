@@ -21,18 +21,21 @@ const AmountToPay: React.FC<AmountToPayProps> = ({ label, value }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 10,
+    flex: 1,
+    flexDirection: 'row',
+    gap: 5,
+    marginTop: 12,
     paddingVertical: 12,
     paddingHorizontal: 16, // Slightly adjusted for better padding
     borderWidth: 0.5, // Lighter border for a subtle effect
     borderRadius: 15, // Adjusted radius to 15px for bottom corners as per your spec
     borderColor: '#25AE7A',
     boxShadow: '0px 0px 4px rgba(165, 165, 165, 0.25)', // Add shadow effect to match your style
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: 163, // Set width to match the spec
-    height: 60, // Set height as per your spec
+    width: "100%", // Set width to match the spec
+    height: 50, // Set height as per your spec
     marginHorizontal: 'auto', // Ensures horizontal centering
+    alignItems: 'center',
+
   },
   label: {
     fontSize: 10,
@@ -40,6 +43,7 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 13,
     fontWeight: 'bold',
+    marginLeft: 50,
   },
 });
 

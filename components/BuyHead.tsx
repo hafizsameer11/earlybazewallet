@@ -15,13 +15,15 @@ const BuyHead: React.FC<BuyHeadProps> = ({ buttonText, exchangeRate, topLabel })
     <View style={styles.container}>
       {/* Buy Button */}
       <TouchableOpacity style={styles.buyButton}>
-        <Text style={[styles.buyText, {fontFamily: fontsLoaded ? 'Caprasimo-Regular' : undefined }]}>{buttonText}</Text>
+        <Text style={[styles.buyText, { fontFamily: fontsLoaded ? 'Caprasimo-Regular' : undefined }]}>{buttonText}</Text>
 
         {/* Exchange Rate Label - Show only if passed via props */}
         {exchangeRate && (
-          <View style={styles.exchangeRateContainer}>
-            <Text style={styles.exchangeRateText}>{topLabel}</Text>
-            <Text style={styles.exchangeRateValue}>{exchangeRate}</Text>
+          <View style={styles.glowWrapper}>
+            <View style={styles.exchangeRateContainer}>
+              <Text style={styles.exchangeRateText}>{topLabel}</Text>
+              <Text style={styles.exchangeRateValue}>{exchangeRate}</Text>
+            </View>
           </View>
         )}
       </TouchableOpacity>
@@ -58,34 +60,45 @@ const styles = StyleSheet.create({
   },
   exchangeRateContainer: {
     position: 'absolute',
-    top: -28, // Adjusted positioning
-    right: 0, // Adjusted positioning
+    top: -28,
+    right: 0,
     backgroundColor: '#0C4A7E',
-    width: 136, // Match small card width
-    height: 57, // Match small card height
-    borderTopLeftRadius: 20, // top-left radius
-    borderTopRightRadius: 20, // top-right radius
-    borderBottomRightRadius: 0, // bottom-right radius
-    borderBottomLeftRadius: 15, // bottom-left radius
+    width: 136,
+    height: 57,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: 15,
     paddingVertical: 8,
     paddingHorizontal: 14,
     justifyContent: 'center',
-    // alignItems: 'center',
     shadowColor: '#0C4A7E',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.5,
-    shadowRadius: 8,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 20,
+    elevation: 10,
   },
+  glowWrapper: {
+    position: 'absolute',
+    top: -0,
+    right: 0,
+    shadowColor: '#0C4A7E',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 20,
+    elevation: 20, // ensures Android renders it
+    borderRadius: 20,
+  },
+  
   exchangeRateText: {
     color: '#FFF',
     fontSize: 12,
   },
   exchangeRateValue: {
     color: '#FFF',
-    fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 12,
     marginTop: 4,
+    fontFamily: 'Caprasimo',
   },
 });
 

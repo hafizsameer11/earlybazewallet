@@ -166,7 +166,7 @@ const VerificationModal: React.FC<VerificationModalProps & { requestData: any; o
                     {/* OTP Input */}
                     <View style={styles.inputContainer}>
                         <Text style={[styles.label, { color: textColor }]}>Enter Your Email</Text>
-                        <View style={[styles.inputRow, { borderColor: isOtpFocused ? '#25AE7A' : borderColor }]}>
+                        <View style={[styles.inputRow, { borderColor: isOtpFocused ? '#25AE7A' : borderColor, }]}>
                             <TextInput
                                 placeholder="Email"
                                 placeholderTextColor="#A1A1A1"
@@ -198,17 +198,20 @@ const VerificationModal: React.FC<VerificationModalProps & { requestData: any; o
 
                         {/* PIN Input */}
                         <Text style={[styles.label, { color: textColor, marginTop: 20 }]}>Input Pin</Text>
-                        <View style={[styles.inputRow, { borderColor: isPinFocused ? '#25AE7A' : borderColor }]}>
-                            <TextInput
-                                placeholder="Input Pin"
-                                placeholderTextColor="#A1A1A1"
-                                style={[styles.inputField, { color: textColor }]}
-                                secureTextEntry
-                                value={pin}
-                                onChangeText={setPin}
-                                onFocus={() => setIsPinFocused(true)}
-                                onBlur={() => setIsPinFocused(false)}
-                            />
+                        <View style={styles.pinInputContainer}>
+                            <View style={[styles.inputRow, { borderColor: isPinFocused ? '#25AE7A' : borderColor, width: '64%', }]}>
+                                <TextInput
+                                    placeholder="Input Pin"
+                                    placeholderTextColor="#A1A1A1"
+                                    style={[styles.inputField, { color: textColor }]}
+                                    secureTextEntry
+                                    value={pin}
+                                    onChangeText={setPin}
+                                    onFocus={() => setIsPinFocused(true)}
+                                    onBlur={() => setIsPinFocused(false)}
+                                />
+
+                            </View>
                             <View style={styles.iconContainer}>
                                 <TouchableOpacity style={styles.authButton}>
                                     <Ionicons name="finger-print" size={28} color="#fff" />
@@ -219,7 +222,6 @@ const VerificationModal: React.FC<VerificationModalProps & { requestData: any; o
                             </View>
                         </View>
                     </View>
-
                     <View style={styles.buttonContainer}>
                         {/* Proceed Button - Calls API Request */}
                         <PrimaryButton
@@ -291,11 +293,14 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        marginBottom: 3,
     },
     modalContainer: {
         width: '90%',
         borderRadius: 15,
         alignItems: 'center',
+        marginBottom: 12,
+        paddingBottom: 12,
     },
     horizontalLine: {
         width: '100%',
@@ -311,12 +316,12 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
     },
     title: {
-        fontSize: 17,
+        fontSize: 18,
         fontFamily: 'Caprasimo'
 
     },
     label: {
-        fontSize: 11,
+        fontSize: 12,
         fontWeight: 'bold',
         alignSelf: 'flex-start',
         marginBottom: 5,
@@ -324,6 +329,9 @@ const styles = StyleSheet.create({
     inputContainer: {
         paddingHorizontal: 20,
         paddingVertical: 10,
+    },
+    pinInputContainer: {
+        flexDirection: 'row',
     },
     inputRow: {
         flexDirection: 'row',

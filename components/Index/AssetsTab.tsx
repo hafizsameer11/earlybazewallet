@@ -89,7 +89,7 @@ const AssetsTab: React.FC = () => {
               icon: item.symbol ? `https://earlybaze.hmstech.xyz/storage/${item.symbol}` : null,
             }}
             isAssetTab={selectedTab === 'Assets'} // 🔸 New prop
-            customIconSize={selectedTab === 'Assets' ? 35 : 20} // 🔸 New prop
+            customIconSize={selectedTab === 'Assets' ? 30 : 16} // 🔸 New prop
           />
         )}
         showsVerticalScrollIndicator={false}
@@ -110,7 +110,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginTop: 15,
     flex: 1, // Ensures the container takes up all available space
-    paddingBottom: 80,
   },
   tabsContainer: {
     flexDirection: 'row',

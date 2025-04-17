@@ -70,6 +70,7 @@ const Swap: React.FC = () => {
   const ngnAmountRef = useRef<string>("0.00");
 
   const { mutate: getExchangeRate } = useMutation({
+
     mutationFn: ({
       data,
       token,
@@ -111,6 +112,8 @@ const Swap: React.FC = () => {
   });
 
   console.log("Exchange Rate Naira:", exchangeRateNaira?.data);
+
+  const parsedRate = parseFloat(exchangeRateNaira?.data?.rate ?? "1");
 
 
   const { mutate: requestSwap, isPending } = useMutation({
@@ -167,7 +170,10 @@ const Swap: React.FC = () => {
 
 
     onError: (error) => {
+      console.log("The Amount", enteredAmount);
       console.error("❌ Swap Failed:", error);
+      
+      
 
       // ✅ Show error toast
       Toast.show({
@@ -258,7 +264,7 @@ const Swap: React.FC = () => {
             networkImage={selectedNetwork.icon}
             amount={enteredAmount}
             converted={convertedAmount}
-            conversionRate={convertedAmount}
+            conversionRate={parsedRate} // ✅ Pass actual exchange rate here
             onAmountChange={setEnteredAmount} // ✅ Pass amount to Swap component
             onConvertedChange={setConvertedAmount} // ✅ Pass converted amount to Swap component
             onPressAsset={() => {
@@ -281,13 +287,13 @@ const Swap: React.FC = () => {
           </TouchableOpacity> */}
 
           {/* ✅ Receive Section (Amount in NGN) */}
-          {/* ✅ Receive Section (Amount in NGN) */}
           <SwapAssetSection
             title="You Receive"
             asset="Naira"
             assetImage={images.naira}
-            amount={`NGN ${parseFloat(ngnAmountRef.current).toFixed(2)}`}
+            amount={`NGN ${parseFloat(ngnAmount).toFixed(2)}`}
           />
+
         </View>
 
         {/* ✅ Exchange Rate Display (Amount in USD) */}
@@ -354,7 +360,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginHorizontal: 18,
     borderRadius: 20,
-    marginTop:80,
+    marginTop: 80,
   },
   fixedButtonContainer: {
     width: '90%',

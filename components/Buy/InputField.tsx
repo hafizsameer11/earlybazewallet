@@ -10,22 +10,22 @@ interface InputFieldProps extends TextInputProps {
   onPressDisabled?: () => void;  // Callback for when input is disabled
 }
 
-const InputField: React.FC<InputFieldProps> = ({ 
-  label = '', 
-  value = '', 
-  editable = true, 
-  onChange, 
-  onPressDisabled, 
-  ...props 
+const InputField: React.FC<InputFieldProps> = ({
+  label = '',
+  value = '',
+  editable = true,
+  onChange,
+  onPressDisabled,
+  ...props
 }) => {
   const textColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text');
   const bgColor = useThemeColor({ light: '#FFFFFF', dark: '#2D2D2D' }, 'inputBackground');
-  const borderColor = useThemeColor({ light: '#C2C2C2', dark: '#3A3A3A' }, 'border');
+  const borderColor = useThemeColor({ light: '#FFFFF', dark: '#FFFFFF' }, 'border');
 
   const inputRef = useRef<TextInput>(null);
 
   return (
-    <TouchableWithoutFeedback 
+    <TouchableWithoutFeedback
       onPress={() => {
         console.log("the Input field Tap");
         if (editable) {
@@ -33,53 +33,51 @@ const InputField: React.FC<InputFieldProps> = ({
         } else {
           onPressDisabled?.(); // Trigger toast if input is not editable
         }
-      }} 
+      }}
       accessible={false}
     >
-      <View style={[styles.container, { backgroundColor: bgColor, borderColor }]}>
+      <View style={[styles.container, { backgroundColor: bgColor, }]}>
         {label ? <Text style={[styles.label, { color: textColor }]}>{label}</Text> : null}
         <TextInput
           ref={inputRef}
           style={[styles.input, { color: textColor }]}
-          value={value}
+          value={label === 'Amount in USD' ? `$${value}` : value}
           editable={editable}
           onChangeText={onChange}
-          keyboardType="numeric" // Ensure numeric keyboard
+          keyboardType="numeric"
           {...props}
         />
+
       </View>
     </TouchableWithoutFeedback>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
-    paddingVertical: 12,
     paddingHorizontal: 16,
-    borderWidth: 0.31,
-    borderRadius: 15,
-    borderTopLeftRadius: 20,
-    borderColor: '#E0E0E0',
-    width: 147,
-    height: 70,
-    justifyContent: 'center',
-    alignItems: 'flex-start',
-    shadowColor: '#000',
+    borderWidth: 1,
+    borderRadius: 12,
+    width: 155,
+    height: 50,                    // ⬅️ Adjusted height to match sketch
+    justifyContent: 'center',     // ⬅️ Vertically center content
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
+    borderColor: "#ebedec"
   },
   label: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '500',
     opacity: 0.6,
-    marginBottom: 2,
+    marginTop: 12,
   },
   input: {
-    fontSize: 18,
+    fontSize: 12,
     fontWeight: 'bold',
+    marginBottom: 1,
   },
 });
+
 
 export default InputField;

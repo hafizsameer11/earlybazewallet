@@ -36,15 +36,12 @@ const SendReceive: React.FC = () => {
       {/* Custom Header */}
       <Header
         title="Assets"
-        onFilterPress={() => {
-          setShowPrice((prev) => !prev); // ✅ Toggle price visibility
-          console.log("Filter pressed: toggled showPrice ->", !showPrice);
-        }}
+    
       />
       {/* Search Bar */}
       <View style={styles.horPadding}>
         <SearchBar placeholder="Search Crypto" value={searchQuery} onChangeText={setSearchQuery} />
-      </View>
+    </View>
       <View style={[styles.subcontainer, { backgroundColor: subBackgroundColor }]}>
         {/* Tabs */}
         <View style={styles.horPadding}>

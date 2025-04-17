@@ -92,8 +92,11 @@ const Send: React.FC = () => {
                 <Header />
             </View>
             <View style={styles.content}>
-                <BuyHead buttonText="Send Crypto" topLabel="Balance" exchangeRate={`${balance} ${assetName}`} />
-
+                <BuyHead
+                    buttonText="Send Crypto"
+                    topLabel="Balance"
+                    exchangeRate={`${parseFloat(balance).toFixed(5)} ${assetName}`}
+                />
                 {/* ✅ Pass State Handlers to SendCryptoForm */}
                 <SendCryptoForm
                     selectedTab={selectedTab}

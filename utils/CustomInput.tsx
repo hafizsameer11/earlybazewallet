@@ -63,12 +63,12 @@ const Input: FC<InputProps> = (props) => {
           props.errorText
             ? styles.errorInput
             : {
-                borderColor: isFocused
-                  ? COLORS.primary
-                  : dark
+              borderColor: isFocused
+                ? COLORS.primary
+                : dark
                   ? 'transparent'
                   : COLORS.greyscale300,
-              },
+            },
         ]}
       >
         {props.icon && (
@@ -96,8 +96,8 @@ const Input: FC<InputProps> = (props) => {
               borderColor: props.errorText
                 ? COLORS.error
                 : isFocused
-                ? COLORS.primary
-                : COLORS.greyscale300,
+                  ? COLORS.primary
+                  : COLORS.greyscale300,
             },
           ]}
         />
@@ -133,10 +133,10 @@ const Input: FC<InputProps> = (props) => {
                 color: props.errorText
                   ? COLORS.red
                   : isFocused || props.value
-                  ? COLORS.primary
-                  : dark
-                  ? COLORS.gray
-                  : COLORS.greyscale600,
+                    ? COLORS.primary
+                    : dark
+                      ? COLORS.gray
+                      : COLORS.greyscale600,
               },
             ]}
             onPress={() => inputRef.current?.focus()}
@@ -169,8 +169,8 @@ const styles = StyleSheet.create({
   input: {
     width: '100%',
     fontSize: SIZES.body3,
-    paddingVertical: 16,
-    color: COLORS.black,
+    paddingTop: 24,            // ✅ Add more top padding for label space
+    paddingBottom: 12,         // ✅ Slightly less bottom padding    color: COLORS.black,
     position: 'relative',
     borderRadius: SIZES.padding,
   },

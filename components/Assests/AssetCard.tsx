@@ -107,11 +107,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
         backgroundColor: "#22A45D",
         marginBottom: 20,
-        height: 300,
+        height: 280,
     },
     iconContainer: {
-        width: 60,
-        height: 60,
+        width: 50,
+        height: 50,
         borderRadius: 40,
         justifyContent: "center",
         alignItems: "center",
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         paddingHorizontal: 10,
-        marginRight:20, // reduced from 50 to 20
+        marginRight: 20, // reduced from 50 to 20
         marginBottom: 10,
         position: 'absolute',
         top: 2,
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     actionsContainer: {
         flexDirection: "row",
         gap: 20,
-        marginHorizontal:-5,
+        marginHorizontal: -5,
         width: "100%",
     },
     actionButton: {

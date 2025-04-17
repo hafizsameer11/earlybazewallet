@@ -13,6 +13,8 @@ interface AssetProps {
         symbol?: string | null;
         created_at?: string;
         type?: string;
+        network?: string | null; // ✅ Add this line
+        status?: string | null;
     };
     isAssetTab?: boolean;
     customIconSize?: number;
@@ -26,6 +28,20 @@ const transactionTypeColors: Record<string, string> = {
     withdraw: '#D9D9D9',
 };
 
+const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+    };
+    return date.toLocaleString('en-US', options).replace(',', '');
+};
+
 const AssetItem: React.FC<AssetProps> = ({ item, isAssetTab = false, customIconSize = 20 }) => {
     const themeBackground = useThemeColor({ light: '#FFFFFF', dark: '#1A1A1A' }, 'background');
     const textColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text');
@@ -33,9 +49,9 @@ const AssetItem: React.FC<AssetProps> = ({ item, isAssetTab = false, customIconS
 
     const router = useRouter();
 
-    const cardBackground = isAssetTab ? '#FFF9E5' : themeBackground;
-    const iconBgColor = item.type ? transactionTypeColors[item.type.toLowerCase()] || '#C6FFC7' : '#C6FFC7';
-    
+    const cardBackground = themeBackground;
+    const iconBgColor = item.type ? transactionTypeColors[item.type.toLowerCase()] || '#2232' : '#2232';
+
     const formatPrice = (priceString: string): string => {
 
         const regex = /1 (\w+) = ([0-9.]+) USD/;
@@ -53,12 +69,27 @@ const AssetItem: React.FC<AssetProps> = ({ item, isAssetTab = false, customIconS
         <TouchableOpacity
             style={[styles.itemContainer, { backgroundColor: themeBackground }]}
             onPress={() => {
-                if (item?.type === 'send' || item?.type === 'receive') {
+                if (isAssetTab) {
+                    router.push({
+                        pathname: '/MyAssest',
+                        params: {
+                            balance: item.balance,
+                            assestId: item.id,
+                            assetName: item.name,
+                            fullName: item.name, // 👈 If fullName exists separately, update accordingly
+                            icon: item.icon,
+                            type: item.type,
+                            id:item.id,
+
+                        }
+                    });
+                } else if (item?.type === 'send' || item?.type === 'receive') {
                     router.push(`/TransactionSummary?id=${item.id}&transType=${item.type}`);
                 } else if (item?.type) {
                     router.push(`/TransactionPage?id=${item.id}&types=${item.type}`);
                 }
             }}
+
         >
             {/* Left Side: Icon + Name */}
             <View style={styles.leftContainer}>
@@ -78,11 +109,18 @@ const AssetItem: React.FC<AssetProps> = ({ item, isAssetTab = false, customIconS
                     <Text style={[styles.assetName, { color: textColor }]}>
                         {item.name?.toUpperCase()}
                     </Text>
-                    {item.type && (
-                        <Text style={[styles.assetSubText, { color: '#888' }]}>
-                            {item.type.toUpperCase()}
+                    {!isAssetTab && item.status && (
+                        <View style={styles.statusContainer}>
+                            <View style={styles.dot} />
+                            <Text style={styles.statusText}>Successful</Text>
+                        </View>
+                    )}
+                    {isAssetTab && (
+                        <Text style={[styles.assetSubText, { color: '#666666', marginTop: 10, }]}>
+                            {item.network ? item.network : item.name}
                         </Text>
                     )}
+
                 </View>
             </View>
 
@@ -92,8 +130,13 @@ const AssetItem: React.FC<AssetProps> = ({ item, isAssetTab = false, customIconS
                     {parseFloat(item.balance).toFixed(4)}
                 </Text>
                 {item.price && (
-                    <Text style={[styles.price, { color: textColor }]}>
+                    <Text style={[styles.price, { color: textColor, marginTop: 10 }]}>
                         {formatPrice(item.price)}
+                    </Text>
+                )}
+                {!isAssetTab && (
+                    <Text style={styles.dateText}>
+                        {formatDate(item.created_at)}
                     </Text>
                 )}
             </View>
@@ -108,15 +151,17 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: 16,
-        borderRadius: 15,
-        marginHorizontal: 16,
+        paddingVertical: 10,
+        paddingHorizontal: 16,
+        borderRadius: 12, // more subtle
         marginBottom: 10,
+        backgroundColor: '#fff', // or use cardBackground
         shadowColor: '#000',
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-        elevation: 3,
+        shadowOpacity: 0.4,
+        shadowRadius: 2,
+        elevation: 1,
     },
+
     leftContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -131,20 +176,46 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     assetSubText: {
-        fontSize: 12,
+        fontSize: 10,
         marginTop: 2,
     },
     rightContainer: {
         alignItems: 'flex-end',
+        justifyContent: 'center',
         flexGrow: 1,
         marginRight: 10,
     },
     balance: {
         fontSize: 14,
-        fontWeight: 'bold',
+        fontWeight: '600', // bolder to match
     },
     price: {
-        fontSize: 10,
-        color: '#888',
+        fontSize: 11,
+        fontWeight: '400',
+        color: '#666',
+        marginTop: 2,
     },
+    statusContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 4,
+    },
+    dot: {
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: 'green',
+        marginRight: 6,
+    },
+    statusText: {
+        color: 'green',
+        fontSize: 12,
+        fontWeight: '500',
+    },
+    dateText: {
+        marginTop: 6,
+        fontSize: 11,
+        color: '#555',
+    },
+
 });

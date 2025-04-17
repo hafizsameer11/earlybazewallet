@@ -108,24 +108,27 @@ const TransactionSummary: React.FC = () => {
 
       {/* Dynamic Crypto Icon with Floating Effect */}
       <View style={styles.iconWrapper}>
-        <View style={styles.iconContainer}>
-          <Image
-            source={
-              image && typeof image === "string" && image.startsWith("http")
-                ? { uri: image }
-                : { uri: `https://earlybaze.hmstech.xyz/storage/${transaction?.symbol || "default.png"}` }
-            }
-            style={styles.bitcoinIcon}
-          />
-
+        <View style={styles.borderWrapper}>
+          <View style={styles.iconContainer}>
+            <Image
+              source={
+                image && typeof image === "string" && image.startsWith("http")
+                  ? { uri: image }
+                  : { uri: `https://earlybaze.hmstech.xyz/storage/${transaction?.symbol || "default.png"}` }
+              }
+              style={styles.bitcoinIcon}
+            />
+          </View>
         </View>
-
       </View>
+
 
       {/* Transaction Card */}
       <View style={[styles.card, { backgroundColor: cardBackgroundColor }]}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={styles.amountText}>{transaction?.amount}</Text>
+          <Text style={styles.amountText}>
+            {parseFloat(transaction?.amount || '0').toFixed(5)}
+          </Text>
           <Text style={[styles.amountText, { marginLeft: 4 }]}>
             {transaction?.currency?.replace(/\b\w/g, (char) => char.toUpperCase())}
           </Text>
@@ -251,20 +254,29 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 65,
     height: 65,
-    backgroundColor: '#FFA500', // Bitcoin orange
+    backgroundColor: '#FFFF', // Bitcoin orange
     borderRadius: 32.5,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
     shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 0.2,
-    shadowRadius: 5,
-    elevation: 5,
-    marginBottom: 10,
+    marginBottom: -26,
+  },
+  borderWrapper: {
+    width: 70, // slightly larger to show border
+    height: 40, // half of the full height
+    borderTopLeftRadius: 33,
+    borderTopRightRadius: 33,
+    borderWidth: 1,
+    borderColor: '#22A45D', // ✅ Your desired top border color
+    borderBottomWidth: 0,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   bitcoinIcon: {
-    width: 50,
-    height: 50,
+    width: 65,
+    height: 65,
     resizeMode: 'contain',
   },
   card: {
@@ -277,7 +289,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
-    marginTop: 10,
+    marginTop: 43,
   },
   amountText: {
     fontSize: 18,

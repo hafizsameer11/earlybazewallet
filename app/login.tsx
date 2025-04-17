@@ -138,7 +138,7 @@ const Login = () => {
                 { color: dark ? COLORS.white : COLORS.black },
               ]}
             >
-                        <View>
+              <View>
                 <Formik
                   initialValues={{ email: "", password: "" }}
                   validationSchema={validationSignInSchema}
@@ -203,7 +203,7 @@ const Login = () => {
                             bottom: 12,
                           }}
                         >
-                          Forget Password ?
+                          Forgot Password ?
                         </Text>
                       </TouchableOpacity>
                       <View>
@@ -226,6 +226,7 @@ const Login = () => {
                               style={{
                                 color: COLORS.primary,
                                 fontWeight: "bold",
+                                marginBottom: -2.2,
                               }}
                             >
                               {" "} Sign Up
@@ -276,7 +277,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.greyscale300,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor:'white'
+    backgroundColor: 'white'
   },
   middleImg: {
     width: "100%",
@@ -285,7 +286,7 @@ const styles = StyleSheet.create({
     resizeMode: "contain", // or use 'cover' if you want it to fill the circle and crop
     transform: [{ scale: 0.7 }]
 
-  
+
   },
   bottomBox: {
     position: "absolute",

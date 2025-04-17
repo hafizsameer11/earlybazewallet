@@ -240,7 +240,7 @@ const SendCryptoForm: React.FC<{
 
                     {/* ✅ Amount and Currency Selection */}
                     <View style={styles.exchangeContainer}>
-                       
+
 
                         <SelectionBox
                             label="Coin"
@@ -251,10 +251,10 @@ const SendCryptoForm: React.FC<{
                         //     openModal("coin");
                         // }}
                         />
-                         <SelectionBox
-                            label="Select Network"
+                        <SelectionBox
+                            label="Network"
                             id={selectedNetwork.id}
-                            value={selectedNetwork.name || "Network"}
+                            value={selectedNetwork.name || "Select"}
                             icon={selectedNetwork?.icon || images.dummy}
                             onPress={coinId ? () => openModal("network") : undefined}
                             disabled={!coinId}
@@ -265,32 +265,34 @@ const SendCryptoForm: React.FC<{
 
                     {/* ✅ Network Selection */}
                     <View style={styles.selectionContainer}>
-                       
-                         <InputField
-                            label={selectedCoin?.name}
-                            value={usdAmount}
-                            onChange={(val) => setUsdAmount(val)} // ✅ Just update state
-                            onEndEditing={() => {
-                                const entered = parseFloat(usdAmount || "0");
-                                const available = parseFloat(assetData.balance || "0");
+                        <View style={{ flex: 1, }}>
+                            <InputField
+                                label={selectedCoin?.name}
+                                value={usdAmount}
+                                onChange={(val) => setUsdAmount(val)} // ✅ Just update state
+                                onEndEditing={() => {
+                                    const entered = parseFloat(usdAmount || "0");
+                                    const available = parseFloat(assetData.balance || "0");
 
-                                if (entered > available) {
-                                    Alert.alert(
-                                        "Insufficient Balance",
-                                        "You don't have enough balance. Resetting to your available balance.",
-                                        [{ text: "OK" }]
-                                    );
-                                    setUsdAmount(available.toString());
-                                }
-                            }}
-                        />
-                         <InputField
-                            label="USD"
-                            value={convertedAmount}
-                            onChange={() => { }}
-                            editable={false} // ✅ Make it disabled
-                        />
-                       
+                                    if (entered > available) {
+                                        Alert.alert(
+                                            "Insufficient Balance",
+                                            "You don't have enough balance. Resetting to your available balance.",
+                                            [{ text: "OK" }]
+                                        );
+                                        setUsdAmount(available.toString());
+                                    }
+                                }}
+                            />
+                        </View>
+                        <View>
+                            <InputField
+                                label="Amount in USD"
+                                value={convertedAmount}
+                                onChange={() => { }}
+                                editable={false} // ✅ Make it disabled
+                            />
+                        </View>
                     </View>
                 </View>
 
@@ -473,10 +475,10 @@ const styles = StyleSheet.create({
     },
     selectionContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginHorizontal: 12,
+        alignItems: 'center',
         marginTop: 16,
-        gap: 8,
+        gap: 1,
+        paddingHorizontal: 16,
     },
     selectionBox: {
         flex: 1,

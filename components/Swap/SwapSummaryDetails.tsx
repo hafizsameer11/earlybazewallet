@@ -112,6 +112,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     width: 40,
     height: 40,
+    borderWidth: 1.5,              // Add light border
+    borderColor: '#E5E5E5',        // Light grey as per your requirement
+    borderRadius: 20,              // Make it circular
   },
   amountText: {
     fontSize: 16,

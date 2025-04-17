@@ -334,6 +334,8 @@ const Register = () => {
                                   color: COLORS.primary,
                                   fontWeight: "bold",
                                   marginLeft: 5,
+                                  marginBottom: -2.4,
+
                                 }}
                               >
                                 Sign In

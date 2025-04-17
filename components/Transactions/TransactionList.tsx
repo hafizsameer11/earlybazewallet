@@ -9,6 +9,7 @@ interface TransactionListProps {
     amount: string;
     created_at: string;
     status: string;
+    currency: string;
   }[];
 }
 
@@ -29,7 +30,6 @@ export default TransactionList;
 const styles = StyleSheet.create({
   listContainer: {
     marginTop: 10,
-    paddingBottom: 80,
 
   },
 });

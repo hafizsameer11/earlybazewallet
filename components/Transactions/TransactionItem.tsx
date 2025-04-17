@@ -11,9 +11,11 @@ interface TransactionItemProps {
   created_at: string;
   status: string;
   id: string,
+  currency: string;
+
 }
 
-const TransactionItem: React.FC<TransactionItemProps> = ({ type, amount, created_at, status, id }) => {
+const TransactionItem: React.FC<TransactionItemProps> = ({ type, amount, created_at, status, id, currency }) => {
   const backgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1A1A1A' }, 'background');
   const textColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text');
 
@@ -48,6 +50,15 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, amount, created
 
   const iconBackgroundColor = transactionTypeColors[type] || '#C6FFC7'; // Default to send color if no match
 
+  const formatCurrencyName = (currency?: string | null): string => {
+    if (!currency) return 'USDT'; // fallback if null or undefined
+
+    return currency
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   return (
     <TouchableOpacity
       style={[styles.itemContainer, { backgroundColor }]}
@@ -68,7 +79,9 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, amount, created
 
         {/* Transaction Details */}
         <View>
-          <Text style={[styles.transactionType, { color: textColor }]}>USDT</Text>
+          <Text style={[styles.transactionType, { color: textColor }]}>
+            {formatCurrencyName(currency)}
+          </Text>
           <View style={styles.statusContainer}>
             <View style={[styles.statusDot, { backgroundColor: statusColor }]} />
             <Text style={[styles.transactionStatus, { color: statusColor }]}>{status}</Text>

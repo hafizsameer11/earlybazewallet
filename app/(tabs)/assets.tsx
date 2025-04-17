@@ -120,38 +120,60 @@
 //     marginBottom: 16,
 //   },
 // });
-
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useFocusEffect } from 'expo-router'; // <- this ensures the effect runs every time
-import LoadingIndicator from '@/components/LoadingIndicator';
-import { getFromStorage } from '@/utils/storage';
+import { View, StyleSheet } from 'react-native';
+import Header from '@/components/Header';
+import SearchBar from '@/components/SearchBar';
+import Tabs from '@/components/Tabs';
+import AssetList from '@/components/AssetList';
+import { useThemeColor } from '@/hooks/useThemeColor';
 
 const Market: React.FC = () => {
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
+  const backgroundColor = useThemeColor({ light: '#EFFEF9', dark: '#000000' }, 'background');
+  const subBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#000000' }, 'background');
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const redirectToSendReceive = async () => {
-        setLoading(true);
-        const fetchedToken = await getFromStorage("authToken");
-        console.log("🔹 Token in focus:", fetchedToken);
+  const [selectedTab, setSelectedTab] = useState<'All Assets' | 'My Assets'>('All Assets');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showPrice, setShowPrice] = useState(true);
 
-        router.push({
-          pathname: '/SendReceive',
-          params: { fromMarket: "market" },
-        });
+  // ✅ hardcoded parameter like it came from SendReceive route
+  const fromMarket = 'market';
+  const type = undefined; // or you can set any specific type if needed
 
-        // You don’t even need to call setLoading(false) since we're navigating away
-      };
+  return (
+    <View style={[styles.container, { backgroundColor }]}>
+      {/* Custom Header */}
+      <Header
+        title="Assets"
 
-      redirectToSendReceive();
-    }, [])
+      />
+
+      {/* Search Bar */}
+      <View style={styles.horPadding}>
+        <SearchBar
+          placeholder="Search Crypto"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+      </View>
+
+      <View style={[styles.subcontainer, { backgroundColor: subBackgroundColor }]}>
+        {/* Tabs */}
+        <View style={styles.horPadding}>
+          <Tabs selectedTab={selectedTab} onTabSelect={setSelectedTab} />
+        </View>
+
+        {/* Asset List */}
+        <AssetList
+          selectedTab={selectedTab}
+          searchQuery={searchQuery}
+          type={type}
+          showPrice={showPrice}
+          fromMarket={fromMarket}
+        />
+      </View>
+    </View>
   );
-
-  return <LoadingIndicator message="Redirecting to Send/Receive..." />;
 };
 
 export default Market;
@@ -159,5 +181,15 @@ export default Market;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 25,
+  },
+  horPadding: {
+    paddingHorizontal: 16,
+  },
+  subcontainer: {
+    flex: 1,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    marginTop: 20,
   },
 });

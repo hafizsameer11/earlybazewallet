@@ -144,7 +144,6 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 22,
     paddingVertical: 20,
-    paddingBottom: 100,
 
   },
   sectionTitle: {

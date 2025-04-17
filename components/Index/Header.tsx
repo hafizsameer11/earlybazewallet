@@ -70,11 +70,11 @@ export function Header({ username, greeting }: HeaderProps) {
         </View>
         <View style={styles.iconsContainer}>
           {/* Scan Icon - Opens QR Modal */}
-          <View style={[styles.iconContainer, { backgroundColor }]}>
+          {/* <View style={[styles.iconContainer, { backgroundColor }]}>
             <TouchableOpacity onPress={() => setIsScannerOpen(true)}>
               <Image source={scan} style={styles.icon} />
             </TouchableOpacity>
-          </View>
+          </View> */}
           {/* Notification Icon */}
           <View style={[styles.iconContainer, { backgroundColor }]}>
             <TouchableOpacity onPress={() => handleIconPress('Notification')}>
