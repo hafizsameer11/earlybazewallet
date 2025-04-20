@@ -20,7 +20,10 @@ import { verifyPin } from "@/utils/mutations/authMutations";
 import Toast from 'react-native-toast-message';
 import { getFromStorage } from '@/utils/storage';
 import { getUserDetails } from '@/utils/queries/appQueries';
+import * as LocalAuthentication from 'expo-local-authentication';
 
+
+import * as SecureStore from 'expo-secure-store';
 
 interface VerificationModalProps {
     visible: boolean;
@@ -31,7 +34,21 @@ interface VerificationModalProps {
 const VerificationModal: React.FC<VerificationModalProps & { requestData: any; onSuccess: ({ reference, amount, currency }: { reference: string, amount: string, currency: string, transaction_id: string }) => void }> = ({ visible, onClose, onFail, requestData, onSuccess }) => {
 
     const [token, setToken] = useState<string | null>(null); // State to hold the token
+    const [useFaceScan, setUseFaceScan] = useState(false);
+    const [useFingerprint, setUseFingerprint] = useState(false);
 
+    useEffect(() => {
+        const loadSecurityPrefs = async () => {
+            const faceScan = await SecureStore.getItemAsync('useFaceScan');
+            const fingerprint = await SecureStore.getItemAsync('useFingerprint');
+
+            if (faceScan !== null) setUseFaceScan(faceScan === 'true');
+            if (fingerprint !== null) setUseFingerprint(fingerprint === 'true');
+        };
+
+        loadSecurityPrefs();
+    }, []);
+    
     useEffect(() => {
         const fetchUserData = async () => {
             const fetchedToken = await getFromStorage("authToken");
@@ -149,6 +166,62 @@ const VerificationModal: React.FC<VerificationModalProps & { requestData: any; o
     const handleResendOtp = () => {
         setTimer(30); // Start 30-second timer
     };
+    const handleBiometricAuth = async () => {
+        try {
+            const hasHardware = await LocalAuthentication.hasHardwareAsync();
+            const isEnrolled = await LocalAuthentication.isEnrolledAsync();
+
+            if (!hasHardware || !isEnrolled) {
+                alert("Biometric authentication is not available.");
+                return;
+            }
+
+            const result = await LocalAuthentication.authenticateAsync({
+                promptMessage: "Authenticate to proceed",
+                fallbackLabel: "Use PIN instead",
+            });
+
+            if (result.success) {
+                console.log("✅ Biometric Auth Success! Proceeding...");
+
+                // Same logic as in your mutatePin.onSuccess block:
+                mutateTransfer(
+                    {
+                        data: {
+                            currency: requestData.currency,
+                            network: requestData.network,
+                            amount: requestData.amount,
+                            email: requestData.email || requestData.address,
+                            fee_summary: requestData.fee_summary,
+                        },
+                        token: requestData.token,
+                    },
+                    {
+                        onSuccess: (response) => {
+                            console.log("✅ Transfer Successful via Biometrics:", response);
+                            const reference = response?.data.reference || "N/A";
+                            const amount = requestData.amount;
+                            const currency = requestData.currency;
+                            const transaction_id = response?.data.transaction_id || "N/A";
+
+                            onSuccess({ reference, amount, currency, transaction_id });
+                            onClose();
+                        },
+                        onError: (error) => {
+                            console.error("❌ Transfer Failed:", error);
+                            onFail();
+                        },
+                    }
+                );
+            } else {
+                alert("Biometric authentication failed.");
+            }
+        } catch (error) {
+            console.error("❌ Biometric Auth Error:", error);
+            alert("Biometric authentication failed.");
+        }
+    };
+
 
     return (
         <Modal visible={visible} transparent animationType="slide">
@@ -213,13 +286,24 @@ const VerificationModal: React.FC<VerificationModalProps & { requestData: any; o
 
                             </View>
                             <View style={styles.iconContainer}>
-                                <TouchableOpacity style={styles.authButton}>
+                                <TouchableOpacity
+                                    style={[styles.authButton, !useFingerprint && styles.disabledAuthButton]}
+                                    onPress={useFingerprint ? handleBiometricAuth : undefined}
+                                    disabled={!useFingerprint}
+                                >
                                     <Ionicons name="finger-print" size={28} color="#fff" />
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.authButton}>
+
+                                <TouchableOpacity
+                                    style={[styles.authButton, !useFaceScan && styles.disabledAuthButton]}
+                                    onPress={useFaceScan ? handleBiometricAuth : undefined}
+                                    disabled={!useFaceScan}
+                                >
                                     <Image source={images.face} style={styles.authIcon} />
                                 </TouchableOpacity>
                             </View>
+
+
                         </View>
                     </View>
                     <View style={styles.buttonContainer}>
@@ -353,6 +437,9 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         borderWidth: 1,
         borderColor: '#25AE7A',
+    },
+    disabledAuthButton: {
+        opacity: 0.5,
     },
     sendOtpText: {
         color: '#25AE7A',

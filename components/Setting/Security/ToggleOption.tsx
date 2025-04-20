@@ -7,10 +7,11 @@ interface ToggleOptionProps {
   description: string;
   icon: React.ReactNode;
   value: boolean;
-  onToggle: (newValue: boolean) => void;
+  onToggle: (val: boolean) => void;
+  disabled?: boolean;
 }
 
-const ToggleOption: React.FC<ToggleOptionProps> = ({ label, description, icon, value, onToggle }) => {
+const ToggleOption: React.FC<ToggleOptionProps> = ({ label, description, icon, value, onToggle, disabled = false }) => {
   const textColor = useThemeColor({ light: '#000', dark: '#fff' }, 'text');
 
   return (
@@ -23,13 +24,15 @@ const ToggleOption: React.FC<ToggleOptionProps> = ({ label, description, icon, v
       <Switch
         value={value}
         onValueChange={onToggle}
-        trackColor={{ false: '#ddd', true: '#A5D6A7' }} // Light green track for ON state
-        thumbColor={value ? '#009B5D' : '#f4f3f4'} // Green thumb when ON, light gray when OFF
-        ios_backgroundColor="#ddd" // Default background color for iOS
+        trackColor={{ false: '#ddd', true: '#A5D6A7' }}
+        thumbColor={value ? '#009B5D' : '#f4f3f4'}
+        ios_backgroundColor="#ddd"
+        disabled={disabled}
       />
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
