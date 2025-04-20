@@ -163,6 +163,7 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
                                         ? networkCurrency.data.map((item) => ({
                                             id: item.id.toString(),
                                             name: item.network,
+                                            displayName: item.name,                  // ✅ new field to show in UI
                                             icon: { uri: `https://earlybaze.hmstech.xyz/storage/${item.symbol}` },
                                             color: "#DCDCDC", // Default color
                                         }))
@@ -194,7 +195,9 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
                                     <View style={[styles.networkIconContainer, { backgroundColor: item.color }]}>
                                         <Image source={item.icon} style={styles.networkIcon} />
                                     </View>
-                                    <Text style={[styles.networkText, { color: textColor }]}>{item.name}</Text>
+                                    {/* <Text style={[styles.networkText, { color: textColor }]}>{item.name}</Text> */}
+                                    <Text style={[styles.networkText, { color: textColor }]}>{item.displayName || item.name}</Text>
+
                                 </TouchableOpacity>
                             )}
                         />

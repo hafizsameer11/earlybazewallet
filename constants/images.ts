@@ -66,6 +66,7 @@ const naira = require("../assets/images/naira.png");
 const assestBg = require("../assets/images/assestBg.png");
 const notyarrow = require("../assets/images/notyarrow.png");
 const icon = require("../assets/images/icon.png");
+const assestBgBlack = require("../assets/images/assestBgBlack.png");
 
 const dummy = require("../assets/images/dummy.png");
 
@@ -139,6 +140,7 @@ const images = {
   notyarrow,
   icon,
   dummy,
+  assestBgBlack,
 };
 
 export default images;

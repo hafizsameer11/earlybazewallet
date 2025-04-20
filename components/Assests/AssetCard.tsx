@@ -11,9 +11,15 @@ const actions = [
     { name: "swap", label: "Swap", bgColor: "#FFDFDF", color: "#E74C3C" },
 ];
 
+import { useThemeColor } from '@/hooks/useThemeColor';
+
+
 
 const Actions = ({ balance, assestId, assetName, fullName, icon }) => {
     const router = useRouter();
+      const subBackgroundColor = useThemeColor({ light: images.assestBg, dark: images.assestBg }, 'background');
+      
+    
 
     const handleActionPress = (type) => {
         if (type === "receive") {
@@ -41,7 +47,7 @@ const Actions = ({ balance, assestId, assetName, fullName, icon }) => {
     };
     return (
         <ImageBackground
-            source={images.assestBg}
+            source={subBackgroundColor}
             style={styles.actionsBackground}
         >
             {/* My Balance Section */}
