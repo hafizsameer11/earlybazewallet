@@ -67,7 +67,9 @@
     "react-native-webview": "13.12.5",
     "yup": "^1.6.1",
     "expo-asset": "~11.0.5",
-    "expo-local-authentication": "~15.0.2"
+    "expo-local-authentication": "~15.0.2",
+    "expo-notifications": "~0.29.14",
+    "expo-device": "~7.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
