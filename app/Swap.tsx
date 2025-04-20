@@ -49,8 +49,10 @@ const Swap: React.FC = () => {
 
   // ✅ State for amount inputs
   const [enteredAmount, setEnteredAmount] = useState<string>("");
-  const [convertedAmount, setConvertedAmount] = useState<string>("0.00");  // USD amount
-  const [ngnAmount, setNgnAmount] = useState<string>("0.00"); // NGN amount
+  const [convertedAmount, setConvertedAmount] = useState<string>("0.00");  // ✅ USD
+  const [ngnAmount, setNgnAmount] = useState<string>("0.00");              // ✅ NGN
+  const [usdtAmount, setUsdtAmount] = useState<string>("0.00");              // ✅ NGN
+
 
   // ✅ Fetch the token when the component mounts
   useEffect(() => {
@@ -75,10 +77,9 @@ const Swap: React.FC = () => {
       data,
       token,
     }: {
-      data: { currency: string; amount: string };
+      data: { currency: string; amount: string, type: 'swap' };
       token: string;
     }) => calculateExchangeRate({ data, token }),
-
     onSuccess: (response: { data: { amount_usd: string | null; amount_naira: string | null }; message: string; status: string }) => {
       console.log("✅ Exchange Rate Fetched:", response);
 
@@ -88,6 +89,8 @@ const Swap: React.FC = () => {
       // Default to "0.00" if either value is undefined or null
       const usdAmount = amount_usd ?? "0.00";
       const ngnAmount = amount_naira ?? "0.00";
+
+
 
       console.log("The data", ngnAmount);
 
@@ -99,6 +102,11 @@ const Swap: React.FC = () => {
       setConvertedAmount(usdAmount);
       console.log("The converted usd amount", convertedAmount);
       setNgnAmount(ngnAmount);
+
+      setUsdtAmount(usdAmount);
+      console.log("The Usdt Amount..", usdAmount);
+
+      console.log("The Nigra Amount,", ngnAmount);
     },
 
     onError: (error: any) => {
@@ -172,8 +180,8 @@ const Swap: React.FC = () => {
     onError: (error) => {
       console.log("The Amount", enteredAmount);
       console.error("❌ Swap Failed:", error);
-      
-      
+
+
 
       // ✅ Show error toast
       Toast.show({
@@ -263,10 +271,10 @@ const Swap: React.FC = () => {
             network={selectedNetwork.name}
             networkImage={selectedNetwork.icon}
             amount={enteredAmount}
-            converted={convertedAmount}
             conversionRate={parsedRate} // ✅ Pass actual exchange rate here
             onAmountChange={setEnteredAmount} // ✅ Pass amount to Swap component
-            onConvertedChange={setConvertedAmount} // ✅ Pass converted amount to Swap component
+            onConvertedChange={setNgnAmount} // ✅ update ngnAmount instead of convertedAmount
+            converted={usdtAmount}
             onPressAsset={() => {
               setModalType('asset');
               setModalVisible(true);
@@ -287,11 +295,13 @@ const Swap: React.FC = () => {
           </TouchableOpacity> */}
 
           {/* ✅ Receive Section (Amount in NGN) */}
+          {/* ✅ Receive Section (Amount in NGN) */}
           <SwapAssetSection
             title="You Receive"
             asset="Naira"
             assetImage={images.naira}
-            amount={`NGN ${parseFloat(ngnAmount).toFixed(2)}`}
+            amount={ngnAmount} // ✅ use NGN value here
+            converted={ngnAmount} // ✅ pass to show in converted field
           />
 
         </View>

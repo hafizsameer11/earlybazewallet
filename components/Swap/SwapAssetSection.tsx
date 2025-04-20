@@ -1,157 +1,165 @@
-  import React, { useState, useRef } from 'react';
-  import {
-    View,
-    Text,
-    Image,
-    TouchableOpacity,
-    StyleSheet, TextInput
-  } from 'react-native';
-  import { useThemeColor } from '@/hooks/useThemeColor';
-  import { images } from '@/constants';
+import React, { useState, useRef } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet, TextInput
+} from 'react-native';
+import { useThemeColor } from '@/hooks/useThemeColor';
+import { images } from '@/constants';
 
-  interface SwapAssetSectionProps {
-    title: string;
-    asset: string;
-    assetImage: any;
-    amount: string;
-    network?: string;
-    networkImage?: any;
-    initialAmount?: string; // ✅ Initial amount
-    conversionRate?: number; // ✅ Added conversion rate (default to 1)
-    onPressAsset?: () => void;
-    onPressNetwork?: () => void;
-    onAmountChange?: (amount: string) => void; // ✅ Passes amount to parent
-    onConvertedChange?: (convertedAmount: string) => void; // ✅ Passes converted amount to parent
-    balance?: string; // Optional balance prop
-  }
+interface SwapAssetSectionProps {
+  title: string;
+  asset: string;
+  assetImage: any;
+  amount: string;
+  network?: string;
+  networkImage?: any;
+  initialAmount?: string; // ✅ Initial amount
+  conversionRate?: number; // ✅ Added conversion rate (default to 1)
+  onPressAsset?: () => void;
+  onPressNetwork?: () => void;
+  onAmountChange?: (amount: string) => void; // ✅ Passes amount to parent
+  onConvertedChange?: (convertedAmount: string) => void; // ✅ Passes converted amount to parent
+  balance?: string; // Optional balance prop
+  converted?: string; // ✅ Add this to receive prop from parent
+  nairaAmount?: any;
 
-  const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
-    title,
-    asset,
-    assetImage,
-    network,
-    networkImage,
-    amount,
-    initialAmount = "0",
-    conversionRate = 1.0, // Default conversion rate
-    onPressAsset,
-    onPressNetwork,
-    onAmountChange,
-    balance,
-    onConvertedChange
-  }) => {
-    const [enteredAmount, setEnteredAmount] = useState(initialAmount); // ✅ State for user-entered amount
-    const [convertedAmount, setConvertedAmount] = useState((parseFloat(initialAmount) * conversionRate).toFixed(2)); // ✅ State for converted amount
+}
 
-    const textColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text');
-    const cardBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#161616' }, 'card');
-    const inputBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#000000' }, 'input');
-    const labelColor = useThemeColor({ light: '#888', dark: '#BBBBBB' }, 'label');
-    const borderColor = useThemeColor({ light: '#E5E5E5', dark: '#000000' }, 'border');
-    const arrow = useThemeColor({ light: images.down_arrow, dark: images.down_arrow_black }, 'arrow');
+const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
+  title,
+  asset,
+  assetImage,
+  network,
+  networkImage,
+  amount,
+  initialAmount = "0",
+  conversionRate = 1.0, // Default conversion rate
+  onPressAsset,
+  onPressNetwork,
+  onAmountChange,
+  balance,
+  onConvertedChange,
+  converted = "0.00", // ✅ default value.
+  nairaAmount
 
-    const inputRef = useRef<TextInput>(null);
+}) => {
+  const [enteredAmount, setEnteredAmount] = useState(initialAmount); // ✅ State for user-entered amount
 
-    // ✅ Update Converted Amount when User Inputs Amount
-    const handleAmountChange = (text: string) => {
-      const numericValue = text.replace(/[^0-9.]/g, ''); // Allow only numbers & decimal
-      const input = parseFloat(numericValue || "0");
-      const max = parseFloat(balance || "0");
+  const textColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text');
+  const cardBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#161616' }, 'card');
+  const inputBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#000000' }, 'input');
+  const labelColor = useThemeColor({ light: '#888', dark: '#BBBBBB' }, 'label');
+  const borderColor = useThemeColor({ light: '#E5E5E5', dark: '#000000' }, 'border');
+  const arrow = useThemeColor({ light: images.down_arrow, dark: images.down_arrow_black }, 'arrow');
 
-      if (input > max) {
-        alert(`🚫 You don’t have enough balance.\nYour maximum available amount is ${max.toFixed(6)} ${asset}.`);
+  const inputRef = useRef<TextInput>(null);
 
-        // Auto-set to max
-        const maxValue = max.toFixed(6);
-        setEnteredAmount(maxValue);
-        const converted = (max * conversionRate).toFixed(2);
-        setConvertedAmount(converted);
+  // ✅ Update Converted Amount when User Inputs Amount
+  const handleAmountChange = (text: string) => {
+    const numericValue = text.replace(/[^0-9.]/g, '');
+    const input = parseFloat(numericValue || "0");
+    const max = parseFloat(balance || "0");
 
-        if (onAmountChange) onAmountChange(maxValue);
-        if (onConvertedChange) onConvertedChange(converted);
-        return;
-      }
+    if (input > max) {
+      alert(`🚫 You don’t have enough balance.\nYour maximum available amount is ${max.toFixed(6)} ${asset}.`);
+      const maxValue = max.toFixed(6);
+      setEnteredAmount(maxValue);
+      const converted = (max * conversionRate).toFixed(2);
+      if (onAmountChange) onAmountChange(maxValue);
+      if (onConvertedChange) onConvertedChange(converted);
+      return;
+    }
 
-      setEnteredAmount(numericValue);
-      const updatedConvertedAmount = (input * conversionRate).toFixed(2);
-      setConvertedAmount(updatedConvertedAmount);
+    setEnteredAmount(numericValue);
+    const updatedConvertedAmount = (input * conversionRate).toFixed(2);
+    if (onAmountChange) onAmountChange(numericValue);
+    if (onConvertedChange) onConvertedChange(updatedConvertedAmount);
+  };
 
-      if (onAmountChange) onAmountChange(numericValue);
-      if (onConvertedChange) onConvertedChange(updatedConvertedAmount);
-    };
 
-    return (
-      <View style={[styles.swapBox, { backgroundColor: cardBackgroundColor, borderColor }]}>
-        <Text style={[styles.label, { color: labelColor }]}>{title}</Text>
+  return (
+    <View style={[styles.swapBox, { backgroundColor: cardBackgroundColor, borderColor }]}>
+      <Text style={[styles.label, { color: labelColor }]}>{title}</Text>
 
-        {/* Asset Selection */}
-        <View style={styles.row}>
+      {/* Asset Selection */}
+      {/* Asset Selection */}
+      <View style={styles.row}>
+        <TouchableOpacity
+          style={[styles.assetBox, { borderColor, backgroundColor: inputBackgroundColor }]}
+          onPress={onPressAsset}
+          disabled={title === 'You Receive'} // disable press for "You Receive"
+        >
+          <Image source={assetImage} style={styles.assetImage} />
+          <View style={styles.assetTextContainer}>
+            <Text style={[styles.assetText, { color: textColor }]}>{asset}</Text>
+          </View>
+        </TouchableOpacity>
+
+        {title === 'You Send' && (
           <TouchableOpacity
             style={[styles.assetBox, { borderColor, backgroundColor: inputBackgroundColor }]}
-            onPress={onPressAsset}
+            onPress={onPressNetwork}
           >
-            <Image source={assetImage} style={styles.assetImage} />
+            <Image source={networkImage} style={styles.assetImage} />
             <View style={styles.assetTextContainer}>
-              <Text style={[styles.assetText, { color: textColor }]}>{asset}</Text>
+              <Text style={[styles.assetText, { color: textColor }]}>{network}</Text>
             </View>
           </TouchableOpacity>
-
-          {/* ✅ Input for "You Send" (Editable only if asset is selected) */}
-          <TouchableOpacity style={[styles.assetBox, { borderColor, backgroundColor: inputBackgroundColor }]} onPress={onPressNetwork}>
-              <Image source={networkImage} style={styles.assetImage} />
-              <View style={styles.assetTextContainer}>
-                {/* <Text style={[styles.assetSubText, { color: labelColor }]}>Network</Text> */}
-                <Text style={[styles.assetText, { color: textColor }]}>{network}</Text>
-              </View>
-              {/* <Image source={arrow} style={styles.arrowIcon} /> */}
-            </TouchableOpacity>
-        </View>
-
-        {/* Network Selection & Converted Amount */}
-        {network && (
-          <View style={styles.row}>
-        
-
-            {title === "You Send" ? (
-            <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
-              <TouchableOpacity
-                activeOpacity={1}
-                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 0 }}
-                onPress={() => {
-                  if (asset !== "Select Asset") {
-                    inputRef.current?.focus();
-                  }
-                }}
-              >
-                <Text style={[styles.amountCurrency, { color: labelColor }]}>{asset}</Text>
-                <TextInput
-                  ref={inputRef}
-                  style={[styles.amountText, { color: textColor, textAlign: 'right', flex: 1,padding:0 }]}
-                  placeholderTextColor={labelColor}
-                  keyboardType="numeric"
-                  value={enteredAmount}
-                  onChangeText={handleAmountChange}
-                  editable={asset !== "Select Asset"}
-                />
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
-              <Text style={[styles.amountCurrency, { color: labelColor }]}>{asset}</Text>
-              <Text style={[styles.amountText, { color: textColor }]}>{amount}</Text>
-            </View>
-          )}
-
-            {/* ✅ Converted Amount Updates Dynamically */}
-            <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
-              <Text style={[styles.amountCurrency, { color: labelColor }]}>USD</Text>
-              <Text style={[styles.amountText, { color: textColor }]}>{convertedAmount}</Text>
-            </View>
+        )}
+        {title === 'You Receive' && (
+          <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
+            <Text style={[styles.amountCurrency, { color: labelColor }]}>NGN</Text>
+            <Text style={[styles.amountText, { color: textColor }]}>{converted}</Text>
           </View>
         )}
       </View>
-    );
-  };
+
+
+      {/* Network Selection & Converted Amount */}
+      {/* Network Selection & Converted Amount */}
+      {title === 'You Send' && (
+        <View style={styles.row}>
+          <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
+            <TouchableOpacity
+              activeOpacity={1}
+              style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 0 }}
+              onPress={() => {
+                if (asset !== "Select Asset") {
+                  inputRef.current?.focus();
+                }
+              }}
+            >
+              <Text style={[styles.amountCurrency, { color: labelColor }]}>{asset}</Text>
+              <TextInput
+                ref={inputRef}
+                style={[styles.amountText, { color: textColor, textAlign: 'right', flex: 1, padding: 0 }]}
+                placeholderTextColor={labelColor}
+                keyboardType="numeric"
+                value={enteredAmount}
+                onChangeText={(text) => setEnteredAmount(text)}
+                onBlur={() => handleAmountChange(enteredAmount)}
+
+                editable={asset !== "Select Asset"}
+              />
+            </TouchableOpacity>
+          </View>
+
+          <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
+            <Text style={[styles.amountCurrency, { color: labelColor }]}>USD</Text>
+            <Text style={[styles.amountText, { color: textColor }]}>{converted}</Text>
+          </View>
+        </View>
+      )}
+
+
+
+
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   swapBox: {
@@ -179,7 +187,7 @@ const styles = StyleSheet.create({
   assetBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 50, // Rounded corners
+    borderRadius: 10, // Rounded corners
     paddingVertical: 8,
     paddingHorizontal: 10,
     width: '48%',
@@ -213,8 +221,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderRadius: 20,
-    paddingVertical: 14,
+    borderRadius: 10,
+    paddingVertical: 18,
     paddingHorizontal: 10,
     width: '48%',
     borderWidth: 1,

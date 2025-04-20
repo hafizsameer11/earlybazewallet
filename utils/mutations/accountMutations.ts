@@ -101,6 +101,7 @@ export const calculateExchangeRate = async ({
   };
   token: string;
 }) => {
+  console.log("Sending Data with this", data);
   return await apiCall(
     API_ENDPOINTS.USER.CalculateExchangeRate,
     "POST",
