@@ -70,6 +70,11 @@ const assestBgBlack = require("../assets/images/assestBgBlack.png");
 
 const dummy = require("../assets/images/dummy.png");
 
+const first =  require("../assets/images/first.png");
+const second =  require("../assets/images/second.png");
+const third =  require("../assets/images/third.png");
+
+
 const images = {
   indexService,
   slider_bg,
@@ -141,6 +146,9 @@ const images = {
   icon,
   dummy,
   assestBgBlack,
+  first,
+  second,
+  third,
 };
 
 export default images;

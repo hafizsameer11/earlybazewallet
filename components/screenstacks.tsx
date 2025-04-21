@@ -37,6 +37,8 @@ const ScreenStacks = () => {
         <Stack.Screen name="TicketChat" options={{ headerShown: false }} />
         <Stack.Screen name='Security' options={{ headerShown: false }} />
 
+        <Stack.Screen name ='onboarding' options={{headerShown: false}}/>
+
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="forgetpassword" options={{ headerShown: false }} />
