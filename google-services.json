@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "655857468538",
-    "project_id": "earlybazewallet-d6ff3",
-    "storage_bucket": "earlybazewallet-d6ff3.firebasestorage.app"
+    "project_number": "269238874691",
+    "project_id": "earlybaze-f9c65",
+    "storage_bucket": "earlybaze-f9c65.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:655857468538:android:1b448d4a5888952bbda7c3",
+        "mobilesdk_app_id": "1:269238874691:android:41bb6e354254adb0f75af6",
         "android_client_info": {
           "package_name": "com.earlybaze.wallet"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAQgvvTHAEfEWzuW1qd2zcx83tHr1oKHIc"
+          "current_key": "AIzaSyDNUL1mRKXGH9UVqZYQdNDbXHsqJiTa2v8"
         }
       ],
       "services": {

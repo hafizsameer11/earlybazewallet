@@ -52,6 +52,7 @@ export default function NotificationManager({ token, user }: { token: string, us
 
             notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
                 const notifUserId = notification.request.content.data?.userId;
+                console.log('📥 Notification received (background):', notification.request.content);
                 if (parseInt(notifUserId) === userId) {
                     console.log('📥 Notification received (foreground):', notification.request.content);
                 }

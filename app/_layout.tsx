@@ -10,7 +10,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import ScreenStacks from '../components/screenstacks';
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { UserBalanceProvider } from '../contexts/UserBalanceContext';
-import Toast from 'react-native-toast-message'; // ✅ Import Toast
+import Toast from 'react-native-toast-message';
 import { getFromStorage } from "@/utils/storage";
 import { getUserDetails } from "@/utils/queries/appQueries";
 import NotificationManager from "./NotificationManager";
@@ -20,22 +20,15 @@ SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
-export default function RootLayout() {
-  const [token, setToken] = useState<string | null>(null); // State to h
+// ✅ Separate the inner logic into a component
+function AppContent() {
   const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
+  const [token, setToken] = useState<string | null>(null);
+
+  const [fontsLoaded] = useFonts({
     Caprasimo: require('../assets/fonts/Caprasimo-Regular.ttf'),
   });
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }// Get token from storage
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await getFromStorage('authToken');
@@ -44,25 +37,39 @@ export default function RootLayout() {
     fetchToken();
   }, []);
 
-  // Fetch user details only when token is available
   const { data: userDetails } = useQuery({
     queryKey: ['userDetails'],
     queryFn: () => getUserDetails({ token }),
     enabled: !!token,
   });
+console.log("🔹 User Details:", userDetails,"token",token);
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) return null;
 
   return (
     <ThemeProvider>
       <UserBalanceProvider>
-        <QueryClientProvider client={queryClient}>
-          <ScreenStacks />
-          {token && userDetails && (
-            <NotificationManager token={token} user={userDetails?.data} />
-          )}
-        </QueryClientProvider>
-        <Toast /> {/* ✅ Add Toast Provider */}
+        <ScreenStacks />
+        {token && userDetails && (
+          <NotificationManager token={token} user={userDetails?.data} />
+        )}
+        <Toast />
         <StatusBar style="auto" />
       </UserBalanceProvider>
     </ThemeProvider>
+  );
+}
+
+// ✅ Wrap everything with QueryClientProvider at the outermost level
+export default function RootLayout() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppContent />
+    </QueryClientProvider>
   );
 }
