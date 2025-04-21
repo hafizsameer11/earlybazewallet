@@ -42,7 +42,7 @@ function AppContent() {
     queryFn: () => getUserDetails({ token }),
     enabled: !!token,
   });
-console.log("🔹 User Details:", userDetails,"token",token);
+  console.log("🔹 User Details:", userDetails, "token", token);
   useEffect(() => {
     if (fontsLoaded) {
       SplashScreen.hideAsync();
