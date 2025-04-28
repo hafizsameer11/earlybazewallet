@@ -2,6 +2,7 @@ import React from 'react';
 import { View, TouchableOpacity, Image, Text, StyleSheet, GestureResponderEvent } from 'react-native';
 import { useRouter } from 'expo-router';
 import images from '../../constants/images';
+import { Alert } from 'react-native'; // 🔥 Import Alert if not already
 
 // Define the interface for ServiceButton props
 interface ServiceButtonProps {
@@ -51,7 +52,12 @@ const ServiceOptions: React.FC = () => {
         <ServiceButton
           icon={images.buy_index}
           label="Buy"
-          onPress={() => router.push('/Buy')}
+          onPress={() => {
+            Alert.alert(
+              'Coming Soon',
+              'This feature is currently under development and will be released soon.'
+            );
+          }}
         />
         <View style={styles.divider} />
         <ServiceButton

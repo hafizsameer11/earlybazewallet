@@ -15,7 +15,7 @@ import { useRoute } from '@react-navigation/native';
 
 const Send: React.FC = () => {
     const networkOptions = [{ id: "1" }];
-    const [selectedTab, setSelectedTab] = useState<'Crypto Address' | 'Internal Transfer'>('Crypto Address');
+    const [selectedTab, setSelectedTab] = useState<'Crypto Address' | 'Internal Transfer'>('Internal Transfer');
     const route = useRoute();
     const { assestId, icon, assetName, fullName, balance } = route.params as { assestId: string, icon: string, assetName: string, fullName: string, balance: string }; // ✅ Destructure the params
 

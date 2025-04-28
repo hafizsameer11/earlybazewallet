@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, Image, ImageBackground, TouchableOpacity } from
 import { images } from "@/constants"; // Assuming images.assestBg is imported here
 import { icons } from "@/constants";
 import { useLocalSearchParams, useRouter } from "expo-router"; // Ensure correct router import
+import { Alert } from 'react-native'; // 🔥 Import Alert if not already
+
 // Sample actions array
 const actions = [
     { name: "send", label: "Send", bgColor: "#C6FFC7", color: "#22A45D" },
@@ -17,9 +19,9 @@ import { useThemeColor } from '@/hooks/useThemeColor';
 
 const Actions = ({ balance, assestId, assetName, fullName, icon }) => {
     const router = useRouter();
-      const subBackgroundColor = useThemeColor({ light: images.assestBg, dark: images.assestBg }, 'background');
-      
-    
+    const subBackgroundColor = useThemeColor({ light: images.assestBg, dark: images.assestBg }, 'background');
+
+
 
     const handleActionPress = (type) => {
         if (type === "receive") {
@@ -39,7 +41,10 @@ const Actions = ({ balance, assestId, assetName, fullName, icon }) => {
 
             }
         } else if (type === 'buy') {
-            router.push('/Buy');
+            Alert.alert(
+                'Coming Soon',
+                'This feature is currently under development and will be released soon.'
+            );
         }
         else if (type === 'swap') {
             router.push('/Swap');
@@ -179,7 +184,7 @@ const styles = StyleSheet.create({
     actionsContainer: {
         flexDirection: "row",
         gap: 20,
-        marginHorizontal: -5,
+        marginHorizontal: 12,
         width: "100%",
     },
     actionButton: {

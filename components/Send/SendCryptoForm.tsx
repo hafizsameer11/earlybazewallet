@@ -35,7 +35,7 @@ import { getFromStorage } from "@/utils/storage";
 
 
 const SendCryptoForm: React.FC<{
-    selectedTab: 'Crypto Address' | 'Internal Transfer';
+    selectedTab: 'Internal Transfer';
     setSelectedTab: React.Dispatch<React.SetStateAction<'Crypto Address' | 'Internal Transfer'>>;
     selectedCoin: any;
     setSelectedCoin: React.Dispatch<React.SetStateAction<any>>;
@@ -233,9 +233,9 @@ const SendCryptoForm: React.FC<{
                             value={scannedAddress}
                             onChangeText={setScannedAddress}
                         />
-                        <TouchableOpacity onPress={() => setIsScannerOpen(true)}>
+                        {/* <TouchableOpacity onPress={() => setIsScannerOpen(true)}>
                             <Image source={scan} style={styles.scanIcon} />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
 
                     {/* ✅ Amount and Currency Selection */}

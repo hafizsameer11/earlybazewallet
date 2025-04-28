@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useThemeColor } from '@/hooks/useThemeColor';
 
 interface TabSwitcherProps {
-    selectedTab: 'Crypto Address' | 'Internal Transfer';
+    selectedTab: 'Internal Transfer' | 'Crypto Address';
     setSelectedTab: (tab: 'Crypto Address' | 'Internal Transfer') => void;
 }
 
@@ -16,6 +16,7 @@ const TabSwitcher: React.FC<TabSwitcherProps> = ({ selectedTab, setSelectedTab }
 
     return (
         <View style={[styles.tabContainer, { backgroundColor: tabBackgroundColor }]}>
+            {/*
             <TouchableOpacity
                 style={[styles.tabButton, selectedTab === 'Crypto Address' && { backgroundColor: activeTabColor }]}
                 onPress={() => setSelectedTab('Crypto Address')}>
@@ -23,6 +24,7 @@ const TabSwitcher: React.FC<TabSwitcherProps> = ({ selectedTab, setSelectedTab }
                     Crypto Address
                 </Text>
             </TouchableOpacity>
+            */}
 
             <TouchableOpacity
                 style={[styles.tabButton, selectedTab === 'Internal Transfer' && { backgroundColor: activeTabColor }]}
