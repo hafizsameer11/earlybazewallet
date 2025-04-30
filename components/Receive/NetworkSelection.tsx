@@ -117,9 +117,9 @@ const NetworkSelection: React.FC<NetworkSelectionProps> = ({
                 </Text>
             </View>
 
-            <View style={styles.proceedButton}>
+            {/* <View style={styles.proceedButton}>
                 <PrimaryButton title="Proceed" onPress={() => router.push('/SummaryReceive')} />
-            </View>
+            </View> */}
 
             {/* Show Modal only if a coin is selected */}
             {coinId && (

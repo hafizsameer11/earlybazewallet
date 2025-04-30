@@ -8,25 +8,32 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "assetBundlePatterns": ["constants/fonts/*"],
+    "assetBundlePatterns": [
+      "constants/fonts/*",
+      "assets/images/*" // ✅ Ensure QR code image is bundled
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSCameraUsageDescription": "This app requires access to the camera to scan QR codes."
+        "NSCameraUsageDescription": "This app requires access to the camera to scan QR codes.",
+        "NSPhotoLibraryAddUsageDescription": "This app needs access to your photo library to save QR code images.",
+        "NSPhotoLibraryUsageDescription": "This app accesses your photo library to store and share images."
       }
     },
     "android": {
-         "googleServicesFile": "./google-services.json",
+      "googleServicesFile": "./google-services.json",
+      "package": "com.earlybaze.wallet",
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",       // ✅ Required for media read
+        "WRITE_EXTERNAL_STORAGE",      // ✅ Required for saving to gallery (legacy)
+        "READ_MEDIA_IMAGES"            // ✅ Android 13+ scoped storage support
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "permissions": [
-        "CAMERA",
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
-      ],
-      "package": "com.earlybaze.wallet"
+      }
     },
     "web": {
       "bundler": "metro",

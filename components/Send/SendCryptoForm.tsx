@@ -273,7 +273,7 @@ const SendCryptoForm: React.FC<{
                     <View style={styles.selectionContainer}>
                         <View style={{ flex: 1, }}>
                             <InputField
-                                label={selectedCoin?.name}
+                                label={"Amount in USD Dollars"}
                                 value={usdAmount}
                                 onChange={(val) => setUsdAmount(val)} // ✅ Just update state
                                 onEndEditing={() => {

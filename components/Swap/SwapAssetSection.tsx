@@ -35,7 +35,7 @@ const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
   network,
   networkImage,
   amount,
-  initialAmount = "0",
+  initialAmount = '',
   conversionRate = 1.0, // Default conversion rate
   onPressAsset,
   onPressNetwork,
@@ -46,7 +46,7 @@ const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
   nairaAmount
 
 }) => {
-  const [enteredAmount, setEnteredAmount] = useState(initialAmount); // ✅ State for user-entered amount
+  const [enteredAmount, setEnteredAmount] = useState<string>(''); // start empty
 
   const textColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text');
   const cardBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#161616' }, 'card');

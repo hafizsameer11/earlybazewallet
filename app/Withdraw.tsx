@@ -155,7 +155,7 @@ const Withdraw: React.FC = () => {
 
             <Toast /> {/* ✅ Add Toast Component to Render */}
             <View style={styles.fixedButtonContainer}>
-            // Inside JSX:
+            {/* // Inside JSX: */}
                 <PrimaryButton
                     title={isPendingWithdrawal ? "Processing..." : "Proceed"}
                     disabled={isPendingWithdrawal}
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
 
     fixedButtonContainer: {
         position: 'absolute',
-        bottom: -330,
+        bottom: -280,
         width: '90%',
         alignSelf: 'center', // Centers the button horizontally
     }
