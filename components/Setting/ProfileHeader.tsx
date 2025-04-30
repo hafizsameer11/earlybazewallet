@@ -20,7 +20,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, email, cryptoBalanc
     const amountColor = useThemeColor({ light: '#0C5E3F', dark: '#0C5E3F' }, 'textTitle');
     const fontsLoaded = useLoadFonts(); // Load custom fonts
     const wallet_icon = useThemeColor({ light: images.wallet, dark: images.wallet_black }, 'textTitle');
-
+    console.log("cryptoBalance", cryptoBalance, "nairaBalance", nairaBalance);
 
     return (
         <>

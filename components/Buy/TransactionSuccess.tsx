@@ -11,9 +11,10 @@ interface TransactionSuccessProps {
   network: string | undefined;
   currency?: string | undefined;
   symbol?: string | undefined;
+  type?: string | undefined;
 }
 
-const TransactionSuccess: React.FC<TransactionSuccessProps> = ({ title, amount = 0, network = '0', currency, symbol = icons.bitCoin }) => {
+const TransactionSuccess: React.FC<TransactionSuccessProps> = ({ title, amount = 0, network = '0', currency, symbol = icons.bitCoin, type }) => {
   // Theme colors
   const backgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1A1A1A' }, 'background');
   const textColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text');
@@ -33,15 +34,31 @@ const TransactionSuccess: React.FC<TransactionSuccessProps> = ({ title, amount =
       <View style={[styles.successBox, { backgroundColor, borderColor }]}>
         <Text style={[styles.successTitle, { color: successTextColor }]}>{title}</Text>
         <Text style={[styles.successAmount, { color: textColor }]}>
-          <Text style={styles.boldText}>{amount} {network}</Text> has been credited to your crypto wallet
+          <Text style={styles.boldText}>
+            {amount} {type == 'withdraw' ? 'has been sent to your bank account' : 'has been credited to your crypto wallet'}
+          </Text>
         </Text>
 
         {/* Transaction Details */}
         <View style={styles.detailContainer}>
-          <TransactionDetailItem label="Crypto bought" value={currency} />
-          <TransactionDetailItem label="Network" value="Bitcoin" />
-          <TransactionDetailItem label="Amount Paid" value={amount} />
+          <TransactionDetailItem
+            label={type === 'withdraw' ? 'Amount Withdrawn' : 'Crypto bought'}
+            value={`₦${amount.toLocaleString()}`}
+          />
+
+          {type !== 'withdraw' && (
+            <TransactionDetailItem
+              label="Network"
+              value="Bitcoin"
+            />
+          )}
+
+          <TransactionDetailItem
+            label="Amount Paid"
+            value={`₦${amount.toLocaleString()}`}
+          />
         </View>
+
       </View>
     </View>
   );

@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Linking } from 'react-native';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import SettingOption from './SettingOption';
 import { Ionicons } from '@expo/vector-icons';
@@ -99,9 +99,18 @@ const OtherSettings: React.FC<OtherSettingsProps> = ({ isDarkMode, onToggleTheme
       )}
 
       {/* Other Setting Options */}
-      <SettingOption title="Terms of Use" iconName={term} onPress={() => { }} textColor={textColor} />
-      <SettingOption title="Notifications" iconName={notification} onPress={() => router.push('/Notification')} textColor={textColor} />
-      <SettingOption title="FAQ" iconName={faq} onPress={() => { }} textColor={textColor} />
+      <SettingOption
+        title="Terms of Use"
+        iconName={term}
+        onPress={() => Linking.openURL('https://earlybazewallet.com/terms')}
+        textColor={textColor}
+      />      <SettingOption title="Notifications" iconName={notification} onPress={() => router.push('/Notification')} textColor={textColor} />
+      <SettingOption
+        title="FAQ"
+        iconName={faq}
+        onPress={() => Linking.openURL('https://earlybazewallet.com/faqs')}
+        textColor={textColor}
+      />
 
       {/* Logout Button */}
       <SettingOption

@@ -53,6 +53,7 @@ const Transactions: React.FC = () => {
       enabled: !!token, // Only run the query when the token is available
     }
   );
+  console.log("🔹 Transactions Response:", transactionsResponse?.data);
 
 
   const transactions = activeTab === "Withdraw"

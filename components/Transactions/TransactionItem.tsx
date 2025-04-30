@@ -22,7 +22,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, amount, created
   const withdrawTransaction = type || undefined; // Ensure it's undefined if empty
 
 
-  console.log("The data coming....", amount);
+  console.log("The data coming....", amount, type);
 
   // Define colors for different statuses
   const statusColors: Record<string, string> = {
@@ -50,7 +50,9 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, amount, created
 
   const iconBackgroundColor = transactionTypeColors[type] || '#C6FFC7'; // Default to send color if no match
 
-  const formatCurrencyName = (currency?: string | null): string => {
+  const formatCurrencyName = (currency?: string | null, type?: string | null): string => {
+    if (type == 'withdraw') return 'NGN'; // Special rule for withdraw
+
     if (!currency) return 'USDT'; // fallback if null or undefined
 
     return currency
@@ -58,6 +60,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, amount, created
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
   };
+
 
   return (
     <TouchableOpacity
@@ -80,7 +83,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, amount, created
         {/* Transaction Details */}
         <View>
           <Text style={[styles.transactionType, { color: textColor }]}>
-            {formatCurrencyName(currency)}
+            {formatCurrencyName(currency, type)}
           </Text>
           <View style={styles.statusContainer}>
             <View style={[styles.statusDot, { backgroundColor: statusColor }]} />

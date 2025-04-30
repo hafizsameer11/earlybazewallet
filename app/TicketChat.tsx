@@ -127,7 +127,7 @@ const TicketChat: React.FC = () => {
                 ticket?.data && (
                     <TicketDetails
                         status={ticket.data.status}
-                        name="Qamardeen"
+                        name={ticket?.data.user?.name}
                         subject={ticket.data.subject}
                         priority="High"
                         dateCreated={new Date(ticket.data.created_at).toLocaleString()}

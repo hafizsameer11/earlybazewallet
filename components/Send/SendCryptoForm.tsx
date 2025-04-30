@@ -46,6 +46,8 @@ const SendCryptoForm: React.FC<{
     scannedAddress: string;
     setScannedAddress: React.Dispatch<React.SetStateAction<string>>;
     assetData: { assestId: string; icon: string; assetName: string; balance: string };
+    setConverted: React.Dispatch<React.SetStateAction<string>>;
+    converted: string;
 
     // ✅ New prop to lift fee data up to parent
     onFeeChange: (fee: {
@@ -66,7 +68,9 @@ const SendCryptoForm: React.FC<{
     scannedAddress,
     setScannedAddress,
     assetData,
-    onFeeChange // ✅ Receive prop
+    onFeeChange, // ✅ Receive prop,
+    setConverted,
+    converted,
 }) => {
         const [token, setToken] = useState<string | null>(null);
         const cardBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1A1A1A' }, 'card');
@@ -146,6 +150,8 @@ const SendCryptoForm: React.FC<{
 
                 // ✅ Update state only if values have changed
                 setConvertedAmount(usdAmount);
+                // setconverted
+                setConverted(usdAmount);
                 if (fee_summary) {
                     setFeeData({
                         platform_fee_usd: fee_summary.platform_fee_usd ?? "0.00",
@@ -274,20 +280,20 @@ const SendCryptoForm: React.FC<{
                                     const entered = parseFloat(usdAmount || "0");
                                     const available = parseFloat(assetData.balance || "0");
 
-                                    if (entered > available) {
-                                        Alert.alert(
-                                            "Insufficient Balance",
-                                            "You don't have enough balance. Resetting to your available balance.",
-                                            [{ text: "OK" }]
-                                        );
-                                        setUsdAmount(available.toString());
-                                    }
+                                    // if (entered > available) {
+                                    //     Alert.alert(
+                                    //         "Insufficient Balance",
+                                    //         "You don't have enough balance. Resetting to your available balance.",
+                                    //         [{ text: "OK" }]
+                                    //     );
+                                    //     setUsdAmount(available.toString());
+                                    // }
                                 }}
                             />
                         </View>
                         <View>
                             <InputField
-                                label="Amount in USD"
+                                label={`Amount in ${selectedCoin?.name}`}
                                 value={convertedAmount}
                                 onChange={() => { }}
                                 editable={false} // ✅ Make it disabled

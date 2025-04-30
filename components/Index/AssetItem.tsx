@@ -112,7 +112,8 @@ const AssetItem: React.FC<AssetProps> = ({ item, isAssetTab = false, customIconS
                     {!isAssetTab && item.status && (
                         <View style={styles.statusContainer}>
                             <View style={styles.dot} />
-                            <Text style={styles.statusText}>Successful</Text>
+                            <Text style={styles.statusText}>{['approved', 'completed'].includes(item.status ?? 'approved') ? 'Successful' : 'Pending'}
+                            </Text>
                         </View>
                     )}
                     {isAssetTab && (

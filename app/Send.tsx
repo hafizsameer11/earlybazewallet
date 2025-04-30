@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import Header from '@/components/Header';
 import BuyHead from '@/components/BuyHead';
@@ -11,17 +11,29 @@ import { useState } from 'react';
 import SendCryptoForm from '@/components/Send/SendCryptoForm';
 import Toast from "react-native-toast-message"; // ✅ Import Toast
 import { useRoute } from '@react-navigation/native';
+import { getFromStorage } from '@/utils/storage';
 
 
 const Send: React.FC = () => {
     const networkOptions = [{ id: "1" }];
     const [selectedTab, setSelectedTab] = useState<'Crypto Address' | 'Internal Transfer'>('Internal Transfer');
+        const [token, setToken] = useState<string | null>(null);
+     useEffect(() => {
+            const fetchUserData = async () => {
+                const fetchedToken = await getFromStorage('authToken');
+                setToken(fetchedToken);
+                console.log('🔹 Retrieved Token:', fetchedToken);
+            };
+    
+            fetchUserData();
+        }, []);
+    
     const route = useRoute();
     const { assestId, icon, assetName, fullName, balance } = route.params as { assestId: string, icon: string, assetName: string, fullName: string, balance: string }; // ✅ Destructure the params
 
     console.log("Received values:", { assestId, icon, assetName });
     const assetData = { assestId, icon, assetName, balance };
-
+    const [convertedAmount, setConvertedAmount] = useState<string>("0.00");
     const [feeSummary, setFeeSummary] = useState({
         platform_fee_usd: "0.00",
         blockchain_fee_usd: "0.00",
@@ -39,7 +51,7 @@ const Send: React.FC = () => {
     const [scannedAddress, setScannedAddress] = useState<string>("");
 
     // ✅ Extracted function for validation and navigation
-    const handleProceed = () => {
+    const handleProceed = async() => {
         // Check for missing fields
         if (!selectedCoin?.name) {
             Toast.show({ type: "error", text1: "Please select a coin." });
@@ -67,12 +79,14 @@ const Send: React.FC = () => {
         const requestData = {
             currency: selectedCoin.name.toLowerCase(),
             network: selectedNetwork.name.toLowerCase(),
-            amount: usdAmount,
+            amount: convertedAmount,
+            // amount_usd:
             email: selectedTab === "Internal Transfer" ? scannedAddress : undefined,
             address: selectedTab === "Crypto Address" ? scannedAddress : undefined,
             image: selectedCoin?.icon?.uri || "",
             temp: "temp",
             // 🔥 Add fee values
+            converted: usdAmount,
             platform_fee_usd: feeSummary.platform_fee_usd,
             network_fee_usd: feeSummary.blockchain_fee_usd,
             total_fee_usd: feeSummary.total_fee_usd,
@@ -80,10 +94,41 @@ const Send: React.FC = () => {
         };
 
         console.log("🔹 Request Data:", requestData);
-        router.push({
-            pathname: "/TransactionSummary",
-            params: { type: "send", ...requestData },
-        });
+        if (selectedTab === "Internal Transfer") {
+            // 🛠 Validate Email API call
+            const response = await fetch('https://earlybaze.hmstech.xyz/api/validate-email', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+              },
+              body: JSON.stringify({ email: scannedAddress }),
+            });
+      
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.message || 'Invalid email address');
+            }
+      
+            const result = await response.json();
+            console.log('✅ Email validated successfully:', result);
+      
+            // Add username to requestData
+            requestData.name = result.data?.name || '';
+            console.log('🔹 Username:', requestData.name);
+            // Now navigate
+            router.push({
+              pathname: '/TransactionSummary',
+              params: { type: 'send', ...requestData },
+            });
+      
+          } else {
+            // No email validation needed
+            router.push({
+              pathname: '/TransactionSummary',
+              params: { type: 'send', ...requestData },
+            });
+          }
     };
 
     return (
@@ -111,6 +156,8 @@ const Send: React.FC = () => {
                     setScannedAddress={setScannedAddress}
                     assetData={assetData}  // Passing the object as a prop
                     onFeeChange={setFeeSummary}
+                    converted={convertedAmount}
+                    setConverted={setConvertedAmount}
 
                 />
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, NativeAppEventEmitter } from 'react-native';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import PrimaryButton from '@/components/Buy/PrimaryButton';
 import Header from '@/components/Header';
@@ -21,7 +21,7 @@ import { getInternalReceive } from "@/utils/queries/appQueries";
 import LoadingIndicator from "@/components/LoadingIndicator";
 
 const TransactionSummary: React.FC = () => {
-  const { type, currency, network, amount, email, address, temp, image, platform_fee, network_fee, total_fee, amount_after_fee } = useLocalSearchParams();
+  const { type, currency, network, amount, email, address, temp, image, platform_fee, network_fee, total_fee, amount_after_fee, converted, name } = useLocalSearchParams();
 
   const { transType } = useLocalSearchParams();
   console.log("Transaction Type:", transType); // Debugging
@@ -90,8 +90,10 @@ const TransactionSummary: React.FC = () => {
       created_at: "N/A",
       amount: amount || "N/A",
       amount_usd: amount || "N/A",
+      converted: converted || "N/A",
       sender_address: email || "N/A",
       recipient_address: email || address,
+      name: name
     };
   }, [transactionData, type, email, address, amount]);
 
@@ -137,7 +139,7 @@ const TransactionSummary: React.FC = () => {
         y
         <TransactionDetailItem
           label={type === "send" ? "Recipient Address" : "Sender Address"}
-          value={email || String(type === "send" ? transaction?.recipient_address : transaction?.recipient_address)}
+          value={email || String(transType == "send" ? transaction?.sender_address : transaction?.recipient_address)}
           isCopyable
         />
 
@@ -152,11 +154,14 @@ const TransactionSummary: React.FC = () => {
         />
 
         <TransactionDetailItem label="Amount" value={String(transaction?.amount)} />
-        <TransactionDetailItem label="Amount in USD" value={String(transaction?.amount_usd)} />
+        <TransactionDetailItem label="Amount in USD" value={String(transaction?.converted ?? transaction?.amount_usd)} />
+        {type === "send" && (
+          <TransactionDetailItem label="Receiver Name" value={String(transaction?.name)} />
+        )}
 
         {!temp && (
           <>
-            <TransactionDetailItem label="Network fee" value={String(transaction?.gas_fee)} />
+            <TransactionDetailItem label="Network fee" value={String(transaction?.gas_fee ?? 0)} />
             <TransactionDetailItem label="Transaction Hash" value={String(transaction?.tx_id)} isCopyable />
 
             <TransactionDetailItem

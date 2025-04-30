@@ -105,7 +105,7 @@ const TransactionPage: React.FC = () => {
         }
         : {
           amount: transactionData?.amount || "Unknown",
-          bank_name: transactionData?.bank_name || "Unknown",
+          bank_name: transactionData?.bank_account?.bank_name || "Unknown",
           transactionReference: transactionData?.transactionReference || "Unknown",
           transactionDate: transactionData?.transactionDate || "Unknown",
           status: transactionData?.status || "Unknown",
@@ -157,11 +157,12 @@ const TransactionPage: React.FC = () => {
         : {
           amount: transactionSummary.data.amount || "Unknown",
           bank_name:
-            transactionSummary.data.bank_account?.bankname || "Unknown",
+            transactionSummary.data.bank_account?.bank_name || "Unknown",
           transactionReference: transactionSummary.data.reference || "Unknown",
-          transactionDate: transactionSummary.data.created_at
-            ? new Date(transactionSummary.data.created_at).toLocaleString()
-            : "Unknown",
+          transactionDate: transactionSummary.data?.created_at
+          ? new Date(transactionSummary.data.created_at.replace(/\.\d{6}Z$/, 'Z')).toLocaleString()
+          : "Unknown",
+        
           status:
             ["approved", "completed", "success"].includes(transactionSummary.data.status)
               ? "Success"
@@ -249,7 +250,8 @@ const TransactionPage: React.FC = () => {
         {(normalizedStatus === "approved" || normalizedStatus === "completed") && (
           <View style={{ marginTop: 20 }}>
             <TransactionSuccess
-              title={transactionType === "withdraw" ? "Withdrawal Successful" : "Transaction Successful"}
+            type={types}
+              title={types === "withdraw" ? "Withdrawal Successful" : "Transaction Successful"}
               amount={transactionSummary?.data?.amount}
               network={transactionSummary?.data?.network}
               currency={transactionSummary?.data?.currency}

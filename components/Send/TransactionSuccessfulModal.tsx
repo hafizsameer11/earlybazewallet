@@ -21,7 +21,7 @@ const TransactionMessage: React.FC<{ transactionReference: string, transactionAm
   <View style={styles.textContainer}>
     <Text style={styles.successText}>Transaction Successful</Text>
     <Text style={styles.description}>
-      You have successfully sent <Text style={styles.bold}>{transactionAmont} {transactionCurrency}</Text> to
+      You have successfully sent <Text style={styles.bold}>{transactionAmont} {transactionCurrency}</Text> refference
     </Text>
     <Text style={styles.walletAddress}>{transactionReference}</Text>
   </View>

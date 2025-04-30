@@ -51,15 +51,15 @@ const SettingsScreen: React.FC = () => {
     queryFn: () => getUserBalance({ token }), // Replace with actual API function
     enabled: !!token, // Only run the query when the token is available
   });
-
+console.log("🔹 User Balance:", userBalance?.data);
   return (
     <SafeAreaView style={styles.container} >
       <ScrollView>
         <ProfileHeader
           name={userDetails?.data.name}
           email={userDetails?.data.email}
-          cryptoBalance={userBalance?.data.crypto_balance}
-          nairaBalance={userBalance?.data.naira_balance}
+          cryptoBalance={userBalance?.data?.userBalance?.crypto_balance}
+          nairaBalance={userBalance?.data?.userBalance?.naira_balance}
           profileImage={
             userDetails?.data.profile_picture
               ? `https://earlybaze.hmstech.xyz/storage/${userDetails.data.profile_picture}`
