@@ -12,14 +12,18 @@ interface TransactionSuccessProps {
   currency?: string | undefined;
   symbol?: string | undefined;
   type?: string | undefined;
+  amountPaid?: any | undefined;
 }
 
-const TransactionSuccess: React.FC<TransactionSuccessProps> = ({ title, amount = 0, network = '0', currency, symbol = icons.bitCoin, type }) => {
+const TransactionSuccess: React.FC<TransactionSuccessProps> = ({ title, amount = 0, amountPaid, network = '0', currency, symbol = icons.bitCoin, type }) => {
   // Theme colors
   const backgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1A1A1A' }, 'background');
   const textColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text');
   const borderColor = useThemeColor({ light: '#22A45D', dark: '#157347' }, 'border');
   const successTextColor = useThemeColor({ light: '#0C5E3F', dark: '#22A45D' }, 'successText');
+
+  console.log("TransactionSuccess Props:", { title, amount, network, currency, symbol, type, amountPaid });
+
 
   return (
     <View style={styles.successContainer}>
@@ -35,28 +39,34 @@ const TransactionSuccess: React.FC<TransactionSuccessProps> = ({ title, amount =
         <Text style={[styles.successTitle, { color: successTextColor }]}>{title}</Text>
         <Text style={[styles.successAmount, { color: textColor }]}>
           <Text style={styles.boldText}>
-            {amount} {type == 'withdraw' ? 'has been sent to your bank account' : 'has been credited to your crypto wallet'}
+            {amount} {type == 'withdraw' ? 'has been sent to your bank account' : 'has been credited to your naira wallet'}
           </Text>
         </Text>
 
         {/* Transaction Details */}
         <View style={styles.detailContainer}>
           <TransactionDetailItem
-            label={type === 'withdraw' ? 'Amount Withdrawn' : 'Crypto bought'}
-            value={`₦${amount.toLocaleString()}`}
+            label={type === 'withdraw' ? 'Amount Withdrawn' : 'Crypto Swaped'}
+            value={type === 'withdraw' ? `₦${amount.toLocaleString()}` : `${currency} ${amount}`}
           />
-
           {type !== 'withdraw' && (
             <TransactionDetailItem
               label="Network"
-              value="Bitcoin"
+              value={network}
             />
           )}
 
           <TransactionDetailItem
-            label="Amount Paid"
-            value={`₦${amount.toLocaleString()}`}
+            label={type === 'withdraw' ? 'Amount Paid' : 'Amount Received'}
+            value={
+              type === 'withdraw'
+                ? `₦${amount.toLocaleString()}`
+                : amountPaid
+                  ? ` ${amountPaid}`
+                  : `${currency}  ${amount}`
+            }
           />
+
         </View>
 
       </View>

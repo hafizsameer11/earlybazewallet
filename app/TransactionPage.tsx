@@ -8,7 +8,7 @@ import TransactionSuccess from '@/components/Buy/TransactionSuccess';
 import TransactionSummaryModal from '@/components/Buy/TransactionSummaryModal';
 import { useNavigation } from 'expo-router';
 import { useRoute } from '@react-navigation/native';
-
+import { router } from 'expo-router';
 
 //Code related to the integration:
 import { getFromStorage } from '@/utils/storage';
@@ -27,7 +27,7 @@ const TransactionPage: React.FC = () => {
 
   const params = route.params as { type: string };
   const transactionType = params?.type;
-  const { id, types } = useLocalSearchParams();
+  const { id, types, from } = useLocalSearchParams();
 
   console.log("Type from TransactionPagess:", types);
   console.log("ID from TransactionPagess:", id);
@@ -160,9 +160,9 @@ const TransactionPage: React.FC = () => {
             transactionSummary.data.bank_account?.bank_name || "Unknown",
           transactionReference: transactionSummary.data.reference || "Unknown",
           transactionDate: transactionSummary.data?.created_at
-          ? new Date(transactionSummary.data.created_at.replace(/\.\d{6}Z$/, 'Z')).toLocaleString()
-          : "Unknown",
-        
+            ? new Date(transactionSummary.data.created_at.replace(/\.\d{6}Z$/, 'Z')).toLocaleString()
+            : "Unknown",
+
           status:
             ["approved", "completed", "success"].includes(transactionSummary.data.status)
               ? "Success"
@@ -223,12 +223,13 @@ const TransactionPage: React.FC = () => {
   // Construct final transactions array
   const transactions = extraStep ? [...baseTransactions, extraStep] : baseTransactions;
 
-  console.log(transactions);
+  console.log("TransactionDataComing:", transactions);
 
   return (
     <ScrollView contentContainerStyle={[styles.container, { backgroundColor }]}>
       {/* Header */}
-      <Header title="Transaction Page" />
+      <Header title="Transaction Page" from={from} />
+
 
       {/* Transaction Steps */}
       <View style={styles.progressContainer}>
@@ -250,12 +251,13 @@ const TransactionPage: React.FC = () => {
         {(normalizedStatus === "approved" || normalizedStatus === "completed") && (
           <View style={{ marginTop: 20 }}>
             <TransactionSuccess
-            type={types}
+              type={types}
               title={types === "withdraw" ? "Withdrawal Successful" : "Transaction Successful"}
               amount={transactionSummary?.data?.amount}
               network={transactionSummary?.data?.network}
               currency={transactionSummary?.data?.currency}
               symbol={transactionSummary?.data?.symbol}
+              amountPaid={transactionData?.amountPaid}
             />
           </View>
         )}
@@ -269,26 +271,49 @@ const TransactionPage: React.FC = () => {
           (transactions.some(tx => tx.title === 'Transaction Processed') &&
             transactionData?.status !== "rejected" &&
             !transactions.some(tx => tx.title === 'Transaction Success')) ? (
-          <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
-            <Text style={[styles.closeButtonText, { color: textColor }]}>Close</Text>
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => {
+              if (from === "summary") {
+                router.push('/(tabs)')
+              } else {
+                navigation.goBack();
+              }
+            }}
+          >
+            <Text style={[styles.closeButtonText, { color: textColor }]}>
+              {transactionData?.status === "Rejected" ? "Support" : "Close"}
+            </Text>
           </TouchableOpacity>
+
         ) : (
           <>
             <View style={styles.buttonWrapper}>
               <PrimaryButton title="Full Summary" onPress={() => setModalVisible(true)} />
             </View>
-            <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => {
+                if (from === "summary") {
+                  router.push('/(tabs)')
+
+                } else {
+                  navigation.goBack();
+                }
+              }}
+            >
               <Text style={[styles.closeButtonText, { color: textColor }]}>
-                {transactionData?.status === "Rejected" ? 'Support' : 'Close'}
+                {transactionData?.status === "Rejected" ? "Support" : "Close"}
               </Text>
             </TouchableOpacity>
+
           </>
         )}
       </View>
 
       {/* Modal */}
-      <TransactionSummaryModal visible={modalVisible} onClose={() => setModalVisible(false)} transactionData={transactionData} labels={labels} />;
-      s
+      <TransactionSummaryModal visible={modalVisible} onClose={() => setModalVisible(false)} transactionData={transactionData} labels={labels} />
+
     </ScrollView>
   );
 };

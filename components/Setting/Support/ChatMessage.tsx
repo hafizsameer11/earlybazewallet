@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useThemeColor } from '@/hooks/useThemeColor';
 
 interface ChatMessageProps {
     sender: string;
@@ -45,10 +44,12 @@ const styles = StyleSheet.create({
         color: '#25AE7A',
     },
     bubble: {
-        padding: 14,
+        paddingVertical: 20, // increased vertical padding
+        paddingHorizontal: 27,
         borderRadius: 18,
         maxWidth: '75%',
         position: 'relative',
+        minHeight: 50, // ensure enough height
     },
     userBubble: {
         borderTopRightRadius: 5,
@@ -63,7 +64,7 @@ const styles = StyleSheet.create({
     time: {
         fontSize: 10,
         position: 'absolute',
-        top: 5,
+        top: 6,
         right: 10,
         opacity: 0.6,
     },

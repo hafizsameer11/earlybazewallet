@@ -79,7 +79,7 @@ const AssetItem: React.FC<AssetProps> = ({ item, isAssetTab = false, customIconS
                             fullName: item.name, // 👈 If fullName exists separately, update accordingly
                             icon: item.icon,
                             type: item.type,
-                            id:item.id,
+                            id: item.id,
 
                         }
                     });
@@ -110,11 +110,38 @@ const AssetItem: React.FC<AssetProps> = ({ item, isAssetTab = false, customIconS
                         {item.name?.toUpperCase()}
                     </Text>
                     {!isAssetTab && item.status && (
-                        <View style={styles.statusContainer}>
-                            <View style={styles.dot} />
-                            <Text style={styles.statusText}>{['approved', 'completed'].includes(item.status ?? 'approved') ? 'Successful' : 'Pending'}
+                        <View style={[styles.statusContainer, { alignItems: 'center', flexDirection: 'row' }]}>
+                            <View
+                                style={[
+                                    styles.dot,
+                                    {
+                                        backgroundColor:
+                                            item.status === 'failed'
+                                                ? 'red'
+                                                : ['approved', 'completed'].includes(item.status ?? '')
+                                                    ? 'green'
+                                                    : 'orange',
+                                    },
+                                ]}
+                            />
+                            <Text
+                                style={[
+                                    styles.statusText,
+                                    {
+                                        color:
+                                            item.status === 'failed'
+                                                ? 'red'
+                                                : ['approved', 'completed'].includes(item.status ?? '')
+                                                    ? 'green'
+                                                    : 'orange',
+                                        marginLeft: 6, // spacing between dot and text
+                                    },
+                                ]}
+                            >
+                                {['approved', 'completed'].includes(item.status ?? '') ? 'Successful' : item.status === 'failed' ? 'Failed' : 'Pending'}
                             </Text>
                         </View>
+
                     )}
                     {isAssetTab && (
                         <Text style={[styles.assetSubText, { color: '#666666', marginTop: 10, }]}>

@@ -14,7 +14,7 @@ import { getFromStorage } from "@/utils/storage";
 const Kyc: React.FC = () => {
   const backgroundColor = useThemeColor({ light: '#EFFEF9', dark: '#000000' }, 'background');
   const [token, setToken] = useState<string | null>(null); // State to hold the token
-  const [kycStatus, setKycStatus] = useState<'Pending' | 'Failed' | 'Approved' | undefined>('Pending');
+  const [kycStatus, setKycStatus] = useState<'Pending' | 'Failed' | 'Approved' | 'Verified' | undefined>('Approved'); // State to hold KYC status
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -33,7 +33,7 @@ const Kyc: React.FC = () => {
       enabled: !!token,
     }
   );
-
+  console.log("🔹 KYC Data:", kycData);
   // Check if KYC data is available, and update the state
   useEffect(() => {
     if (kycData?.data?.status) {
@@ -41,13 +41,16 @@ const Kyc: React.FC = () => {
       console.log("KYC Status from API:", status); // Debugging
 
       // Ensure status is one of the allowed values
-      if (['Pending', 'Failed', 'Approved'].includes(status)) {
-        console.log("changings status", status);
-        setKycStatus(status);
+      if (status.toLowerCase() === 'verified') {
+        setKycStatus('Approved'); // Normalize it for your component
+      } else if (status.toLowerCase() === 'pending') {
+        setKycStatus('Pending');
+      } else if (status.toLowerCase() === 'failed' || status.toLowerCase() === 'rejected') {
+        setKycStatus('Failed');
       } else {
-        // Fallback to 'Pending' if status is not recognized
         setKycStatus('Pending');
       }
+
     }
   }, [kycData]); // Dependency on kycData ensures this only runs when kycData is updated
 
@@ -65,8 +68,8 @@ const Kyc: React.FC = () => {
       <View style={styles.buttonContainer}>
         <PrimaryButton
           title="Proceed"
-        onPress={() => router.push('/KycDetail')}
-          disabled={kycStatus === 'Approved' } // Disable button if KYC is approved
+          onPress={() => router.push('/KycDetail')}
+          disabled={kycStatus === 'Approved'} // Disable button if KYC is approved
         />
       </View>
     </ScrollView>

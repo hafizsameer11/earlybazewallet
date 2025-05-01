@@ -45,7 +45,7 @@ const TransactionSummaryModal: React.FC<TransactionSummaryModalProps> = ({ visib
   const close = useThemeColor({ light: images.cross_white, dark: images.cross_black }, 'close');
 
   const statusColor =
-    transactionData && transactionData.status === "Completed"
+    transactionData && transactionData.status === "Completed" || "Success"
       ? "#25AE7A"
       : transactionData && transactionData.status === "Rejected"
         ? "#D32F2F"
@@ -72,15 +72,12 @@ const TransactionSummaryModal: React.FC<TransactionSummaryModalProps> = ({ visib
               if (!value) return null; // Skip empty or null values
 
               // Handle Date Fields Separately
-              if (key === "transactionDate" && typeof value === "string") {
-                return (
-                  <TransactionDetailItem
-                    key={key}
-                    label={labels?.transactionDate || "Transaction Date"}
-                    value={new Date(value).toLocaleString()} // Format the date
-                  />
-                );
-              }
+              <TransactionDetailItem
+                key={key}
+                label={labels?.transactionDate || "Transaction Date"}
+                value={value}
+              />
+
 
               return (
                 <TransactionDetailItem

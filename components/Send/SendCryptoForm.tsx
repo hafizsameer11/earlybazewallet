@@ -224,6 +224,8 @@ const SendCryptoForm: React.FC<{
             return true;
         };
 
+
+
         return (
             <View style={styles.container}>
                 <TabSwitcher selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
@@ -271,35 +273,44 @@ const SendCryptoForm: React.FC<{
 
                     {/* ✅ Network Selection */}
                     <View style={styles.selectionContainer}>
-                        <View style={{ flex: 1, }}>
+                        <View style={{ flex: 1 }}>
                             <InputField
                                 label={"Amount in USD Dollars"}
                                 value={usdAmount}
-                                onChange={(val) => setUsdAmount(val)} // ✅ Just update state
+                                onChange={(val) => setUsdAmount(val)}
                                 onEndEditing={() => {
-                                    const entered = parseFloat(usdAmount || "0");
+                                    const entered = parseFloat(convertedAmount || "0");
                                     const available = parseFloat(assetData.balance || "0");
 
-                                    // if (entered > available) {
-                                    //     Alert.alert(
-                                    //         "Insufficient Balance",
-                                    //         "You don't have enough balance. Resetting to your available balance.",
-                                    //         [{ text: "OK" }]
-                                    //     );
-                                    //     setUsdAmount(available.toString());
-                                    // }
+                                    if (entered > available) {
+                                        Alert.alert(
+                                            "Insufficient Balance",
+                                            "You don't have enough balance. Resetting to your available balance.",
+                                            [{ text: "OK" }]
+                                        );
+
+                                        const adjusted = available.toFixed(10);
+                                        setConvertedAmount(adjusted);
+                                        setConverted(adjusted);
+
+                                        const currentRate = parseFloat(usdAmount) / parseFloat(convertedAmount || "1");
+                                        const adjustedUsd = (parseFloat(adjusted) * currentRate).toFixed(2);
+                                        setUsdAmount(adjustedUsd);
+                                    }
                                 }}
                             />
+
                         </View>
                         <View>
                             <InputField
                                 label={`Amount in ${selectedCoin?.name}`}
                                 value={convertedAmount}
                                 onChange={() => { }}
-                                editable={false} // ✅ Make it disabled
+                                editable={false}
                             />
                         </View>
                     </View>
+
                 </View>
 
                 {coinId && (

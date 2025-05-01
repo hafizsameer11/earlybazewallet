@@ -62,7 +62,7 @@ export default function HomeScreen() {
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     >
-      <Header username={userDetails?.data.name} greeting="Good Morning" />
+      <Header username={userDetails?.data.name} greeting="Good Day" />
       <WalletCard isCrypto={isCrypto} onToggle={toggleWallet} />
       <ServiceOptions />
       <ImageSlider />

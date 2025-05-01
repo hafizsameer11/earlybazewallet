@@ -60,10 +60,15 @@ const SwapSummary: React.FC = () => {
 
       {/* Proceed Button Fixed at Bottom */}
       <View style={styles.fixedButtonContainer}>
-        <PrimaryButton title="Proceed" onPress={() => router.push({
-          pathname: '/TransactionPage',
-          params: { types: 'swap', id },
-        })} />
+        <PrimaryButton
+          title="Proceed"
+          onPress={() =>
+            router.push({
+              pathname: "/TransactionPage",
+              params: { types: "swap", id, from: "summary" }, // ✅ Add `from`
+            })
+          }
+        />
       </View>
     </View>
   );

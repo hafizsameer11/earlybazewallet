@@ -87,7 +87,9 @@ const TransactionStep: React.FC<TransactionStepProps> = ({
             </TouchableOpacity>
           )}
 
-          <Text style={[styles.dateText, { color: labelColor }]}>{date}</Text>
+          {title !== 'Transaction Rejected' && (
+            <Text style={[styles.dateText, { color: labelColor }]}>{date}</Text>
+          )}
         </View>
       </View>
 
