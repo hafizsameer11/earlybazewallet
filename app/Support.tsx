@@ -41,15 +41,15 @@ const Support: React.FC = () => {
                 <View style={styles.optionsContainer}>
                     <SupportOption title="Tickets" image={images.ticket} onPress={() => router.push("/Tickets")} notificationCount={tickets?.data?.length || 0} />
                     <SupportOption
-    title="Email Us"
-    image={images.email}
-    onPress={() => Linking.openURL('mailto:support@earlybazewallet.com')}
-/>
-<SupportOption
-    title="Call Us"
-    image={images.call}
-    onPress={() => Linking.openURL('tel:+2348167258473')}
-/>
+                        title="Email Us"
+                        image={images.email}
+                        onPress={() => Linking.openURL('mailto:support@earlybazewallet.com')}
+                    />
+                    <SupportOption
+                        title="Call Us"
+                        image={images.call}
+                        onPress={() => Linking.openURL('tel:+2348167258473')}
+                    />
                 </View>
 
                 {/* New Ticket Form */}

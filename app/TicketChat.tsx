@@ -106,12 +106,43 @@ const TicketChat: React.FC = () => {
         },
     });
 
-    const sendMessage = () => {
-        if (messageText.trim().length > 0 && token) {
-            createReply({
-                data: { ticket_id: id as string, message: messageText },
-                token: token,
-            });
+    const sendMessage = async () => {
+        if ((!messageText.trim() && !selectedImage) || !token) return;
+
+        const formData = new FormData();
+
+        formData.append('ticket_id', id as string);
+        formData.append('message', messageText);
+
+        if (selectedImage) {
+            const fileName = selectedImage.split('/').pop() ?? `image_${Date.now()}.jpg`;
+            const fileType = fileName.split('.').pop();
+
+            formData.append('attachment', {
+                uri: selectedImage,
+                name: fileName,
+                type: `image/${fileType}`,
+            } as any);
+        }
+
+        createReply({ data: formData, token });
+    };
+
+
+    const handlePickImage = async () => {
+        const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (!permission.granted) {
+            alert("Permission required to access gallery.");
+            return;
+        }
+
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            quality: 0.8,
+        });
+
+        if (!result.canceled && result.assets.length > 0) {
+            setSelectedImage(result.assets[0].uri);
         }
     };
 
@@ -149,6 +180,7 @@ const TicketChat: React.FC = () => {
                                 text={msg.message}
                                 time={new Date(msg.created_at).toLocaleTimeString()}
                                 isUser={msg.sender_type === "user"}
+                                attachment={msg.attachment}
                             />
                         ))
                     ) : (
@@ -161,6 +193,10 @@ const TicketChat: React.FC = () => {
                 </ScrollView>
 
                 <View style={[styles.inputContainer, { backgroundColor: inputBackground }]}>
+                    <TouchableOpacity onPress={handlePickImage}>
+                        <Entypo name="image" size={22} color="#333" style={styles.icon} />
+                    </TouchableOpacity>
+
                     <TextInput
                         style={[styles.input, { color: textColor }]}
                         placeholder="Type a message..."
@@ -168,10 +204,12 @@ const TicketChat: React.FC = () => {
                         value={messageText}
                         onChangeText={setMessageText}
                     />
+
                     <TouchableOpacity onPress={sendMessage}>
                         <Ionicons name="send" size={20} color="#333" style={styles.icon} />
                     </TouchableOpacity>
                 </View>
+
             </KeyboardAvoidingView>
         </View>
     );

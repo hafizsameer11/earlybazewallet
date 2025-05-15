@@ -10,10 +10,10 @@ const Notification: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState('All');
 
   return (
-    <ScrollView contentContainerStyle={[styles.container, { backgroundColor }]}>
+    <ScrollView contentContainerStyle={[styles.container, { backggiroundColor }]}>
       <Header title="Notification" />
       <NotificationTab selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-      <NotificationList />
+      <NotificationList selectedTab={selectedTab} />
     </ScrollView>
   );
 };

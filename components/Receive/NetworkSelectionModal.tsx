@@ -87,7 +87,7 @@ const NetworkSelectionModal: React.FC<NetworkSelectionModalProps> = ({
     console.log("isBuy", isBuy);
 
     // Log the full response using JSON.stringify to avoid [Object]
-    console.log("🔹 Wallet Currencyss:", JSON.stringify(walletCurrency, null, 2));
+    // console.log("🔹 Wallet Currencyss:", JSON.stringify(walletCurrency, null, 2));
 
 
 

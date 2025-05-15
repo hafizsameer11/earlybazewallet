@@ -624,6 +624,7 @@ interface AssetsTransResponse {
       balance: string;
       account_balance: string;
       price: string;
+      title: string;
     }>;
     transactions: Array<{
       id: number;

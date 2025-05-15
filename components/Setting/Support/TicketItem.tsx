@@ -46,11 +46,11 @@ const TicketItem: React.FC<TicketItemProps> = ({ id, title, date, status, hasNot
         </View>
 
         {/* Notification Badge */}
-        {hasNotification && (
+        {/* {hasNotification && (
           <View style={styles.notificationBadge}>
             <Text style={styles.notificationText}>{notificationCount}</Text>
           </View>
-        )}
+        )} */}
       </View>
     </TouchableOpacity>
   );

@@ -8,13 +8,13 @@ import Transactions from "@/components/Assests/Transactions";
 
 
 const MyAssets: React.FC = () => {
-    const { assetName, icon, assestId, fullName, balance } = useLocalSearchParams();
+    const { assetName, icon, assestId, fullName, balance, title } = useLocalSearchParams();
     console.log("name", assetName);
     const percentage = "+24.35%"; // Replace with dynamic percentage if needed
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Header title={assetName || "Asset"} />
+            <Header title={title || "Asset"} />
             <AssetCard
                 iconUrl={icon || "https://example.com/default.png"}
                 balance={balance}
@@ -23,8 +23,9 @@ const MyAssets: React.FC = () => {
                 assetName={assetName}
                 fullName={fullName}
                 icon={icon}
+                title={title}
             />
-            <Transactions assetName={assetName}/>
+            <Transactions assetName={assetName} />
         </ScrollView>
     );
 };

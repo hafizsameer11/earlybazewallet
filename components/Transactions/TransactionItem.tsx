@@ -84,7 +84,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ type, amount, created
         <View>
           <Text style={[styles.transactionType, { color: textColor }]}>
             {formatCurrencyName(currency, type)}
-          </Text>
+        </Text>
           <View style={styles.statusContainer}>
             <View style={[styles.statusDot, { backgroundColor: statusColor }]} />
             <Text style={[styles.transactionStatus, { color: statusColor }]}>{status}</Text>

@@ -94,8 +94,9 @@ interface AssetCardProps {
     assetName: string;
     fullName: string;
     icon: string;
+    title: string;
 }
-const AssetCard: React.FC<AssetCardProps> = ({ iconUrl, balance, percentage, assestId, assetName, fullName, icon }) => {
+const AssetCard: React.FC<AssetCardProps> = ({ iconUrl, balance, percentage, assestId, assetName, fullName, icon,title }) => {
     return (
         <View style={styles.card}>
             <View style={styles.iconContainer}>

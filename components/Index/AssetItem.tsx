@@ -15,6 +15,7 @@ interface AssetProps {
         type?: string;
         network?: string | null; // ✅ Add this line
         status?: string | null;
+        title: string;
     };
     isAssetTab?: boolean;
     customIconSize?: number;
@@ -64,6 +65,7 @@ const AssetItem: React.FC<AssetProps> = ({ item, isAssetTab = false, customIconS
 
         return `1 ${asset} = ${price} USD`;
     };
+    console.log("asset item", item);
 
     return (
         <TouchableOpacity
@@ -76,10 +78,11 @@ const AssetItem: React.FC<AssetProps> = ({ item, isAssetTab = false, customIconS
                             balance: item.balance,
                             assestId: item.id,
                             assetName: item.name,
-                            fullName: item.name, // 👈 If fullName exists separately, update accordingly
+                            fullName: item.name, 
                             icon: item.icon,
                             type: item.type,
                             id: item.id,
+                            title:item.title
 
                         }
                     });
@@ -107,7 +110,7 @@ const AssetItem: React.FC<AssetProps> = ({ item, isAssetTab = false, customIconS
 
                 <View>
                     <Text style={[styles.assetName, { color: textColor }]}>
-                        {item.name?.toUpperCase()}
+                        {item.title?.toUpperCase()}
                     </Text>
                     {!isAssetTab && item.status && (
                         <View style={[styles.statusContainer, { alignItems: 'center', flexDirection: 'row' }]}>

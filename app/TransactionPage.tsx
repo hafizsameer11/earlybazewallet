@@ -125,7 +125,7 @@ const TransactionPage: React.FC = () => {
           ? `$${transactionSummary.data.amount_usd}`
           : "Unknown",
         amountPaid: transactionSummary.data.amount_naira
-          ? `NGN${transactionSummary.data.amount_naira}`
+          ? `NGN${Number(transactionSummary.data.amount_naira).toLocaleString(undefined, { maximumFractionDigits: 0 })}`
           : "Unknown",
         accountPaidTo: "Account 1", // Placeholder
         transactionReference: transactionSummary.data.reference || "Unknown",

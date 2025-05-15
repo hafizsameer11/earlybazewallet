@@ -54,7 +54,9 @@ const SwapSummaryDetails: React.FC<SwapSummaryDetailsProps> = ({
         <View style={styles.assetContainer}>
           {/* Use dynamic icon from the URL */}
           <Image source={images.naira} style={styles.assetIcon} /> {/* Use dynamic icon here */}
-          <Text style={[styles.amountText, { color: textColor }]}>{amount_naira}</Text>
+<Text style={[styles.amountText, { color: textColor }]}>
+  {Number(amount_naira).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+</Text>
         </View>
       </View>
 
@@ -66,7 +68,7 @@ const SwapSummaryDetails: React.FC<SwapSummaryDetailsProps> = ({
           <TransactionDetailItem label="Network" value={network} icon={{ uri: icon }} />
           <TransactionDetailItem label="Asset Received" value="Naira" icon={images.naira} />
           <TransactionDetailItem label="Amount paid in USD" value={amount_usd} />
-          <TransactionDetailItem label="Amount to receive in NGN" value={amount_naira} />
+          <TransactionDetailItem label="Amount to receive in NGN" value={Number(amount_naira).toLocaleString(undefined, { maximumFractionDigits: 0 })} />
           <TransactionDetailItem label="Amount to receive in USD" value={amount_usd} />
           <TransactionDetailItem label="Exchange Rate" value={exchange_rate} />
           <TransactionDetailItem label="Transaction ID" value={transaction_id} />

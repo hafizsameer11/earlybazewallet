@@ -55,13 +55,13 @@ const TransactionSuccess: React.FC<TransactionSuccessProps> = ({ title, amount =
               value={network}
             />
           )}
-
+          {/* {Number(amountPaid).toLocaleString(undefined, { maximumFractionDigits: 0 })} */}
           <TransactionDetailItem
             label={type === 'withdraw' ? 'Amount Paid' : 'Amount Received'}
             value={
               type === 'withdraw'
                 ? `₦${amount.toLocaleString()}`
-                : amountPaid
+                :  Number(amountPaid).toLocaleString(undefined, { maximumFractionDigits: 0 }) 
                   ? ` ${amountPaid}`
                   : `${currency}  ${amount}`
             }

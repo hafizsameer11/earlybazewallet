@@ -4,12 +4,14 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  Alert,
 } from 'react-native';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import PrimaryButton from '@/components/Buy/PrimaryButton';
 import Header from '@/components/Header';
 import SwapSummaryDetails from '@/components/Swap/SwapSummaryDetails';
 import { useLocalSearchParams, useRouter, router } from "expo-router";
+import { getFromStorage } from '@/utils/storage';
 const SwapSummary: React.FC = () => {
   // Theme Colors
   const backgroundColor = useThemeColor({ light: '#EFFEF9', dark: '#000000' }, 'background');
@@ -32,7 +34,9 @@ const SwapSummary: React.FC = () => {
     icon
   } = useLocalSearchParams(); console.log("To Test", id);
   console.log("Can I see", icon);
+  console.log("transactio id ", transaction_id);
   return (
+
     <View style={[styles.container, { backgroundColor }]}>
       {/* Header */}
       <Header title="Swap Summary" />
@@ -62,12 +66,44 @@ const SwapSummary: React.FC = () => {
       <View style={styles.fixedButtonContainer}>
         <PrimaryButton
           title="Proceed"
-          onPress={() =>
-            router.push({
-              pathname: "/TransactionPage",
-              params: { types: "swap", id, from: "summary" }, // ✅ Add `from`
-            })
-          }
+          onPress={async () => {
+            try {
+              // Step 1: Get token
+              const fetchedToken = await getFromStorage("authToken");
+              if (!fetchedToken) {
+                Alert.alert("Authentication Error", "User token not found.");
+                return;
+              }
+
+              // Step 2: Call the swap complete API
+              const res = await fetch(`https://earlybaze.hmstech.xyz/api/wallet/swap-complete/${transaction_id}`, {
+                method: "POST",
+                headers: {
+                  "Authorization": `Bearer ${fetchedToken}`,
+                  "Content-Type": "application/json",
+                },
+              });
+
+              if (!res.ok) {
+                const errorData = await res.json();
+                console.error("❌ API Error:", errorData);
+                Alert.alert("Swap Failed", errorData.message || "Unexpected error occurred.");
+                return;
+              }
+
+              const result = await res.json();
+              console.log("✅ Swap completed:", result);
+
+              // Step 3: Proceed to next screen
+              router.push({
+                pathname: "/TransactionPage",
+                params: { types: "swap", id, from: "summary" },
+              });
+            } catch (err) {
+              console.error("❌ Request Error:", err);
+              Alert.alert("Swap Error", "Failed to complete the swap.");
+            }
+          }}
         />
       </View>
     </View>

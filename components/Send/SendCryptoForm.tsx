@@ -76,6 +76,10 @@ const SendCryptoForm: React.FC<{
         const cardBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1A1A1A' }, 'card');
         const textColor = useThemeColor({ light: '#222222', dark: '#FFFFFF' }, 'text');
         const borderColor = useThemeColor({ light: '#E5E5E5', dark: '#333333' }, 'border');
+        const [lastEditedField, setLastEditedField] = useState<'usd' | 'coin'>('usd');
+        const lastCalledAmountRef = useRef<string | null>(null);
+        const lastUpdatedByRef = useRef<'usd' | 'coin' | null>(null);
+
         const [feeData, setFeeData] = useState({
             platform_fee_usd: "0.00",
             blockchain_fee_usd: "0.00",
@@ -84,7 +88,6 @@ const SendCryptoForm: React.FC<{
         });
 
         const { assestId, icon, assetName } = assetData;  // Access individual properties
-        console.log("The Final data receving: ", assetName, assestId, icon);
 
         const [convertedAmount, setConvertedAmount] = useState("0.00");
         const convertedAmountRef = useRef("0.00");
@@ -118,7 +121,7 @@ const SendCryptoForm: React.FC<{
             const fetchUserData = async () => {
                 const fetchedToken = await getFromStorage("authToken");
                 setToken(fetchedToken);
-                console.log("🔹 Retrieved Token:", fetchedToken);
+                // console.log("🔹 Retrieved Token:", fetchedToken);
             };
 
             fetchUserData();
@@ -129,44 +132,35 @@ const SendCryptoForm: React.FC<{
                 data,
                 token,
             }: {
-                data: { currency: string; amount: string, type: string, to: string };
+                data: { currency: string; amount: string, type: string, to: string, amount_in: string };
                 token: string;
             }) => calculateExchangeRate({ data, token }),
 
-            onSuccess: (response: { data: { amount_usd: string | null; amount_naira: string | null, fee_summary: { platform_fee_usd: string | null; blockchain_fee_usd: string | null; total_fee_usd: string | null; amount_after_fee: string | null } }; message: string; status: string }) => {
-                console.log("✅ Exchange Rate Fetched:", response);
+            onSuccess: (response) => {
+                const { amount_usd, fee_summary } = response.data;
+                const updatedUsd = amount_usd ?? "0.00";
 
-                const { amount_usd, amount_naira, fee_summary } = response.data;
+                // Prevent loop: only update the field NOT responsible for current input
+                if (lastEditedField === "usd") {
+                    setConvertedAmount(updatedUsd);
+                    console.log("The updated usd amount", updatedUsd);
+                    setConverted(updatedUsd);
+                } else if (lastEditedField === "coin") {
+                    console.log("The updated coin amount", updatedUsd);
+                    if (lastUpdatedByRef.current !== "usd") {
+                        setUsdAmount(updatedUsd);
+                    }
+                }
 
-                // Default to "0.00" if either value is undefined or null
-                const usdAmount = amount_usd ?? "0.00";
-                const ngnAmount = amount_naira ?? "0.00";
-
-                console.log("The data", ngnAmount);
-
-                // ✅ Store exchange rate values in refs to persist them
-                convertedAmountRef.current = usdAmount;
-                ngnAmountRef.current = ngnAmount;
-
-                // ✅ Update state only if values have changed
-                setConvertedAmount(usdAmount);
-                // setconverted
-                setConverted(usdAmount);
                 if (fee_summary) {
-                    setFeeData({
+                    const updatedFees = {
                         platform_fee_usd: fee_summary.platform_fee_usd ?? "0.00",
                         blockchain_fee_usd: fee_summary.blockchain_fee_usd ?? "0.00",
                         total_fee_usd: fee_summary.total_fee_usd ?? "0.00",
                         amount_after_fee: fee_summary.amount_after_fee ?? "0.00",
-                    });
-                    if (onFeeChange) {
-                        onFeeChange({
-                            platform_fee_usd: fee_summary.platform_fee_usd ?? "0.00",
-                            blockchain_fee_usd: fee_summary.blockchain_fee_usd ?? "0.00",
-                            total_fee_usd: fee_summary.total_fee_usd ?? "0.00",
-                            amount_after_fee: fee_summary.amount_after_fee ?? "0.00",
-                        });
-                    }
+                    };
+                    setFeeData(updatedFees);
+                    onFeeChange?.(updatedFees);
                 }
             },
 
@@ -192,22 +186,33 @@ const SendCryptoForm: React.FC<{
         }, [assetName, assestId, icon]);
 
         useEffect(() => {
-            if (didMountRef.current) {
-                if (token && selectedCoin?.name && usdAmount) {
-                    getExchangeRate({
-                        data: {
-                            currency: selectedCoin.name.toLowerCase(),
-                            amount: usdAmount,
-                            type: "send",
-                            to: scannedAddress
-                        },
-                        token: token
-                    });
-                }
-            } else {
-                didMountRef.current = true; // ⬅️ Mark as mounted after first render
+            if (!didMountRef.current) {
+                didMountRef.current = true;
+                return;
             }
-        }, [usdAmount, selectedCoin, token, scannedAddress]);
+
+            if (!token || !selectedCoin?.name) return;
+
+            const amountToSend = lastEditedField === 'usd' ? usdAmount : convertedAmount;
+
+            // Avoid triggering if same amount is already used
+            if (lastCalledAmountRef.current === amountToSend) return;
+            if (!amountToSend || isNaN(Number(amountToSend)) || parseFloat(amountToSend) <= 0) return;
+
+            lastCalledAmountRef.current = amountToSend;
+
+            getExchangeRate({
+                data: {
+                    currency: selectedCoin.name.toLowerCase(),
+                    amount: amountToSend,
+                    type: "send",
+                    to: scannedAddress,
+                    amount_in: lastEditedField,
+                },
+                token,
+            });
+        }, [usdAmount, convertedAmount, token, selectedCoin?.name, scannedAddress, lastEditedField]);
+
         const validateBalance = () => {
             const enteredAmount = parseFloat(usdAmount || "0");
             const availableBalance = parseFloat(assetData.balance || "0");
@@ -277,7 +282,13 @@ const SendCryptoForm: React.FC<{
                             <InputField
                                 label={"Amount in USD Dollars"}
                                 value={usdAmount}
-                                onChange={(val) => setUsdAmount(val)}
+                                onChange={(val) => {
+                                    setUsdAmount(val)
+                                    lastUpdatedByRef.current = "usd";
+                                    lastCalledAmountRef.current = null; // ✅ reset here too
+
+
+                                }}
                                 onEndEditing={() => {
                                     const entered = parseFloat(convertedAmount || "0");
                                     const available = parseFloat(assetData.balance || "0");
@@ -305,8 +316,13 @@ const SendCryptoForm: React.FC<{
                             <InputField
                                 label={`Amount in ${selectedCoin?.name}`}
                                 value={convertedAmount}
-                                onChange={() => { }}
-                                editable={false}
+                                onChange={(val) => {
+                                    setConvertedAmount(val);
+                                    setLastEditedField('coin'); // Mark as coin input
+                                    lastUpdatedByRef.current = "coin";
+                                    lastCalledAmountRef.current = null; // ✅ Reset to force API re-call when switching back
+
+                                }} editable={true}
                             />
                         </View>
                     </View>

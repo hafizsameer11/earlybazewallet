@@ -8,10 +8,7 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "assetBundlePatterns": [
-      "constants/fonts/*",
-      "assets/images/*" // ✅ Ensure QR code image is bundled
-    ],
+    "assetBundlePatterns": ["constants/fonts/*", "assets/images/*"],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
@@ -26,9 +23,8 @@
       "permissions": [
         "CAMERA",
         "RECORD_AUDIO",
-        "READ_EXTERNAL_STORAGE",       // ✅ Required for media read
-        "WRITE_EXTERNAL_STORAGE",      // ✅ Required for saving to gallery (legacy)
-        "READ_MEDIA_IMAGES"            // ✅ Android 13+ scoped storage support
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
