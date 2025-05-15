@@ -41,6 +41,7 @@ const TransactionSummaryModal: React.FC<TransactionSummaryModalProps> = ({ visib
   const textTitleColor = useThemeColor({ light: '#25AE7A', dark: '#25AE7A' }, 'textTitle');
 
   console.log("The Labels", labels);
+  console.log();
 
   const close = useThemeColor({ light: images.cross_white, dark: images.cross_black }, 'close');
 
@@ -71,21 +72,31 @@ const TransactionSummaryModal: React.FC<TransactionSummaryModalProps> = ({ visib
             {Object.entries(transactionData || {}).map(([key, value]) => {
               if (!value) return null; // Skip empty or null values
 
-              // Handle Date Fields Separately
-              <TransactionDetailItem
-                key={key}
-                label={labels?.transactionDate || "Transaction Date"}
-                value={value}
-              />
-
+              // Format amount fields to two decimals, remove trailing zeros
+              let displayValue = value;
+              if (key.startsWith("amount")) {
+                // Try to extract the numeric part (e.g., "$1.00000000" or "NGN1,750")
+                const match = typeof value === "string" && value.match(/^([^0-9.-]*)([0-9,.-]+)(.*)$/);
+                if (match) {
+                  let prefix = match[1] || "";
+                  let numStr = match[2].replace(/,/g, "");
+                  let suffix = match[3] || "";
+                  let num = Number(numStr);
+                  if (!isNaN(num)) {
+                    // Format to 2 decimals, remove trailing .00 if present
+                    let formatted = num.toFixed(2).replace(/\.00$/, "");
+                    displayValue = `${prefix}${formatted}${suffix}`;
+                  }
+                }
+              }
 
               return (
                 <TransactionDetailItem
                   key={key}
-                  label={labels?.[key] || key} // Use labels if available
-                  value={value}
-                  isCopyable={key === "transactionReference"} // Enable copy for transactionReference
-                  valueStyle={key === "status" ? { color: statusColor, fontWeight: "bold" } : {}} // Apply styling for status
+                  label={labels?.[key] || key}
+                  value={displayValue}
+                  isCopyable={key === "transactionReference"}
+                  valueStyle={key === "status" ? { color: statusColor, fontWeight: "bold" } : {}}
                 />
               );
             })}
@@ -107,7 +118,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: 10,
   },
   modalContainer: {
     width: '90%',

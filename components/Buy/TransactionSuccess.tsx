@@ -39,8 +39,9 @@ const TransactionSuccess: React.FC<TransactionSuccessProps> = ({ title, amount =
         <Text style={[styles.successTitle, { color: successTextColor }]}>{title}</Text>
         <Text style={[styles.successAmount, { color: textColor }]}>
           <Text style={styles.boldText}>
-            {amount} {type == 'withdraw' ? 'has been sent to your bank account' : 'has been credited to your naira wallet'}
+            {type === 'withdraw' ? amount : amountPaid} {type === 'withdraw' ? 'has been sent to your bank account' : 'has been credited to your naira wallet'}
           </Text>
+
         </Text>
 
         {/* Transaction Details */}
@@ -61,7 +62,7 @@ const TransactionSuccess: React.FC<TransactionSuccessProps> = ({ title, amount =
             value={
               type === 'withdraw'
                 ? `₦${amount.toLocaleString()}`
-                :  Number(amountPaid).toLocaleString(undefined, { maximumFractionDigits: 0 }) 
+                : Number(amountPaid).toLocaleString(undefined, { maximumFractionDigits: 0 })
                   ? ` ${amountPaid}`
                   : `${currency}  ${amount}`
             }

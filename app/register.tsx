@@ -30,6 +30,7 @@ import Toast from "react-native-toast-message"; // ✅ Import Toast
 
 export interface InputValues {
   name: string;
+  fullName: string;
   email: string;
   phone: string;
   password: string;
@@ -48,6 +49,7 @@ const Register = () => {
       const formData = new FormData();
 
       formData.append("name", data.name);
+      formData.append("fullName", data.fullName);
       formData.append("email", data.email);
       formData.append("phone", data.phone);
       formData.append("password", data.password);
@@ -74,7 +76,7 @@ const Register = () => {
         text2: "Register Successful!",
         visibilityTime: 3000,
       });
-    push({ pathname: "/Otp", params: { email: variables.email } });
+      push({ pathname: "/Otp", params: { email: variables.email } });
     },
     onError: (error) => {
       console.error("❌ Register Failed:", error);
@@ -170,6 +172,7 @@ const Register = () => {
                   <Formik
                     initialValues={{
                       name: "",
+                      fullName: "",
                       email: "",
                       phone: "",
                       password: "",
@@ -189,6 +192,31 @@ const Register = () => {
                       errors,
                     }) => (
                       <View style={styles.formContainer}>
+                        <View>
+                          <Text
+                            style={[
+                              styles.inputLabel,
+                              { color: dark ? COLORS.white : COLORS.black },
+                            ]}
+                          >
+                            Full Name
+                          </Text>
+                          <Input
+                            value={values.fullName}
+                            onChangeText={handleChange("fullName")}
+                            onBlur={handleBlur("fullName")}
+                            label="Input Full Name"
+                            keyboardType="default"
+                            showCheckbox={false}
+                            errorText={
+                              touched.fullName && errors.fullName
+                                ? errors.fullName
+                                : ""
+                            }
+                            prefilledValue={values.name}
+                            id="fullName"
+                          />
+                        </View>
                         <View>
                           <Text
                             style={[
@@ -321,13 +349,15 @@ const Register = () => {
                         </View>
 
                         <View style={styles.bottomBoxText}>
-                          <Text
-                            style={{
-                              textAlign: "center",
-                              color: dark ? COLORS.white : COLORS.black,
-                            }}
-                          >
-                            Already have an account ?
+                          <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+                            <Text
+                              style={{
+                                textAlign: "center",
+                                color: dark ? COLORS.white : COLORS.black,
+                              }}
+                            >
+                              Already have an account?
+                            </Text>
                             <TouchableOpacity onPress={() => push("/login")}>
                               <Text
                                 style={{
@@ -335,13 +365,12 @@ const Register = () => {
                                   fontWeight: "bold",
                                   marginLeft: 5,
                                   marginBottom: -2.4,
-
                                 }}
                               >
                                 Sign In
                               </Text>
                             </TouchableOpacity>
-                          </Text>
+                          </View>
                         </View>
                       </View>
                     )}

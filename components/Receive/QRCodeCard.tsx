@@ -58,64 +58,58 @@ const QRCodeCard: React.FC<QRCodeCardProps> = ({
   });
 
   const handleSaveImage = async () => {
-    try {
-      const { status } = await MediaLibrary.requestPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permission Required', 'Please grant storage permissions to save the image.');
-        return;
-      }
-
-      const asset = Asset.fromModule(images.qrcode);
-      await asset.downloadAsync();
-
-      const fileName = asset.localUri?.split('/').pop();
-      const localCopyPath = FileSystem.cacheDirectory + fileName;
-
-      await FileSystem.copyAsync({
-        from: asset.localUri!,
-        to: localCopyPath
-      });
-
-      const mediaAsset = await MediaLibrary.createAssetAsync(localCopyPath);
-      await MediaLibrary.createAlbumAsync('QR Codes', mediaAsset, false);
-
-      Platform.OS === 'android'
-        ? ToastAndroid.show('The image has been saved to your gallery', ToastAndroid.SHORT)
-        : Alert.alert('Saved', 'The image has been saved to your gallery');
-    } catch (error) {
-      console.error('Error saving image:', error);
-      Alert.alert('Error', 'Failed to save image. Please try again.');
+  try {
+    const { status } = await MediaLibrary.requestPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission Required', 'Please grant storage permissions to save the image.');
+      return;
     }
-  };
+
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${selectedTab === 'Crypto Address'
+      ? receiveAddress?.data?.address
+      : email}&size=200x200`;
+
+    const fileUri = FileSystem.cacheDirectory + 'qr_code.png';
+    const downloadRes = await FileSystem.downloadAsync(qrUrl, fileUri);
+
+    const asset = await MediaLibrary.createAssetAsync(downloadRes.uri);
+    await MediaLibrary.createAlbumAsync('QR Codes', asset, false);
+
+    Platform.OS === 'android'
+      ? ToastAndroid.show('Saved to gallery', ToastAndroid.SHORT)
+      : Alert.alert('Saved', 'Image has been saved.');
+  } catch (err) {
+    console.error('Save error:', err);
+    Alert.alert('Error', 'Failed to save image.');
+  }
+};
+
 
   const handleShareImage = async () => {
-    try {
-      const asset = Asset.fromModule(images.qrcode);
-      await asset.downloadAsync();
+  try {
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${selectedTab === 'Crypto Address'
+      ? receiveAddress?.data?.address
+      : email}&size=200x200`;
 
-      const fileName = asset.localUri?.split('/').pop();
-      const localCopyPath = FileSystem.cacheDirectory + fileName;
+    const fileUri = FileSystem.cacheDirectory + 'qr_code_share.png';
+    const downloadRes = await FileSystem.downloadAsync(qrUrl, fileUri);
 
-      await FileSystem.copyAsync({
-        from: asset.localUri!,
-        to: localCopyPath
-      });
-
-      const isAvailable = await Share.isAvailableAsync();
-      if (!isAvailable) {
-        Alert.alert('Sharing not available on this device');
-        return;
-      }
-
-      await Share.shareAsync(localCopyPath, {
-        dialogTitle: 'Share your QR Code',
-        mimeType: 'image/png'
-      });
-    } catch (error) {
-      console.error('Error sharing image:', error);
-      Alert.alert('Error', 'Could not share image.');
+    const isAvailable = await Share.isAvailableAsync();
+    if (!isAvailable) {
+      Alert.alert('Sharing not available');
+      return;
     }
-  };
+
+    await Share.shareAsync(downloadRes.uri, {
+      dialogTitle: 'Share your QR Code',
+      mimeType: 'image/png'
+    });
+  } catch (err) {
+    console.error('Share error:', err);
+    Alert.alert('Error', 'Failed to share image.');
+  }
+};
+
 
   return (
     <View style={[styles.qrContainer, { backgroundColor: cardBackgroundColor }]}>
@@ -131,13 +125,13 @@ const QRCodeCard: React.FC<QRCodeCardProps> = ({
       <View style={styles.iconRow}>
         <TouchableOpacity style={styles.iconButton} onPress={handleSaveImage}>
           <View style={[styles.iconBackground, { backgroundColor: iconBackground }]}>
-            <Image source={save} />
+            <Image source={save} /> {/* Fixed closing tag */}
           </View>
           <Text style={styles.iconText}>Save</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconButton} onPress={handleShareImage}>
           <View style={[styles.iconBackground, { backgroundColor: iconBackground }]}>
-            <Image source={share} />
+            <Image source={share} /> {/* Fixed closing tag */}
           </View>
           <Text style={styles.iconText}>Share</Text>
         </TouchableOpacity>

@@ -9,7 +9,7 @@ interface AssetCardProps {
     balance: string;
     price: string;
     icon: string; // Ensure it's a string (URL),
-    coinName:string;
+    coinName: string;
 }
 
 const AssetCard: React.FC<AssetCardProps> = ({ name, fullName, balance, price, icon, coinName }) => {
@@ -17,13 +17,31 @@ const AssetCard: React.FC<AssetCardProps> = ({ name, fullName, balance, price, i
     const textColor = useThemeColor({ light: '#000000', dark: '#FFFFFF' }, 'text');
     const secondaryTextColor = useThemeColor({ light: '#666', dark: '#999' }, 'secondaryText');
 
+    function formatBalance(value: number | string): string {
+        let num = typeof value === 'string' ? parseFloat(value) : value;
+
+        if (isNaN(num)) return '0.00';
+
+        // Format with up to 5 decimal places, remove trailing zeros
+        let formatted = num.toFixed(5).replace(/(\.\d*?[1-9])0+$/g, '$1').replace(/\.0+$/, '');
+
+        // Ensure at least 2 decimal places
+        if (formatted.indexOf('.') === -1) {
+            formatted += '.00';
+        } else if (formatted.split('.')[1].length === 1) {
+            formatted += '0';
+        }
+
+        return formatted;
+    }
+
     console.log("the Icon", icon);
     return (
         <View style={[styles.card, { backgroundColor }]}>
             {/* Icon and Asset Name */}
             <View style={styles.iconRow}>
                 <View style={styles.iconContainer}>
-                <Image source={typeof icon === "string" ? { uri: icon } : icon ||images.account} style={styles.icon} />
+                    <Image source={typeof icon === "string" ? { uri: icon } : icon || images.account} style={styles.icon} />
                 </View>
                 <View style={styles.textContainer}>
                     <Text style={[styles.assetName, { color: textColor }]}>{coinName}</Text>
@@ -39,7 +57,9 @@ const AssetCard: React.FC<AssetCardProps> = ({ name, fullName, balance, price, i
 
             {/* Values Row */}
             <View style={styles.row}>
-                <Text style={[styles.balance, { color: textColor }]}>{balance}</Text>
+                <Text style={[styles.balance, { color: textColor }]}>
+                    {formatBalance(balance)}
+                </Text>
                 <Text style={[styles.price, { color: textColor }]}>{price}</Text>
             </View>
         </View>

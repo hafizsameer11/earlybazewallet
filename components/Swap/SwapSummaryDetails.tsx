@@ -54,9 +54,9 @@ const SwapSummaryDetails: React.FC<SwapSummaryDetailsProps> = ({
         <View style={styles.assetContainer}>
           {/* Use dynamic icon from the URL */}
           <Image source={images.naira} style={styles.assetIcon} /> {/* Use dynamic icon here */}
-<Text style={[styles.amountText, { color: textColor }]}>
-  {Number(amount_naira).toLocaleString(undefined, { maximumFractionDigits: 0 })}
-</Text>
+          <Text style={[styles.amountText, { color: textColor }]}>
+            {Number(amount_naira).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+          </Text>
         </View>
       </View>
 
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
   },
   assetContainer: {
     alignItems: 'center',
-    marginHorizontal: 20,
+    marginHorizontal: 30,
 
 
   },
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   },
   swapIcon: {
     position: 'absolute',
-    width: 30,
+    width: 24,
     left: '24%',
     top: 22,
   },

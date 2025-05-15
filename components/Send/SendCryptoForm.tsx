@@ -230,6 +230,21 @@ const SendCryptoForm: React.FC<{
         };
 
 
+        function formatSmartDecimal(value: string | number): string {
+            const num = parseFloat(String(value));
+            if (isNaN(num)) return '0.00';
+
+            const fixed = num.toFixed(8); // Max 8 decimal places
+            const trimmed = fixed
+                .replace(/(\.\d*?[1-9])0+$/g, '$1') // remove trailing zeros after last significant digit
+                .replace(/\.0+$/, '.00'); // if only .0 or .00 etc., convert to .00
+
+            const [intPart, decPart] = trimmed.split('.');
+            if (!decPart) return `${intPart}.00`;
+            if (decPart.length === 1) return `${intPart}.${decPart}0`;
+
+            return trimmed;
+        }
 
         return (
             <View style={styles.container}>
@@ -358,12 +373,17 @@ const SendCryptoForm: React.FC<{
 
                     <View style={styles.feeRow}>
                         <Text style={[styles.feeLabel, { color: feeLabelColor }]}>Total Fee</Text>
-                        <Text style={[styles.feeValue, { color: feeValueColor }]}>${feeData.total_fee_usd}</Text>
+                        <Text style={[styles.feeValue, { color: feeValueColor }]}>
+                            ${formatSmartDecimal(feeData.total_fee_usd)}
+                        </Text>
                     </View>
 
                     <View style={[styles.feeRow, { marginTop: 10 }]}>
                         <Text style={[styles.feeLabel, { fontWeight: 'bold', color: feeLabelColor }]}>You Will Send</Text>
-                        <Text style={[styles.feeValue, { fontWeight: 'bold', color: feeValueColor }]}>${feeData.amount_after_fee}</Text>
+                        <Text style={[styles.feeValue, { fontWeight: 'bold', color: feeValueColor }]}>
+                            ${formatSmartDecimal(feeData.amount_after_fee)}
+                        </Text>
+
                     </View>
                 </View>
 

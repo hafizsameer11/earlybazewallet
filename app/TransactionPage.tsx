@@ -118,7 +118,7 @@ const TransactionPage: React.FC = () => {
       ? {
         coin: transactionSummary.data.currency || "Unknown",
         network: transactionSummary.data.network || "Unknown",
-        amountBtc: transactionSummary.data.amount || "Unknown"
+        amountBtc: transactionSummary.data.amount
           ? `${transactionSummary.data.amount} ${transactionSummary.data.currency}`
           : "Unknown",
         amountUsd: transactionSummary.data.amount_usd
@@ -137,11 +137,11 @@ const TransactionPage: React.FC = () => {
           : ["rejected", "failed"].includes(normalizedStatus)
             ? "Rejected"
             : "Pending",
-        reason:
-          transactionSummary.data.status === "failed" || 'rejected'
-            ? "Network congestion timeout"
-            : null,
+        ...(["failed", "rejected"].includes(transactionSummary.data.status)
+          ? { reason: "Network congestion timeout" }
+          : {})
       }
+
       : normalizedType === "buy"
         ? {
           coin: transactionSummary.data.coin || "Unknown",

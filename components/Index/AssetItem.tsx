@@ -110,7 +110,7 @@ const AssetItem: React.FC<AssetProps> = ({ item, isAssetTab = false, customIconS
 
                 <View>
                     <Text style={[styles.assetName, { color: textColor }]}>
-                        {item.title?.toUpperCase()}
+                        {item.name?.toUpperCase()}
                     </Text>
                     {!isAssetTab && item.status && (
                         <View style={[styles.statusContainer, { alignItems: 'center', flexDirection: 'row' }]}>
@@ -137,7 +137,7 @@ const AssetItem: React.FC<AssetProps> = ({ item, isAssetTab = false, customIconS
                                                 : ['approved', 'completed'].includes(item.status ?? '')
                                                     ? 'green'
                                                     : 'orange',
-                                        marginLeft: 6, // spacing between dot and text
+                                        marginLeft: 2, // spacing between dot and text
                                     },
                                 ]}
                             >

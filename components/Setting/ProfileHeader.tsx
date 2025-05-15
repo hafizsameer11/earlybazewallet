@@ -61,7 +61,13 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ name, email, cryptoBalanc
                         <Text style={[styles.balanceLabel, { color: textColor }]}>Crypto Asset</Text>
                         <View style={styles.balanceRow}>
                             <Image source={wallet_icon} style={styles.balanceIcon} />
-                            <Text style={[styles.balanceAmount, { color: amountColor }]}>{cryptoBalance}</Text>
+                            <Text style={[styles.balanceAmount, { color: amountColor }]}>
+                                {Number(cryptoBalance).toLocaleString(undefined, {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 8,
+                                })}
+                            </Text>
+
                             <View style={styles.balanceCurrencyName} >
                                 <Text style={{ color: textColor }}>USD</Text>
                             </View>

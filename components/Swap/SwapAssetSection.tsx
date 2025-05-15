@@ -79,6 +79,21 @@ const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
     if (onConvertedChange) onConvertedChange(updatedConvertedAmount);
   };
 
+  function formatSmartDecimal(value: string | number): string {
+    const num = parseFloat(String(value));
+    if (isNaN(num)) return '0.00';
+
+    const fixed = num.toFixed(8); // Show up to 8 decimals
+    const trimmed = fixed
+      .replace(/(\.\d*?[1-9])0+$/g, '$1') // Trim trailing zeros after non-zero digit
+      .replace(/\.0+$/, '.00'); // Ensure .00 if it's whole number
+
+    const [intPart, decPart] = trimmed.split('.');
+    if (!decPart) return `${intPart}.00`;
+    if (decPart.length === 1) return `${intPart}.${decPart}0`;
+
+    return trimmed;
+  }
 
   return (
     <View style={[styles.swapBox, { backgroundColor: cardBackgroundColor, borderColor }]}>
@@ -112,7 +127,9 @@ const SwapAssetSection: React.FC<SwapAssetSectionProps> = ({
         {title === 'You Receive' && (
           <View style={[styles.amountBox, { borderColor, backgroundColor: inputBackgroundColor }]}>
             <Text style={[styles.amountCurrency, { color: labelColor }]}>NGN</Text>
-            <Text style={[styles.amountText, { color: textColor }]}>{converted}</Text>
+            <Text style={[styles.amountText, { color: textColor }]}>
+              {formatSmartDecimal(converted)}
+            </Text>
           </View>
         )}
       </View>

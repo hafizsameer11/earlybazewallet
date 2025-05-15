@@ -25,6 +25,7 @@ export const validationResetPasswordSchema = yup.object().shape({
 
 export const validationRegistrationSchema = yup.object().shape({
     name: yup.string().required("Username is required"),
+    fullName: yup.string().required("Full Name is required"),
     email: yup.string().required("Email is required")
     .matches(
       /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,

@@ -54,7 +54,8 @@ const Receive: React.FC = () => {
                 assetData={assetData}
                 setSelectedNetworkName={setSelectedNetworkName}
                 setSelectedCoinName={setSelectedCoinName}
-            />        </ScrollView>
+            />
+        </ScrollView>
     );
 };
 

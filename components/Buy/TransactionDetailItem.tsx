@@ -21,6 +21,21 @@ const TransactionDetailItem: React.FC<TransactionDetailItemProps> = ({ label, va
     await Clipboard.setString(String(value));
     console.log(`Copied: ${value}`);
   };
+  function formatSmartDecimal(value: string | number): string {
+    const num = parseFloat(String(value));
+    if (isNaN(num)) return '0.00';
+
+    const fixed = num.toFixed(8); // Show up to 8 decimals
+    const trimmed = fixed
+      .replace(/(\.\d*?[1-9])0+$/g, '$1') // remove trailing zeros
+      .replace(/\.0+$/, '.00');           // ensure whole numbers end in .00
+
+    const [intPart, decPart] = trimmed.split('.');
+    if (!decPart) return `${intPart}.00`;
+    if (decPart.length === 1) return `${intPart}.${decPart}0`;
+
+    return trimmed;
+  }
 
   return (
     <View style={styles.paymentRow}>
@@ -36,7 +51,7 @@ const TransactionDetailItem: React.FC<TransactionDetailItemProps> = ({ label, va
           style={[styles.value, { color: textColor }, valueStyle]}
           numberOfLines={2}
         >
-          {String(value)}
+          {typeof value === 'number' || !isNaN(Number(value)) ? formatSmartDecimal(value) : String(value)}
         </Text>
 
         {icon && <Image source={icon} style={styles.icon} />}
